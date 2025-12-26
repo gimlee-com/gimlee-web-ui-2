@@ -4,7 +4,7 @@ import { Card, CardBody, CardTitle } from '../Card/Card'
 import { Section } from '../Section/Section'
 
 const meta: Meta<typeof Grid> = {
-  title: 'UIkit/Grid',
+  title: 'UIkit/Layout/Grid',
   component: Grid,
   argTypes: {
     gap: {

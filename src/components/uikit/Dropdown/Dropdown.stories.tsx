@@ -4,7 +4,7 @@ import { Button } from '../Button/Button'
 import { Nav, NavItem, NavHeader, NavDivider } from '../Nav/Nav'
 
 const meta: Meta<typeof Dropdown> = {
-  title: 'UIkit/Nav/Dropdown',
+  title: 'UIkit/Dropdown',
   component: Dropdown,
   argTypes: {
     large: { control: 'boolean' },

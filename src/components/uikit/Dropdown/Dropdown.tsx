@@ -37,17 +37,17 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
       if (pos) options.push(`pos: ${pos}`)
       if (offset !== undefined) options.push(`offset: ${offset}`)
       if (flip !== undefined) options.push(`flip: ${flip}`)
-      if (shift !== undefined) options.push(`shift: ${shift}`)
+          if (shift !== undefined) options.push(`shift: ${shift}`)
       
-      // The user can still pass other options via props
-      const anyProps = props as any
-      for (const key in anyProps) {
-        if (key.startsWith('uk-')) {
-          options.push(String(anyProps[key]))
-        }
-      }
+          // Use a Record type to allow string indexing safely
+          const htmlProps = props as Record<string, unknown>
+          for (const key in htmlProps) {
+            if (key.startsWith('uk-')) {
+              options.push(String(htmlProps[key]))
+            }
+          }
       
-      return options.join(';')
+          return options.join(';')
     }, [mode, pos, offset, flip, shift, props])
 
     const otherProps = { ...props }

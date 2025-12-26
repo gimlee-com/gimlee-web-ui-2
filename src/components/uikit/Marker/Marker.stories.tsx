@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { Marker } from './Marker'
 
 const meta: Meta<typeof Marker> = {
-  title: 'UIkit/Nav/Marker',
+  title: 'UIkit/Marker',
   component: Marker,
   args: {
     href: '#',

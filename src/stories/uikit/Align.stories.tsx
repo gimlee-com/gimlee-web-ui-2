@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { Panel } from '../../components/uikit/Panel/Panel'
 
 const meta: Meta = {
-  title: 'UIkit/Align',
+  title: 'UIkit/Layout/Align',
   parameters: {
     controls: { hideNoControlsWarning: true },
   },
