@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { adService } from '../services/adService';
 import type { AdPreviewDto } from '../types/api';
 import { AdCard } from '../components/ads/AdCard';
@@ -7,6 +8,7 @@ import { Heading } from '../components/uikit/Heading/Heading';
 import { Spinner } from '../components/uikit/Spinner/Spinner';
 
 const HomePage: React.FC = () => {
+  const { t } = useTranslation();
   const [featuredAds, setFeaturedAds] = useState<AdPreviewDto[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -20,7 +22,7 @@ const HomePage: React.FC = () => {
     <div>
       <section className="uk-section uk-section-small">
         <div className="uk-flex uk-flex-between uk-flex-middle">
-          <Heading as="h2">Featured Ads</Heading>
+          <Heading as="h2">{t('home.featuredAds')}</Heading>
         </div>
         {loading ? (
           <div className="uk-flex uk-flex-center">

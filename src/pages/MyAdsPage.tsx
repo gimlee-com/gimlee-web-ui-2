@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { adService } from '../services/adService';
 import type { AdPreviewDto } from '../types/api';
 import { Heading } from '../components/uikit/Heading/Heading';
@@ -9,6 +10,7 @@ import { Table } from '../components/uikit/Table/Table';
 import { Label } from '../components/uikit/Label/Label';
 
 const MyAdsPage: React.FC = () => {
+  const { t } = useTranslation();
   const [ads, setAds] = useState<AdPreviewDto[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -20,13 +22,13 @@ const MyAdsPage: React.FC = () => {
   }, []);
 
   const handleCreateAd = async () => {
-    const title = prompt('Enter a title for your new ad:');
+    const title = prompt(t('ads.enterTitlePrompt'));
     if (title) {
       try {
         const newAd = await adService.createAd({ title });
         navigate(`/my-ads/edit/${newAd.id}`);
       } catch (err: any) {
-        alert(err.message || 'Failed to create ad');
+        alert(err.message || t('ads.failedToCreate'));
       }
     }
   };
@@ -36,7 +38,7 @@ const MyAdsPage: React.FC = () => {
         await adService.activateAd(id);
         setAds(prev => prev.map(ad => ad.id === id ? { ...ad, status: 'ACTIVE' } : ad));
     } catch (err: any) {
-        alert(err.message || 'Failed to activate ad');
+        alert(err.message || t('ads.failedToActivate'));
     }
   };
 
@@ -47,17 +49,17 @@ const MyAdsPage: React.FC = () => {
   return (
     <div>
       <div className="uk-flex uk-flex-between uk-flex-middle uk-margin-bottom">
-        <Heading as="h2">My Ads</Heading>
-        <Button variant="primary" onClick={handleCreateAd}>Create New Ad</Button>
+        <Heading as="h2">{t('ads.myAdsTitle')}</Heading>
+        <Button variant="primary" onClick={handleCreateAd}>{t('ads.createNew')}</Button>
       </div>
 
       <Table striped hover responsive>
         <thead>
           <tr>
-            <th>Title</th>
-            <th>Price</th>
-            <th>Status</th>
-            <th>Actions</th>
+            <th>{t('ads.title')}</th>
+            <th>{t('ads.price')}</th>
+            <th>{t('common.status')}</th>
+            <th>{t('common.actions')}</th>
           </tr>
         </thead>
         <tbody>
@@ -72,18 +74,18 @@ const MyAdsPage: React.FC = () => {
               </td>
               <td>
                 <div className="uk-button-group">
-                  <Link to={`/my-ads/edit/${ad.id}`} className="uk-button uk-button-default uk-button-small">Edit</Link>
+                  <Link to={`/my-ads/edit/${ad.id}`} className="uk-button uk-button-default uk-button-small">{t('common.edit')}</Link>
                   {ad.status === 'INACTIVE' && (
-                    <Button size="small" variant="primary" onClick={() => handleActivate(ad.id)}>Activate</Button>
+                    <Button size="small" variant="primary" onClick={() => handleActivate(ad.id)}>{t('ads.activate')}</Button>
                   )}
-                  <Link to={`/ads/${ad.id}`} className="uk-button uk-button-text uk-button-small uk-margin-small-left">View</Link>
+                  <Link to={`/ads/${ad.id}`} className="uk-button uk-button-text uk-button-small uk-margin-small-left">{t('common.view')}</Link>
                 </div>
               </td>
             </tr>
           ))}
           {ads.length === 0 && (
             <tr>
-              <td colSpan={4} className="uk-text-center">You have no ads yet.</td>
+              <td colSpan={4} className="uk-text-center">{t('ads.noAdsYet')}</td>
             </tr>
           )}
         </tbody>

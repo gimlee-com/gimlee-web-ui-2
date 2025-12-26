@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { adService } from '../services/adService';
 import type { PageAdPreviewDto } from '../types/api';
 import { AdCard } from '../components/ads/AdCard';
@@ -9,6 +10,7 @@ import { Spinner } from '../components/uikit/Spinner/Spinner';
 import { Pagination as UkPagination, PaginationItem, PaginationPrevious, PaginationNext } from '../components/uikit/Pagination/Pagination';
 
 const AdListingPage: React.FC = () => {
+  const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const [data, setData] = useState<PageAdPreviewDto | null>(null);
   const [loading, setLoading] = useState(true);
@@ -64,15 +66,15 @@ const AdListingPage: React.FC = () => {
 
   return (
     <div>
-      <Heading as="h2">Browse Ads</Heading>
-      
+      <Heading as="h2">{t('ads.browseTitle')}</Heading>
+  
       <form onSubmit={handleSearch} className="uk-margin-medium-bottom">
         <div className="uk-inline uk-width-1-1">
           <span className="uk-form-icon" uk-icon="icon: search"></span>
           <input
             className="uk-input"
             type="text"
-            placeholder="Search ads..."
+            placeholder={t('ads.searchPlaceholder')}
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
           />
@@ -99,7 +101,7 @@ const AdListingPage: React.FC = () => {
           
           {data?.content.length === 0 && (
             <div className="uk-text-center uk-margin-large-top">
-              <p>No ads found matching your search.</p>
+              <p>{t('ads.noAdsFound')}</p>
             </div>
           )}
         </>

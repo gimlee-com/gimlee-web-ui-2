@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import { authService } from '../services/authService';
 import type { LoginRequestDto } from '../types/api';
@@ -9,6 +10,7 @@ import { Alert } from '../components/uikit/Alert/Alert';
 import { Heading } from '../components/uikit/Heading/Heading';
 
 const LoginPage: React.FC = () => {
+  const { t } = useTranslation();
   const { register, handleSubmit, formState: { errors } } = useForm<LoginRequestDto>();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -24,10 +26,10 @@ const LoginPage: React.FC = () => {
         authLogin(response.accessToken);
         navigate('/');
       } else {
-        setError('Login failed. Please check your credentials.');
+        setError(t('auth.errors.loginFailed'));
       }
     } catch (err: any) {
-      setError(err.message || 'An error occurred during login.');
+      setError(err.message || t('auth.errors.generic'));
     } finally {
       setLoading(false);
     }
@@ -36,41 +38,41 @@ const LoginPage: React.FC = () => {
   return (
     <div className="uk-flex uk-flex-center">
       <div className="uk-card uk-card-default uk-card-body uk-width-large">
-        <Heading as="h3" className="uk-text-center">Login</Heading>
+        <Heading as="h3" className="uk-text-center">{t('auth.loginTitle')}</Heading>
         {error && <Alert variant="danger">{error}</Alert>}
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="uk-margin">
-            <label className="uk-form-label">Username</label>
+            <label className="uk-form-label">{t('auth.username')}</label>
             <div className="uk-form-controls">
               <input
-                {...register('username', { required: 'Username is required' })}
+                {...register('username', { required: t('auth.errors.required', { field: t('auth.username') }) })}
                 className={`uk-input ${errors.username ? 'uk-form-danger' : ''}`}
                 type="text"
-                placeholder="Username"
+                placeholder={t('auth.username')}
               />
               {errors.username && <span className="uk-text-danger uk-text-small">{errors.username.message}</span>}
             </div>
           </div>
           <div className="uk-margin">
-            <label className="uk-form-label">Password</label>
+            <label className="uk-form-label">{t('auth.password')}</label>
             <div className="uk-form-controls">
               <input
-                {...register('password', { required: 'Password is required' })}
+                {...register('password', { required: t('auth.errors.required', { field: t('auth.password') }) })}
                 className={`uk-input ${errors.password ? 'uk-form-danger' : ''}`}
                 type="password"
-                placeholder="Password"
+                placeholder={t('auth.password')}
               />
               {errors.password && <span className="uk-text-danger uk-text-small">{errors.password.message}</span>}
             </div>
           </div>
           <div className="uk-margin">
             <Button type="submit" variant="primary" className="uk-width-1-1" disabled={loading}>
-              {loading ? 'Logging in...' : 'Login'}
+              {loading ? t('auth.loggingIn') : t('auth.loginTitle')}
             </Button>
           </div>
         </form>
         <div className="uk-text-center uk-margin-top">
-          Don't have an account? <Link to="/register">Register</Link>
+          {t('auth.noAccount')} <Link to="/register">{t('navbar.register')}</Link>
         </div>
       </div>
     </div>

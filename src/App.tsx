@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import './i18n';
 import Navbar from './components/layout/Navbar';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';

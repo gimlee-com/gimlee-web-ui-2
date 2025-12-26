@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { adService } from '../services/adService';
 import { apiClient } from '../services/apiClient';
 import { cityService } from '../services/cityService';
@@ -13,6 +14,7 @@ import { Alert } from '../components/uikit/Alert/Alert';
 const API_URL = import.meta.env.VITE_API_URL || '';
 
 const EditAdPage: React.FC = () => {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { register, handleSubmit, reset } = useForm<UpdateAdRequestDto>();
@@ -97,31 +99,31 @@ const EditAdPage: React.FC = () => {
   };
 
   if (loading) return <div className="uk-flex uk-flex-center"><Spinner ratio={2} /></div>;
-  if (!ad) return <div>Ad not found.</div>;
+  if (!ad) return <div>{t('ads.notFound')}</div>;
 
   return (
     <div>
-      <Heading as="h2">Edit Ad: {ad.title}</Heading>
+      <Heading as="h2">{t('ads.editTitle')}: {ad.title}</Heading>
       {error && <Alert variant="danger">{error}</Alert>}
-      
+  
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="uk-margin">
-          <label className="uk-form-label">Title</label>
+          <label className="uk-form-label">{t('ads.title')}</label>
           <input {...register('title')} className="uk-input" type="text" />
         </div>
 
         <div className="uk-margin">
-          <label className="uk-form-label">Description</label>
+          <label className="uk-form-label">{t('ads.description')}</label>
           <textarea {...register('description')} className="uk-textarea" rows={5}></textarea>
         </div>
 
         <div className="uk-margin">
-          <label className="uk-form-label">City</label>
+          <label className="uk-form-label">{t('ads.city')}</label>
           <div className="uk-inline uk-width-1-1">
             <input
               className="uk-input"
               type="text"
-              placeholder="Search for a city..."
+              placeholder={t('ads.cityPlaceholder')}
               value={citySearch}
               onChange={(e) => handleCitySearch(e.target.value)}
             />
@@ -143,11 +145,11 @@ const EditAdPage: React.FC = () => {
 
         <div className="uk-grid-small" uk-grid="">
           <div className="uk-width-1-2">
-            <label className="uk-form-label">Price</label>
+            <label className="uk-form-label">{t('ads.price')}</label>
             <input {...register('price')} className="uk-input" type="number" step="0.01" />
           </div>
           <div className="uk-width-1-2">
-            <label className="uk-form-label">Currency</label>
+            <label className="uk-form-label">{t('ads.currency')}</label>
             <select {...register('currency')} className="uk-select">
               <option value="USD">USD</option>
               <option value="ARRR">ARRR (Pirate Chain)</option>
@@ -156,13 +158,13 @@ const EditAdPage: React.FC = () => {
         </div>
 
         <div className="uk-margin">
-          <label className="uk-form-label">Media</label>
+          <label className="uk-form-label">{t('ads.media')}</label>
           <div className="uk-placeholder uk-text-center">
             <span uk-icon="icon: cloud-upload"></span>
-            <span className="uk-text-middle uk-margin-small-left">Upload files by </span>
+            <span className="uk-text-middle uk-margin-small-left">{t('ads.uploadText')}</span>
             <div uk-form-custom="">
               <input type="file" multiple onChange={(e) => e.target.files && handleUpload(e.target.files)} />
-              <span className="uk-link">selecting them</span>
+              <span className="uk-link">{t('ads.selectFiles')}</span>
             </div>
           </div>
           <div className="uk-grid-small uk-child-width-1-4 uk-margin-top" uk-grid="">
@@ -179,9 +181,9 @@ const EditAdPage: React.FC = () => {
 
         <div className="uk-margin-large-top">
           <Button type="submit" variant="primary" disabled={saving}>
-            {saving ? 'Saving...' : 'Save Changes'}
+            {saving ? t('ads.saving') : t('common.save')}
           </Button>
-          <Button type="button" className="uk-margin-left" onClick={() => navigate('/my-ads')}>Cancel</Button>
+          <Button type="button" className="uk-margin-left" onClick={() => navigate('/my-ads')}>{t('common.cancel')}</Button>
         </div>
       </form>
     </div>

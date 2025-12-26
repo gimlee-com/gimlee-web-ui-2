@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { paymentService } from '../services/paymentService';
 import type { PirateChainTransaction } from '../types/api';
 import { Heading } from '../components/uikit/Heading/Heading';
@@ -8,6 +9,7 @@ import { Table } from '../components/uikit/Table/Table';
 import { Spinner } from '../components/uikit/Spinner/Spinner';
 
 const ProfilePage: React.FC = () => {
+  const { t, i18n } = useTranslation();
   const [viewKey, setViewKey] = useState('');
   const [transactions, setTransactions] = useState<PirateChainTransaction[]>([]);
   const [loading, setLoading] = useState(true);
@@ -29,7 +31,7 @@ const ProfilePage: React.FC = () => {
     setSuccess(null);
     try {
       await paymentService.addPirateChainViewKey(viewKey);
-      setSuccess('Viewing key updated successfully.');
+      setSuccess(t('profile.keyUpdated'));
       setViewKey('');
       // Refresh transactions
       const txs = await paymentService.getPirateChainTransactions();
@@ -43,12 +45,32 @@ const ProfilePage: React.FC = () => {
 
   return (
     <div>
-      <Heading as="h2">Profile & Settings</Heading>
-      
+      <Heading as="h2">{t('profile.title')}</Heading>
+
+      <div className="uk-card uk-card-default uk-card-body uk-margin-bottom">
+        <Heading as="h4">{t('profile.language')}</Heading>
+        <div className="uk-button-group">
+          <Button
+            size="small"
+            variant={i18n.resolvedLanguage === 'en' ? 'primary' : 'default'}
+            onClick={() => i18n.changeLanguage('en')}
+          >
+            English
+          </Button>
+          <Button
+            size="small"
+            variant={i18n.resolvedLanguage === 'pl' ? 'primary' : 'default'}
+            onClick={() => i18n.changeLanguage('pl')}
+          >
+            Polski
+          </Button>
+        </div>
+      </div>
+  
       <div className="uk-card uk-card-default uk-card-body uk-margin-large-bottom">
-        <Heading as="h4">Pirate Chain Payment Monitoring</Heading>
-        <p>To enable payment monitoring for your ads, please provide your Pirate Chain Viewing Key (z-view key). This allows the service to see incoming transactions without having access to your funds.</p>
-        
+        <Heading as="h4">{t('profile.paymentMonitoring')}</Heading>
+        <p>{t('profile.paymentDesc')}</p>
+
         {error && <Alert variant="danger">{error}</Alert>}
         {success && <Alert variant="success">{success}</Alert>}
 
@@ -57,7 +79,7 @@ const ProfilePage: React.FC = () => {
             <input
               className="uk-input"
               type="text"
-              placeholder="Enter your zxview... key"
+              placeholder={t('profile.viewKeyPlaceholder')}
               value={viewKey}
               onChange={(e) => setViewKey(e.target.value)}
               required
@@ -65,14 +87,14 @@ const ProfilePage: React.FC = () => {
           </div>
           <div className="uk-width-auto">
             <Button type="submit" variant="primary" disabled={saving}>
-              {saving ? 'Saving...' : 'Save Key'}
+              {saving ? t('ads.saving') : t('profile.saveKey')}
             </Button>
           </div>
         </form>
       </div>
 
       <div className="uk-margin-large-top">
-        <Heading as="h4">Recent Pirate Chain Transactions</Heading>
+        <Heading as="h4">{t('profile.recentTransactions')}</Heading>
         {loading ? (
           <Spinner />
         ) : (
@@ -80,7 +102,7 @@ const ProfilePage: React.FC = () => {
             <thead>
               <tr>
                 <th>TXID</th>
-                <th>Amount (ARRR)</th>
+                <th>{t('ads.price')} (ARRR)</th>
                 <th>Confirmations</th>
                 <th>Memo</th>
               </tr>
@@ -96,7 +118,7 @@ const ProfilePage: React.FC = () => {
               ))}
               {transactions.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="uk-text-center">No transactions found.</td>
+                  <td colSpan={4} className="uk-text-center">{t('profile.noTransactions')}</td>
                 </tr>
               )}
             </tbody>

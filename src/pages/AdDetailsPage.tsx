@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { adService } from '../services/adService';
 import type { AdDetailsDto } from '../types/api';
 import { Heading } from '../components/uikit/Heading/Heading';
@@ -10,6 +11,7 @@ import { Lightbox, LightboxItem } from '../components/uikit/Lightbox/Lightbox';
 const API_URL = import.meta.env.VITE_API_URL || '';
 
 const AdDetailsPage: React.FC = () => {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const [ad, setAd] = useState<AdDetailsDto | null>(null);
   const [loading, setLoading] = useState(true);
@@ -27,7 +29,7 @@ const AdDetailsPage: React.FC = () => {
   }
 
   if (!ad) {
-    return <div>Ad not found.</div>;
+    return <div>{t('ads.notFound')}</div>;
   }
 
   const images = ad.mediaPaths?.map(path => ({
@@ -52,7 +54,7 @@ const AdDetailsPage: React.FC = () => {
               </div>
             </Lightbox>
           ) : (
-            <div className="uk-placeholder uk-text-center">No images available</div>
+            <div className="uk-placeholder uk-text-center">{t('ads.noImages')}</div>
           )}
         </div>
         <div className="uk-width-1-3@m">
@@ -64,12 +66,12 @@ const AdDetailsPage: React.FC = () => {
           )}
           <hr />
           <div className="uk-margin">
-            <Heading as="h4">Description</Heading>
-            <p className="uk-text-break">{ad.description || 'No description provided.'}</p>
+            <Heading as="h4">{t('ads.description')}</Heading>
+            <p className="uk-text-break">{ad.description || t('ads.noDescription')}</p>
           </div>
           {ad.location?.city && (
             <div className="uk-margin">
-              <Heading as="h4">Location</Heading>
+              <Heading as="h4">{t('ads.location')}</Heading>
               <p>{ad.location.city.name}, {ad.location.city.country}</p>
             </div>
           )}
