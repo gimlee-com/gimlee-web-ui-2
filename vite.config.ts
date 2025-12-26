@@ -21,6 +21,13 @@ export default defineConfig({
       brotliSize: true,
     }),
   ],
+  css: {
+    preprocessorOptions: {
+      scss: {
+        silenceDeprecations: ['import'],
+      },
+    },
+  },
   test: {
     projects: [{
       extends: true,
