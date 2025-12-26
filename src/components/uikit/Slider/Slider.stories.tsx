@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { Slider, SliderItems, SliderItem, SliderContainer, SliderNav } from './Slider'
-import { Grid } from '../Grid/Grid'
 import { Slidenav } from '../Slidenav/Slidenav'
 import { Card, CardBody, CardTitle, CardMedia } from '../Card/Card'
 import { Panel } from '../Panel/Panel'
