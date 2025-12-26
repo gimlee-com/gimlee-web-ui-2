@@ -1,48 +1,40 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import { Button } from './components/uikit/Button/Button.tsx'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import Navbar from './components/layout/Navbar';
+import HomePage from './pages/HomePage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import AdListingPage from './pages/AdListingPage';
+import AdDetailsPage from './pages/AdDetailsPage';
+import MyAdsPage from './pages/MyAdsPage';
+import EditAdPage from './pages/EditAdPage';
+import ProfilePage from './pages/ProfilePage';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-        <h1>Vite + React</h1>
-        <div className="card">
-            <Button onClick={() => setCount(count => count + 1)} variant="primary">
-                count is {count}
-            </Button>
-            <div className="uk-margin">
-                <Button>Default</Button>
-                <Button variant="danger" className="uk-margin-left">
-                    Danger
-                </Button>
-                <Button variant="text" className="uk-margin-left">
-                    Text
-                </Button>
-                <Button size="small" className="uk-margin-left">
-                    Small
-                </Button>
+    <AuthProvider>
+      <Router>
+        <div className="App">
+          <Navbar />
+          <main className="uk-section uk-section-default">
+            <div className="uk-container">
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
+                <Route path="/ads" element={<AdListingPage />} />
+                <Route path="/ads/:id" element={<AdDetailsPage />} />
+                <Route path="/my-ads" element={<MyAdsPage />} />
+                <Route path="/my-ads/edit/:id" element={<EditAdPage />} />
+                <Route path="/profile" element={<ProfilePage />} />
+              </Routes>
             </div>
-            <p>
-                Edit <code>src/App.tsx</code> and save to test HMR
-            </p>
+          </main>
         </div>
-        <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+      </Router>
+    </AuthProvider>
+  );
 }
 
-export default App
+export default App;

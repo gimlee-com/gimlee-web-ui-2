@@ -21,6 +21,14 @@ export default defineConfig({
       brotliSize: true,
     }),
   ],
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:12060',
+        changeOrigin: true,
+      },
+    },
+  },
   css: {
     preprocessorOptions: {
       scss: {

@@ -1,0 +1,79 @@
+const API_URL = import.meta.env.VITE_API_URL || '';
+
+class ApiClient {
+  private token: string | null = localStorage.getItem('accessToken');
+
+  setToken(token: string | null) {
+    this.token = token;
+    if (token) {
+      localStorage.setItem('accessToken', token);
+    } else {
+      localStorage.removeItem('accessToken');
+    }
+  }
+
+  getToken() {
+    return this.token;
+  }
+
+  async request<T>(path: string, options: RequestInit = {}): Promise<T> {
+    const url = `${API_URL}/api${path}`;
+    const headers = new Headers(options.headers);
+
+    if (this.token) {
+      headers.set('Authorization', `Bearer ${this.token}`);
+    }
+
+    if (!(options.body instanceof FormData)) {
+        headers.set('Content-Type', 'application/json');
+    }
+
+    const response = await fetch(url, {
+      ...options,
+      headers,
+    });
+
+    if (response.status === 403) {
+      this.setToken(null);
+      window.location.href = '/login';
+      throw new Error('Unauthorized');
+    }
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ message: 'An error occurred' }));
+      throw error;
+    }
+
+    if (response.status === 204) {
+        return {} as T;
+    }
+
+    return response.json();
+  }
+
+  get<T>(path: string, options: RequestInit = {}) {
+    return this.request<T>(path, { ...options, method: 'GET' });
+  }
+
+  post<T>(path: string, body?: any, options: RequestInit = {}) {
+    return this.request<T>(path, {
+      ...options,
+      method: 'POST',
+      body: body instanceof FormData ? body : JSON.stringify(body),
+    });
+  }
+
+  put<T>(path: string, body?: any, options: RequestInit = {}) {
+    return this.request<T>(path, {
+      ...options,
+      method: 'PUT',
+      body: body instanceof FormData ? body : JSON.stringify(body),
+    });
+  }
+
+  delete<T>(path: string, options: RequestInit = {}) {
+    return this.request<T>(path, { ...options, method: 'DELETE' });
+  }
+}
+
+export const apiClient = new ApiClient();
