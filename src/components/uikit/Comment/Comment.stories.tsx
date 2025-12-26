@@ -31,7 +31,7 @@ export const Basic: Story = {
           <div className="uk-width-expand">
             <CommentTitle><a className="uk-link-reset" href="#">Author</a></CommentTitle>
             <CommentMeta>
-              <Subnav divider>
+              <Subnav variant="divider">
                 <li><a href="#">12 days ago</a></li>
                 <li><a href="#">Reply</a></li>
               </Subnav>
@@ -57,7 +57,7 @@ export const Primary: Story = {
           <div className="uk-width-expand">
             <CommentTitle><a className="uk-link-reset" href="#">Author</a></CommentTitle>
             <CommentMeta>
-              <Subnav divider>
+              <Subnav variant="divider">
                 <li><a href="#">12 days ago</a></li>
                 <li><a href="#">Reply</a></li>
               </Subnav>

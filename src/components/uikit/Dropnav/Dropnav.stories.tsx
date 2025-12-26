@@ -5,7 +5,6 @@ import { Tab, TabItem } from '../Tab/Tab'
 import { Dropdown } from '../Dropdown/Dropdown'
 import { Nav, NavItem, NavHeader, NavDivider } from '../Nav/Nav'
 import { DropParentIcon } from '../Drop/Drop'
-import { Section } from '../Section/Section'
 
 const meta: Meta<typeof Dropnav> = {
   title: 'UIkit/Dropnav',

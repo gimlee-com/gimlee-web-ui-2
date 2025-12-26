@@ -1,7 +1,5 @@
 import React, { forwardRef, useMemo } from 'react'
 
-type UkBoolean = boolean | 'true' | 'false'
-
 export type SlideshowProps = React.HTMLAttributes<HTMLDivElement> & {
   animation?: 'slide' | 'fade' | 'scale' | 'pull' | 'push'
   autoplay?: boolean

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { Drop, DropParentIcon } from './Drop'
 import { Button } from '../Button/Button'
-import { Card, CardBody } from '../Card/Card'
+import { Card } from '../Card/Card'
 import { Grid } from '../Grid/Grid'
 
 const meta: Meta<typeof Drop> = {

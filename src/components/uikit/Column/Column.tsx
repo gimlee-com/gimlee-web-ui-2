@@ -1,7 +1,6 @@
 import React, { forwardRef } from 'react'
 
 type ColumnCount = 1 | 2 | 3 | 4 | 5 | 6
-type ColumnBreakpoint = 's' | 'm' | 'l' | 'xl'
 
 type ColumnProps = React.HTMLAttributes<HTMLDivElement> & {
   count?: ColumnCount
@@ -31,7 +30,7 @@ export const Column = forwardRef<HTMLDivElement, ColumnProps>(
   }
 )
 
-export const ColumnSpan = forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement> & { tag?: React.ElementType }>(
+export const ColumnSpan = forwardRef<HTMLElement, React.AllHTMLAttributes<HTMLElement> & { tag?: React.ElementType }>(
   ({ children, className: customClassName, tag: Tag = 'p', ...props }, ref) => {
     const classNames = ['uk-column-span']
     if (customClassName) classNames.push(customClassName)

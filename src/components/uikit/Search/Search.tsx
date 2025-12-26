@@ -28,7 +28,7 @@ export const SearchInput = forwardRef<HTMLInputElement, React.InputHTMLAttribute
   }
 )
 
-type SearchIconProps = React.HTMLAttributes<HTMLElement> & {
+type SearchIconProps = React.AllHTMLAttributes<HTMLElement> & {
   flip?: boolean
   tag?: React.ElementType
 }

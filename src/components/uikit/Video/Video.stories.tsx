@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { Video } from './Video'
 import { Grid } from '../Grid/Grid'
-import { Button } from '../Button/Button'
 import { Icon } from '../Icon/Icon'
 
 const meta: Meta<typeof Video> = {

@@ -2,7 +2,7 @@ import React, { forwardRef, useMemo } from 'react'
 
 type VideoAutoplay = boolean | 'inview' | 'hover'
 
-type VideoProps = React.HTMLAttributes<HTMLElement> & {
+type VideoProps = React.AllHTMLAttributes<HTMLElement> & {
   autoplay?: VideoAutoplay
   restart?: boolean
   hoverTarget?: string

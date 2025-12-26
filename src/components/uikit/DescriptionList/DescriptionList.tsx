@@ -1,10 +1,10 @@
 import React, { forwardRef } from 'react'
 
-type DescriptionListProps = React.HTMLAttributes<HTMLDLElement> & {
+type DescriptionListProps = React.HTMLAttributes<HTMLDListElement> & {
   divider?: boolean
 }
 
-export const DescriptionList = forwardRef<HTMLDLElement, DescriptionListProps>(
+export const DescriptionList = forwardRef<HTMLDListElement, DescriptionListProps>(
   ({ children, divider, className: customClassName, ...props }, ref) => {
     const classNames = ['uk-description-list']
     if (divider) classNames.push('uk-description-list-divider')

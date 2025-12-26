@@ -1,11 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { Search, SearchInput, SearchIcon, SearchToggle } from './Search'
+import { Search, SearchInput, SearchIcon } from './Search'
 import { Navbar, NavbarContainer, NavbarLeft, NavbarRight, NavbarItem } from '../Navbar/Navbar'
 import { Dropdown } from '../Dropdown/Dropdown'
 import { Modal, ModalDialog, ModalCloseFull } from '../Modal/Modal'
-import { Grid } from '../Grid/Grid'
 import { Button } from '../Button/Button'
-import { Close } from '../Close/Close'
 
 const meta: Meta<typeof Search> = {
   title: 'UIkit/Search',

@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { Table } from './Table'
 import { Button } from '../Button/Button'
-import { Icon } from '../Icon/Icon'
 
 const meta: Meta<typeof Table> = {
   title: 'UIkit/Table',

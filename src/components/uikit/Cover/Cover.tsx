@@ -1,6 +1,6 @@
 import React, { forwardRef, useMemo } from 'react'
 
-type CoverProps = React.HTMLAttributes<HTMLElement> & {
+type CoverProps = React.AllHTMLAttributes<HTMLElement> & {
   automute?: boolean
   width?: number
   height?: number
