@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { Sticky } from './Sticky'
 import { Card, CardBody, CardTitle } from '../Card/Card'
+import { Grid } from '../Grid/Grid'
 
 const meta: Meta<typeof Sticky> = {
   title: 'UIkit/Sticky',
@@ -13,7 +14,7 @@ type Story = StoryObj<typeof Sticky>
 const TallContainer: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <div className="uk-height-large uk-background-muted uk-padding uk-overflow-auto">
     <div className="uk-height-large uk-position-relative">
-      <div className="uk-grid-small" uk-grid="">
+      <Grid gap="small">
         <div className="uk-width-1-2@s">
           <p>Scroll this area to see the sticky behavior.</p>
           <p>
@@ -32,7 +33,7 @@ const TallContainer: React.FC<{ children: React.ReactNode }> = ({ children }) =>
           </p>
         </div>
         <div className="uk-width-1-2@s">{children}</div>
-      </div>
+      </Grid>
     </div>
   </div>
 )

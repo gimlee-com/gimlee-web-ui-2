@@ -3,7 +3,7 @@ import { useUIKit } from '../../../hooks/useUIkit'
 import UIkit from 'uikit'
 
 type NavProps = React.PropsWithChildren<{
-  variant?: 'default' | 'primary' | 'secondary' | 'center'
+  variant?: 'default' | 'primary' | 'secondary' | 'center' | 'dropdown'
   size?: 'medium' | 'large' | 'xlarge'
   accordion?: boolean | { multiple?: boolean }
 }> &
@@ -32,7 +32,9 @@ export const Nav = forwardRef<HTMLUListElement, NavProps>(
     )
 
     const classNames = ['uk-nav']
-    if (variant && variant !== 'default') {
+    if (variant === 'dropdown') {
+      classNames.push('uk-dropdown-nav')
+    } else if (variant && variant !== 'default') {
       classNames.push(`uk-nav-${variant}`)
     } else {
       classNames.push('uk-nav-default')

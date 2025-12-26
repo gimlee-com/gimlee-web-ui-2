@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { Subnav } from './Subnav'
 import { Icon } from '../Icon/Icon'
+import { Dropdown } from '../Dropdown/Dropdown'
+import { Nav, NavItem, NavHeader } from '../Nav/Nav'
 
 const meta: Meta<typeof Subnav> = {
   title: 'UIkit/Nav/Subnav',
@@ -55,20 +57,20 @@ export const WithDropdown: Story = {
         <a href="#">
           More <Icon icon="triangle-down" />
         </a>
-        <div uk-dropdown="mode: click">
-          <ul className="uk-nav uk-dropdown-nav">
-            <li className="uk-active">
+        <Dropdown mode="click">
+          <Nav variant="dropdown">
+            <NavItem active>
               <a href="#">Active</a>
-            </li>
-            <li>
+            </NavItem>
+            <NavItem>
               <a href="#">Item</a>
-            </li>
-            <li className="uk-nav-header">Header</li>
-            <li>
+            </NavItem>
+            <NavHeader>Header</NavHeader>
+            <NavItem>
               <a href="#">Item</a>
-            </li>
-          </ul>
-        </div>
+            </NavItem>
+          </Nav>
+        </Dropdown>
       </li>
     </Subnav>
   ),

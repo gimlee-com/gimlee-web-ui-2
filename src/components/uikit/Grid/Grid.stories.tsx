@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { Grid } from './Grid'
 import { Card, CardBody, CardTitle } from '../Card/Card'
+import { Section } from '../Section/Section'
 
 const meta: Meta<typeof Grid> = {
   title: 'UIkit/Grid',
@@ -148,9 +149,9 @@ export const WithParallax: Story = {
   name: 'With Parallax',
   render: (args) => (
     <div>
-      <div className="uk-section uk-section-large">
+      <Section size="large">
         <p>Scroll down to see the parallax effect on the grid below...</p>
-      </div>
+      </Section>
       <Grid {...args} className="uk-child-width-1-3@m">
         <div>
           <Card variant="primary">
@@ -177,9 +178,9 @@ export const WithParallax: Story = {
           </Card>
         </div>
       </Grid>
-      <div className="uk-section uk-section-large">
+      <Section size="large">
         <p>...Scroll up to see it again.</p>
-      </div>
+      </Section>
     </div>
   ),
   args: {

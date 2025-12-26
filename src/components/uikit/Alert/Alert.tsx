@@ -1,5 +1,6 @@
 import React, { forwardRef, useEffect, useRef } from 'react'
 import UIkit from 'uikit'
+import { Close } from '../Close/Close'
 
 type AlertProps = React.PropsWithChildren<{
   variant?: 'primary' | 'success' | 'warning' | 'danger'
@@ -68,7 +69,7 @@ export const Alert = forwardRef<HTMLDivElement, AlertProps>(
         uk-alert=""
         {...props}
       >
-        {onClose && <button className="uk-alert-close" type="button" uk-close="" />}
+        {onClose && <Close className="uk-alert-close" />}
         {children}
       </div>
     )

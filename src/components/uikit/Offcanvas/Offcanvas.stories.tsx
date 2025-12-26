@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { Offcanvas, OffcanvasBar, OffcanvasClose } from './Offcanvas'
 import { Button } from '../Button/Button'
 import { Nav, NavItem, NavHeader, NavDivider, SubNav } from '../Nav/Nav'
+import { Icon } from '../Icon/Icon'
 
 const meta: Meta<typeof Offcanvas> = {
   title: 'UIkit/Offcanvas',
@@ -112,20 +113,20 @@ export const NavInOffcanvas: Story = {
             <NavHeader>Header</NavHeader>
             <NavItem>
               <a href="#">
-                <span className="uk-margin-small-right" uk-icon="icon: table" />
+                <Icon icon="table" className="uk-margin-small-right" />
                 Item
               </a>
             </NavItem>
             <NavItem>
               <a href="#">
-                <span className="uk-margin-small-right" uk-icon="icon: thumbnails" />
+                <Icon icon="thumbnails" className="uk-margin-small-right" />
                 Item
               </a>
             </NavItem>
             <NavDivider />
             <NavItem>
               <a href="#">
-                <span className="uk-margin-small-right" uk-icon="icon: trash" />
+                <Icon icon="trash" className="uk-margin-small-right" />
                 Item
               </a>
             </NavItem>

@@ -17,6 +17,9 @@ import {
 } from './Navbar'
 import { Button } from '../Button/Button'
 import { Sticky } from '../Sticky/Sticky'
+import { Grid } from '../Grid/Grid'
+import { Section } from '../Section/Section'
+import { Container } from '../Container/Container'
 
 const meta: Meta<typeof Navbar> = {
   title: 'UIkit/Navbar',
@@ -88,7 +91,7 @@ export const WithDropbar: Story = {
                   Mega <NavbarParentIcon />
                 </a>
                 <NavbarDropdown className="uk-navbar-dropdown-width-2">
-                  <div className="uk-drop-grid uk-child-width-1-2" uk-grid="">
+                  <Grid gap="collapse" className="uk-drop-grid uk-child-width-1-2">
                     <div>
                       <NavbarDropdownNav>
                         <li className="uk-active">
@@ -114,18 +117,18 @@ export const WithDropbar: Story = {
                         </li>
                       </NavbarDropdownNav>
                     </div>
-                  </div>
+                  </Grid>
                 </NavbarDropdown>
               </NavbarItem>
             </NavbarNav>
           </NavbarLeft>
         </Navbar>
       </NavbarContainer>
-      <div className="uk-section uk-section-muted">
-        <div className="uk-container">
+      <Section variant="muted">
+        <Container>
           <p>Content below dropbar.</p>
-        </div>
-      </div>
+        </Container>
+      </Section>
     </div>
   ),
 }
@@ -281,8 +284,8 @@ export const StickyNavbar: Story = {
           </Navbar>
         </NavbarContainer>
       </Sticky>
-      <div className="uk-section uk-section-default">
-        <div className="uk-container">
+      <Section variant="default">
+        <Container>
           <p>Scroll to see the navbar stick with a 60px offset.</p>
           <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent vehicula
@@ -296,8 +299,8 @@ export const StickyNavbar: Story = {
             ex, nec fermentum velit. Etiam porta massa non mauris cursus, nec dictum arcu
             fermentum. Sed in dictum ex, nec fermentum velit.
           </p>
-        </div>
-      </div>
+        </Container>
+      </Section>
     </div>
   ),
 }

@@ -18,7 +18,7 @@ export const Default: Story = {
   render: (args) => (
     <div className="uk-inline">
       <Button>Hover Me</Button>
-      <Dropdown {...args} uk-dropdown="">
+      <Dropdown {...args}>
         <p>This is a simple dropdown.</p>
       </Dropdown>
     </div>
@@ -30,8 +30,8 @@ export const WithNav: Story = {
   render: (args) => (
     <div className="uk-inline">
       <Button>Hover Me</Button>
-      <Dropdown {...args} uk-dropdown="">
-        <Nav className="uk-dropdown-nav">
+      <Dropdown {...args}>
+        <Nav variant="dropdown">
           <NavItem active>
             <a href="#">Active</a>
           </NavItem>
@@ -56,7 +56,7 @@ export const ClickMode: Story = {
   render: (args) => (
     <div className="uk-inline">
       <Button>Click Me</Button>
-      <Dropdown {...args} uk-dropdown="mode: click">
+      <Dropdown {...args} mode="click">
         <p>This dropdown appears on click.</p>
       </Dropdown>
     </div>

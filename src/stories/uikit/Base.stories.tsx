@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import { Panel } from '../../components/uikit/Panel/Panel'
 
 const meta: Meta = {
   title: 'UIkit/Base',
@@ -13,7 +14,7 @@ type Story = StoryObj
 export const TextSemantics: Story = {
   name: 'Text semantics & links',
   render: () => (
-    <div className="uk-padding uk-panel">
+    <Panel className="uk-padding">
       <p>
         This is a paragraph with <a href="#">a link</a>, <strong>strong</strong>,{' '}
         <em>emphasis</em>, <code>code</code>, <del>deleted</del>, <ins>inserted</ins>,{' '}
@@ -45,14 +46,14 @@ export const TextSemantics: Story = {
           Reset link
         </a>
       </p>
-    </div>
+    </Panel>
   ),
 }
 
 export const Headings: Story = {
   name: 'Headings',
   render: () => (
-    <div className="uk-padding uk-panel">
+    <Panel className="uk-padding">
       <h1>h1 Heading 1</h1>
       <h2>h2 Heading 2</h2>
       <h3>h3 Heading 3</h3>
@@ -64,14 +65,14 @@ export const Headings: Story = {
       <h3 className="uk-heading-line">
         <span>Heading Line</span>
       </h3>
-    </div>
+    </Panel>
   ),
 }
 
 export const Lists: Story = {
   name: 'Lists',
   render: () => (
-    <div className="uk-padding uk-panel uk-child-width-1-2@s" uk-grid="">
+    <Panel className="uk-padding uk-child-width-1-2@s" uk-grid="">
       <div>
         <h4>Unordered</h4>
         <ul>
@@ -100,14 +101,14 @@ export const Lists: Story = {
           <dd>Sed do eiusmod tempor.</dd>
         </dl>
       </div>
-    </div>
+    </Panel>
   ),
 }
 
 export const BlockquoteAndCode: Story = {
   name: 'Blockquote & code',
   render: () => (
-    <div className="uk-padding uk-panel uk-child-width-1-2@m" uk-grid="">
+    <Panel className="uk-padding uk-child-width-1-2@m" uk-grid="">
       <div>
         <h4>Blockquote</h4>
         <blockquote cite="#">
@@ -122,20 +123,20 @@ export const BlockquoteAndCode: Story = {
       <div>
         <h4>Preformatted code</h4>
         <pre>
-{`// Code example
+          {`// Code example
 <div id="myid" class="myclass" hidden>
     Lorem ipsum <strong>dolor</strong> sit amet.
 </div>`}
         </pre>
       </div>
-    </div>
+    </Panel>
   ),
 }
 
 export const ResponsiveMedia: Story = {
   name: 'Responsive media',
   render: () => (
-    <div className="uk-padding uk-panel uk-width-large@s">
+    <Panel className="uk-padding uk-width-large@s">
       <p>Images are responsive by default in UIkit.</p>
       <img
         src="https://getuikit.com/docs/images/photo.jpg"
@@ -153,6 +154,6 @@ export const ResponsiveMedia: Story = {
         height="200"
         alt="Preserve width"
       />
-    </div>
+    </Panel>
   ),
 }

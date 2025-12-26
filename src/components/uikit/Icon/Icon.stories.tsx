@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { Icon } from './Icon'
+import { Grid } from '../Grid/Grid'
 import { useUIKit } from '../../../hooks/useUIkit'
 import UIkit from 'uikit'
 import { Button } from '../Button/Button'
@@ -70,9 +71,8 @@ const iconList = [
 ];
 
 const IconLibrary = () => (
-  <div
-    className="uk-grid uk-child-width-1-2 uk-child-width-1-3@s uk-child-width-1-5@m"
-    uk-grid=""
+  <Grid
+    className="uk-child-width-1-2 uk-child-width-1-3@s uk-child-width-1-5@m"
   >
     {iconList.map((icon) => (
       <div key={icon} className="uk-text-center uk-margin">
@@ -80,7 +80,7 @@ const IconLibrary = () => (
         <div className="uk-text-meta uk-text-truncate uk-margin-xsmall-top">{icon}</div>
       </div>
     ))}
-  </div>
+  </Grid>
 );
 
 export const Library: Story = {

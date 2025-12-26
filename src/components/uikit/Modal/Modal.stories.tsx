@@ -11,6 +11,7 @@ import {
   ModalCloseFull,
 } from './Modal'
 import { Button } from '../Button/Button'
+import { Grid } from '../Grid/Grid'
 
 const meta: Meta<typeof Modal> = {
   title: 'UIkit/Modal',
@@ -129,9 +130,9 @@ export const Full: Story = {
       <Modal id="modal-full" className="uk-modal-full" {...args}>
         <ModalDialog>
           <ModalCloseFull large />
-          <div
-            className="uk-grid-collapse uk-child-width-1-2@s uk-flex-middle"
-            uk-grid=""
+          <Grid
+            gap="collapse"
+            className="uk-child-width-1-2@s uk-flex-middle"
           >
             <div
               className="uk-background-cover"
@@ -147,7 +148,7 @@ export const Full: Story = {
                 eiusmod tempor incididunt ut labore et dolore magna aliqua.
               </p>
             </div>
-          </div>
+          </Grid>
         </ModalDialog>
       </Modal>
     </div>

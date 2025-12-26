@@ -3,7 +3,7 @@ import { Close } from './Close'
 import { Alert } from '../Alert/Alert'
 
 const meta: Meta<typeof Close> = {
-  title: 'UIkit/Nav/Close',
+  title: 'UIkit/Close',
   component: Close,
   argTypes: {
     large: { control: 'boolean' },

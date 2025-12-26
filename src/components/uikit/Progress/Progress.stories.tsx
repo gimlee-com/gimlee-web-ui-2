@@ -25,6 +25,7 @@ export const Default: Story = {}
 export const Indeterminate: Story = {
   args: {
     value: undefined,
+    max: 144
   },
 }
 

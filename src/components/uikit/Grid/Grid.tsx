@@ -30,7 +30,7 @@ export const Grid = forwardRef<HTMLDivElement, GridProps>(
       parallax,
     })
 
-    const classNames = []
+    const classNames = ['uk-grid']
     if (gap) classNames.push(`uk-grid-${gap}`)
     if (divider) classNames.push('uk-grid-divider')
     if (match) classNames.push('uk-grid-match')

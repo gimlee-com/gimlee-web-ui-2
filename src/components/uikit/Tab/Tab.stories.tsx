@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { Tab, TabItem } from './Tab'
+import { Grid } from '../Grid/Grid'
 
 const meta: Meta<typeof Tab> = {
   title: 'UIkit/Tab',
@@ -51,7 +52,7 @@ export const Bottom: Story = {
 export const LeftRight: Story = {
   name: 'Left/Right',
   render: (args) => (
-    <div className="uk-child-width-1-2@s" uk-grid="">
+    <Grid className="uk-child-width-1-2@s">
       <div>
         <Tab className="uk-tab-left" {...args}>
           <TabItem active>
@@ -78,7 +79,7 @@ export const LeftRight: Story = {
           </TabItem>
         </Tab>
       </div>
-    </div>
+    </Grid>
   ),
 }
 

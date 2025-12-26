@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { Button } from './Button'
+import { Panel } from '../Panel/Panel'
 
 const meta: Meta<typeof Button> = {
   title: 'UIkit/Button',
@@ -85,7 +86,7 @@ export const Disabled: Story = {
 
 export const GroupedWithMargin: Story = {
   render: () => (
-    <div className="uk-panel uk-padding uk-background-muted">
+    <Panel className="uk-padding uk-background-muted">
       <p>
         Resize the container or view on a smaller screen to see the `uk-margin`
         attribute in action. It adds a top margin to buttons that wrap to the
@@ -103,7 +104,7 @@ export const GroupedWithMargin: Story = {
         <Button variant="primary">Button</Button>
         <Button variant="primary">Button</Button>
       </div>
-    </div>
+    </Panel>
   ),
   parameters: {
     controls: { hideNoControlsWarning: true },

@@ -1,4 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import { Slidenav } from '../../../components/uikit/Slidenav/Slidenav'
+import {
+  Slideshow,
+  SlideshowItem,
+  SlideshowItems,
+} from '../../../components/uikit/Slideshow/Slideshow'
 
 const meta: Meta = {
   title: 'UIkit/Effects/Slideshow Parallax',
@@ -9,13 +15,13 @@ export default meta
 
 export const Default: StoryObj = {
   render: () => (
-    <div
+    <Slideshow
       className="uk-position-relative uk-visible-toggle uk-light"
       tabIndex={-1}
-      uk-slideshow="animation: push"
+      animation="push"
     >
-      <ul className="uk-slideshow-items">
-        <li>
+      <SlideshowItems>
+        <SlideshowItem>
           <img
             src="https://getuikit.com/docs/images/photo.jpg"
             alt=""
@@ -25,8 +31,8 @@ export const Default: StoryObj = {
             <h2 uk-slideshow-parallax="x: 100,-100">Heading</h2>
             <p uk-slideshow-parallax="x: 200,-200">Lorem ipsum dolor sit amet.</p>
           </div>
-        </li>
-        <li>
+        </SlideshowItem>
+        <SlideshowItem>
           <img
             src="https://getuikit.com/docs/images/dark.jpg"
             alt=""
@@ -36,22 +42,22 @@ export const Default: StoryObj = {
             <h2 uk-slideshow-parallax="x: 100,-100">Heading</h2>
             <p uk-slideshow-parallax="x: 200,-200">Lorem ipsum dolor sit amet.</p>
           </div>
-        </li>
-      </ul>
+        </SlideshowItem>
+      </SlideshowItems>
 
-      <a
+      <Slidenav
+        type="previous"
         className="uk-position-center-left uk-position-small uk-hidden-hover"
         href="#"
-        uk-slidenav-previous=""
         uk-slideshow-item="previous"
-      ></a>
-      <a
+      />
+      <Slidenav
+        type="next"
         className="uk-position-center-right uk-position-small uk-hidden-hover"
         href="#"
-        uk-slidenav-next=""
         uk-slideshow-item="next"
-      ></a>
-    </div>
+      />
+    </Slideshow>
   ),
   name: 'Slideshow Parallax',
 }
