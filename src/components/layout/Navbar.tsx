@@ -23,13 +23,15 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <NavbarContainer>
-      <div className="uk-container">
-        <UkNavbar>
-          <NavbarLeft>
-            <Link to="/" className="uk-navbar-item uk-logo">
-              {APP_TITLE}
-            </Link>
+    <div uk-sticky="sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky">
+      <NavbarContainer>
+        <div className="uk-container uk-container-expand">
+          <UkNavbar>
+            <NavbarLeft>
+              <Link to="/" className="uk-navbar-item uk-logo">
+                <img src="/gimlee.svg" alt="Gimlee" style={{ height: '40px' }} className="uk-margin-small-right" />
+                {APP_TITLE}
+              </Link>
             <NavbarNav>
               <NavbarItem>
                 <Link to="/ads">Browse Ads</Link>
@@ -64,7 +66,8 @@ const Navbar: React.FC = () => {
           </NavbarRight>
         </UkNavbar>
       </div>
-    </NavbarContainer>
+      </NavbarContainer>
+    </div>
   );
 };
 
