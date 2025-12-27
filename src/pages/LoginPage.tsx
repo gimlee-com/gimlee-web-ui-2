@@ -4,6 +4,7 @@ import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import { authService } from '../services/authService';
+import { hasRole } from '../utils/jwt';
 import type { LoginRequestDto } from '../types/api';
 import { Button } from '../components/uikit/Button/Button';
 import { Alert } from '../components/uikit/Alert/Alert';
@@ -20,6 +21,8 @@ const LoginPage: React.FC = () => {
   const { login: authLogin } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const registered = searchParams.get('registered') === 'true';
+  const registeredEmail = searchParams.get('email');
 
   const redirect = searchParams.get('redirect') || '/';
 
@@ -37,7 +40,12 @@ const LoginPage: React.FC = () => {
       const response = await authService.login(data);
       if (response.success && response.accessToken) {
         authLogin(response.accessToken);
-        navigate(redirect);
+        
+        if (hasRole(response.accessToken, 'UNVERIFIED')) {
+          navigate('/verify');
+        } else {
+          navigate(redirect);
+        }
       } else {
         setError(t('auth.errors.loginFailed'));
       }
@@ -52,6 +60,11 @@ const LoginPage: React.FC = () => {
     <div className="uk-flex uk-flex-center">
       <div className="uk-card uk-card-default uk-card-body uk-width-large">
         <Heading as="h3" className="uk-text-center">{t('auth.loginTitle')}</Heading>
+        {registered && (
+          <Alert variant="primary">
+            {t('auth.registrationSuccess', { email: registeredEmail })}
+          </Alert>
+        )}
         {error && <Alert variant="danger">{error}</Alert>}
         <Form layout="stacked" onSubmit={handleSubmit(onSubmit)}>
           <motion.div layout className="uk-margin">

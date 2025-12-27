@@ -15,7 +15,7 @@ export const authService = {
     apiClient.post<void>('/auth/register', data),
 
   verifyUser: (data: VerifyUserRequestDto) =>
-    apiClient.post<void>('/auth/verifyUser', data),
+    apiClient.post<IdentityVerificationResponse>('/auth/verifyUser', data),
 
   checkUsername: (username: string) =>
     apiClient.post<AvailabilityStatusResponseDto>('/auth/register/usernameAvailable', { username }),

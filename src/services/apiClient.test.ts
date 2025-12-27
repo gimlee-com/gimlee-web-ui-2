@@ -25,6 +25,7 @@ describe('ApiClient', () => {
   });
 
   afterEach(() => {
+    // @ts-ignore
     window.location = originalLocation;
     vi.restoreAllMocks();
   });

@@ -20,8 +20,6 @@ const RegisterPage: React.FC = () => {
   });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState<'register' | 'verify'>('register');
-  const [verificationCode, setVerificationCode] = useState('');
   const [passwordFocused, setPasswordFocused] = useState(false);
   const [confirmPasswordFocused, setConfirmPasswordFocused] = useState(false);
   const navigate = useNavigate();
@@ -108,55 +106,13 @@ const RegisterPage: React.FC = () => {
     setError(null);
     try {
       await authService.register(registerData);
-      setStep('verify');
+      navigate(`/login?registered=true&email=${encodeURIComponent(data.email)}`);
     } catch (err: any) {
       setError(err.message || 'An error occurred during registration.');
     } finally {
       setLoading(false);
     }
   };
-
-  const onVerifySubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-    try {
-      await authService.verifyUser({ code: verificationCode });
-      navigate('/login');
-    } catch (err: any) {
-      setError(err.message || 'Verification failed.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (step === 'verify') {
-    return (
-      <div className="uk-flex uk-flex-center">
-        <div className="uk-card uk-card-default uk-card-body uk-width-large">
-          <Heading as="h3" className="uk-text-center">{t('auth.verifyTitle')}</Heading>
-          <p className="uk-text-center">{t('auth.verifyText')}</p>
-          {error && <Alert variant="danger">{error}</Alert>}
-          <Form onSubmit={onVerifySubmit}>
-            <div className="uk-margin">
-              <Input
-                type="text"
-                value={verificationCode}
-                onChange={(e) => setVerificationCode(e.target.value)}
-                placeholder={t('auth.verifyButton')}
-                required
-              />
-            </div>
-            <div className="uk-margin">
-              <Button type="submit" variant="primary" className="uk-width-1-1" disabled={loading}>
-                {loading ? t('auth.verifying') : t('auth.verifyButton')}
-              </Button>
-            </div>
-          </Form>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="uk-flex uk-flex-center">

@@ -20,6 +20,7 @@ const renderLoginPage = (initialEntries = ['/login']) => {
         <MemoryRouter initialEntries={initialEntries}>
           <Routes>
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/verify" element={<div>Verify Page</div>} />
             <Route path="/target" element={<div>Target Page</div>} />
             <Route path="/" element={<div>Home Page</div>} />
           </Routes>
@@ -37,7 +38,7 @@ describe('LoginPage', () => {
   it('should navigate to home page after login if no redirect param is present', async () => {
     (authService.login as any).mockResolvedValue({
       success: true,
-      accessToken: 'fake-token',
+      accessToken: 'fake.e30.signature',
     });
 
     renderLoginPage();
@@ -68,7 +69,7 @@ describe('LoginPage', () => {
   it('should navigate to redirect path after login if redirect param is present', async () => {
     (authService.login as any).mockResolvedValue({
       success: true,
-      accessToken: 'fake-token',
+      accessToken: 'fake.e30.signature',
     });
 
     renderLoginPage(['/login?redirect=%2Ftarget']);
@@ -86,6 +87,37 @@ describe('LoginPage', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Target Page')).toBeInTheDocument();
+    });
+  });
+
+  it('should display success alert when registered=true', () => {
+    renderLoginPage(['/login?registered=true&email=test@example.com']);
+    expect(screen.getByText(/Your account has been registered/i)).toBeInTheDocument();
+    expect(screen.getByText(/test@example.com/i)).toBeInTheDocument();
+  });
+
+  it('should navigate to verify page if user has UNVERIFIED role', async () => {
+    const unverifiedToken = 'fake.eyJyb2xlcyI6WyJVTlZFUklGSUVEIl19.fake';
+    (authService.login as any).mockResolvedValue({
+      success: true,
+      accessToken: unverifiedToken,
+    });
+
+    renderLoginPage();
+
+    fireEvent.change(screen.getByPlaceholderText(/Username/i), { target: { value: 'testuser' } });
+    fireEvent.change(screen.getByPlaceholderText(/Password/i), { target: { value: 'Password123' } });
+    
+    const submitButton = screen.getByRole('button', { name: /Login/i });
+    
+    await waitFor(() => {
+      expect(submitButton).not.toBeDisabled();
+    });
+
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByText('Verify Page')).toBeInTheDocument();
     });
   });
 });

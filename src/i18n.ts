@@ -36,8 +36,10 @@ const resources = {
         "registering": "Registering...",
         "noAccount": "Don't have an account?",
         "hasAccount": "Already have an account?",
+        "registrationSuccess": "Your account has been registered and the confirmation code was sent to email {{email}}. Please log in to complete registration.",
         "verifyTitle": "Verify Your Account",
         "verifyText": "Please enter the verification code sent to your email.",
+        "verifyPlaceholder": "Verification code",
         "verifyButton": "Verify",
         "verifying": "Verifying...",
         "errors": {
@@ -126,8 +128,10 @@ const resources = {
         "registering": "Rejestracja...",
         "noAccount": "Nie masz konta?",
         "hasAccount": "Masz już konto?",
+        "registrationSuccess": "Twoje konto zostało zarejestrowane, a kod potwierdzający został wysłany na adres {{email}}. Zaloguj się, aby dokończyć rejestrację.",
         "verifyTitle": "Zweryfikuj swoje konto",
         "verifyText": "Wprowadź kod weryfikacyjny wysłany na Twój e-mail.",
+        "verifyPlaceholder": "Kod weryfikacyjny",
         "verifyButton": "Zweryfikuj",
         "verifying": "Weryfikacja...",
         "errors": {
