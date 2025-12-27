@@ -1,4 +1,7 @@
-import React, { forwardRef, useMemo } from 'react'
+import React, { forwardRef } from 'react'
+import { useUIKit } from '../../../hooks/useUIkit'
+import { useMergeRefs } from '../../../hooks/useMergeRefs'
+import UIkit from 'uikit'
 
 type UkBoolean = boolean | 'true' | 'false'
 
@@ -26,25 +29,27 @@ export const Offcanvas = forwardRef<HTMLDivElement, OffcanvasProps>(
     },
     ref
   ) => {
+    const { ref: uikitRef } = useUIKit<UIkit.UIkitOffcanvasElement, HTMLDivElement>(
+      'offcanvas',
+      {
+        mode,
+        flip,
+        overlay,
+        'esc-close': escClose,
+        'bg-close': bgClose,
+        container,
+      }
+    )
+
+    const mergedRef = useMergeRefs(uikitRef, ref)
+
     const classNames = []
     if (customClassName) classNames.push(customClassName)
 
-    const ukOffcanvasOptions = useMemo(() => {
-      const opts: string[] = []
-      if (mode) opts.push(`mode: ${mode}`)
-      if (flip !== undefined) opts.push(`flip: ${flip}`)
-      if (overlay !== undefined) opts.push(`overlay: ${overlay}`)
-      if (escClose !== undefined) opts.push(`esc-close: ${escClose}`)
-      if (bgClose !== undefined) opts.push(`bg-close: ${bgClose}`)
-      if (container !== undefined) opts.push(`container: ${container}`)
-      return opts.join('; ')
-    }, [mode, flip, overlay, escClose, bgClose, container])
-
     return (
       <div
-        ref={ref}
+        ref={mergedRef}
         className={classNames.join(' ')}
-        uk-offcanvas={ukOffcanvasOptions || ''}
         {...props}
       >
         {children}

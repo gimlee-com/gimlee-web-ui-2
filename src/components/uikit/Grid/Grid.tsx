@@ -1,5 +1,6 @@
 import React, { forwardRef } from 'react'
 import { useUIKit } from '../../../hooks/useUIkit'
+import { useMergeRefs } from '../../../hooks/useMergeRefs'
 
 type GridProps = React.PropsWithChildren<{
   gap?: 'small' | 'medium' | 'large' | 'collapse'
@@ -40,18 +41,11 @@ export const Grid = forwardRef<HTMLDivElement, GridProps>(
     }
 
     // A helper function to merge the refs.
-    const mergeRefs = (node: HTMLDivElement) => {
-      uikitRef.current = node
-      if (typeof ref === 'function') {
-        ref(node)
-      } else if (ref) {
-        ref.current = node
-      }
-    }
+    const mergedRef = useMergeRefs(uikitRef, ref)
 
     return (
       <div
-        ref={mergeRefs}
+        ref={mergedRef}
         className={classNames.join(' ')}
         uk-grid=""
         {...props}

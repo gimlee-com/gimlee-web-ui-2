@@ -1,6 +1,7 @@
 import React, { forwardRef, useEffect, useRef } from 'react'
 import UIkit from 'uikit'
 import { Close } from '../Close/Close'
+import { useMergeRefs } from '../../../hooks/useMergeRefs'
 
 type AlertProps = React.PropsWithChildren<{
   variant?: 'primary' | 'success' | 'warning' | 'danger'
@@ -53,18 +54,11 @@ export const Alert = forwardRef<HTMLDivElement, AlertProps>(
       classNames.push(customClassName)
     }
 
-    const mergeRefs = (node: HTMLDivElement) => {
-      internalRef.current = node
-      if (typeof ref === 'function') {
-        ref(node)
-      } else if (ref) {
-        ref.current = node
-      }
-    }
+    const mergedRef = useMergeRefs(internalRef, ref)
 
     return (
       <div
-        ref={mergeRefs}
+        ref={mergedRef}
         className={classNames.join(' ')}
         uk-alert=""
         {...props}

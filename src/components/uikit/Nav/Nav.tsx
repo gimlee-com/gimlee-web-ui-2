@@ -1,5 +1,6 @@
 import React, { forwardRef } from 'react'
 import { useUIKit } from '../../../hooks/useUIkit'
+import { useMergeRefs } from '../../../hooks/useMergeRefs'
 import UIkit from 'uikit'
 
 type NavProps = React.PropsWithChildren<{
@@ -47,15 +48,7 @@ export const Nav = forwardRef<HTMLUListElement, NavProps>(
       classNames.push(customClassName)
     }
 
-    // A helper function to merge the refs.
-    const mergeRefs = (node: HTMLUListElement) => {
-      uikitRef.current = node
-      if (typeof ref === 'function') {
-        ref(node)
-      } else if (ref) {
-        ref.current = node
-      }
-    }
+    const mergedRef = useMergeRefs(uikitRef, ref)
 
     const navProps: React.HTMLAttributes<HTMLUListElement> & {
       [key: string]: any
@@ -68,7 +61,7 @@ export const Nav = forwardRef<HTMLUListElement, NavProps>(
     }
 
     return (
-      <ul ref={mergeRefs} {...navProps}>
+      <ul ref={mergedRef} {...navProps}>
         {children}
       </ul>
     )

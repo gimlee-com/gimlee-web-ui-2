@@ -1,5 +1,6 @@
 import React, { forwardRef } from 'react'
 import { useUIKit } from '../../../hooks/useUIkit'
+import { useMergeRefs } from '../../../hooks/useMergeRefs'
 
 type UploadProps = React.HTMLAttributes<HTMLDivElement> & {
   url?: string
@@ -91,17 +92,10 @@ export const Upload = forwardRef<HTMLDivElement, UploadProps>(
     const classNames = []
     if (customClassName) classNames.push(customClassName)
 
-    const mergeRefs = (node: HTMLDivElement) => {
-      uikitRef.current = node
-      if (typeof ref === 'function') {
-        ref(node)
-      } else if (ref) {
-        ref.current = node
-      }
-    }
+    const mergedRef = useMergeRefs(uikitRef, ref)
 
     return (
-      <div ref={mergeRefs} className={classNames.join(' ') || undefined} {...props}>
+      <div ref={mergedRef} className={classNames.join(' ') || undefined} {...props}>
         {children}
       </div>
     )

@@ -1,4 +1,7 @@
-import React, { forwardRef, useMemo } from 'react'
+import React, { forwardRef } from 'react'
+import { useUIKit } from '../../../hooks/useUIkit'
+import { useMergeRefs } from '../../../hooks/useMergeRefs'
+import UIkit from 'uikit'
 
 type UkBoolean = boolean | 'true' | 'false'
 
@@ -58,54 +61,34 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
     },
     ref
   ) => {
+    const { ref: uikitRef } = useUIKit<UIkit.UIkitElementBase, HTMLElement>(
+      'navbar',
+      {
+        align,
+        dropbar,
+        'dropbar-anchor': dropbarAnchor,
+        'dropbar-transparent-mode': dropbarTransparentMode,
+        mode,
+        'delay-show': delayShow,
+        'delay-hide': delayHide,
+        boundary,
+        target,
+        'target-x': targetX,
+        'target-y': targetY,
+        offset,
+        animation,
+        duration,
+        'close-on-scroll': closeOnScroll,
+      }
+    )
+
+    const mergedRef = useMergeRefs(uikitRef, ref)
+
     const classNames = ['uk-navbar']
     if (customClassName) classNames.push(customClassName)
 
-    const ukNavbarOptions = useMemo(() => {
-      const opts: string[] = []
-      if (align) opts.push(`align: ${align}`)
-      if (dropbar) opts.push('dropbar: true')
-      if (dropbarAnchor) opts.push(`dropbar-anchor: ${dropbarAnchor}`)
-      if (dropbarTransparentMode)
-        opts.push(`dropbar-transparent-mode: ${dropbarTransparentMode}`)
-      if (mode) opts.push(`mode: ${mode}`)
-      if (delayShow !== undefined) opts.push(`delay-show: ${delayShow}`)
-      if (delayHide !== undefined) opts.push(`delay-hide: ${delayHide}`)
-      if (boundary !== undefined) opts.push(`boundary: ${boundary}`)
-      if (target !== undefined) opts.push(`target: ${target}`)
-      if (targetX !== undefined) opts.push(`target-x: ${targetX}`)
-      if (targetY !== undefined) opts.push(`target-y: ${targetY}`)
-      if (offset !== undefined) opts.push(`offset: ${offset}`)
-      if (animation) opts.push(`animation: ${animation}`)
-      if (duration !== undefined) opts.push(`duration: ${duration}`)
-      if (closeOnScroll !== undefined)
-        opts.push(`close-on-scroll: ${closeOnScroll}`)
-      return opts.join('; ')
-    }, [
-      align,
-      dropbar,
-      dropbarAnchor,
-      dropbarTransparentMode,
-      mode,
-      delayShow,
-      delayHide,
-      boundary,
-      target,
-      targetX,
-      targetY,
-      offset,
-      animation,
-      duration,
-      closeOnScroll,
-    ])
-
     return (
-      <nav
-        ref={ref}
-        className={classNames.join(' ')}
-        uk-navbar={ukNavbarOptions || undefined}
-        {...props}
-      >
+      <nav ref={mergedRef} className={classNames.join(' ')} {...props}>
         {children}
       </nav>
     )
@@ -251,8 +234,8 @@ export const NavbarToggle = forwardRef<HTMLAnchorElement, AnchorProps & { label?
     if (customClassName) classNames.push(customClassName)
     return (
       <a ref={ref} className={classNames.join(' ')} {...props}>
-        <span uk-navbar-toggle-icon="" />
-        {label ?? children}
+        {children ? children : <span uk-navbar-toggle-icon="" />}
+        {label}
       </a>
     )
   }
