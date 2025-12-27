@@ -96,6 +96,12 @@ describe('LoginPage', () => {
     expect(screen.getByText(/test@example.com/i)).toBeInTheDocument();
   });
 
+  it('should display login required alert when reason=unauthorized', () => {
+    renderLoginPage(['/login?reason=unauthorized']);
+    expect(screen.getByText(/Almost there/i)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Register here/i })).toHaveAttribute('href', '/register');
+  });
+
   it('should navigate to verify page if user has UNVERIFIED role', async () => {
     const unverifiedToken = 'fake.eyJyb2xlcyI6WyJVTlZFUklGSUVEIl19.fake';
     (authService.login as any).mockResolvedValue({

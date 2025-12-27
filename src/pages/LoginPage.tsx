@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import { authService } from '../services/authService';
 import { hasRole } from '../utils/jwt';
@@ -23,6 +23,7 @@ const LoginPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const registered = searchParams.get('registered') === 'true';
   const registeredEmail = searchParams.get('email');
+  const loginRequired = searchParams.get('reason') === 'unauthorized';
 
   const redirect = searchParams.get('redirect') || '/';
 
@@ -63,6 +64,13 @@ const LoginPage: React.FC = () => {
         {registered && (
           <Alert variant="primary">
             {t('auth.registrationSuccess', { email: registeredEmail })}
+          </Alert>
+        )}
+        {loginRequired && (
+          <Alert variant="primary">
+            <Trans i18nKey="auth.loginRequired">
+              Almost there! Please log in to access the requested page. New to Gimlee? <Link to="/register">Register here</Link>.
+            </Trans>
           </Alert>
         )}
         {error && <Alert variant="danger">{error}</Alert>}

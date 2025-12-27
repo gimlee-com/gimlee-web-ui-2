@@ -45,6 +45,7 @@ describe('ApiClient', () => {
 
     expect(window.location.href).toContain('/login');
     expect(window.location.href).toContain('redirect=' + encodeURIComponent('/current-page?q=test'));
+    expect(window.location.href).toContain('reason=unauthorized');
   });
 
   it('should not redirect and throw "Not Found" on 403 error', async () => {

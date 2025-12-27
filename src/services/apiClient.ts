@@ -36,7 +36,7 @@ class ApiClient {
     if (response.status === 401) {
       this.setToken(null);
       const currentPath = window.location.pathname + window.location.search;
-      window.location.href = `/login?redirect=${encodeURIComponent(currentPath)}`;
+      window.location.href = `/login?redirect=${encodeURIComponent(currentPath)}&reason=unauthorized`;
       throw new Error('Unauthorized');
     }
 
