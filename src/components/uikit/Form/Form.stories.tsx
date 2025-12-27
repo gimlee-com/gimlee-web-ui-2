@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { Grid } from '../Grid/Grid.tsx'
 import { Button } from '../Button/Button.tsx'
-import { Icon } from '../Icon/Icon.tsx'
 import {
   Form,
   Fieldset,
@@ -14,11 +13,14 @@ import {
   Range,
   FormLabel,
   FormControls,
-  FormError,
+  FormMessage,
   FormCustom,
   FormIcon,
   FormInputContainer,
+  AnimatePresence,
+  motion,
 } from './Form.tsx'
+import { useState } from 'react'
 
 const meta: Meta = {
   title: 'UIkit/Form',
@@ -124,6 +126,27 @@ export const States: Story = {
   ),
 }
 
+export const Messages: Story = {
+  render: () => (
+    <Form layout="stacked">
+      <div className="uk-margin">
+        <FormLabel>Error Message</FormLabel>
+        <FormControls>
+          <Input status="danger" defaultValue="Invalid value" />
+          <FormMessage type="error">This is an error message.</FormMessage>
+        </FormControls>
+      </div>
+      <div className="uk-margin">
+        <FormLabel>Info Message</FormLabel>
+        <FormControls>
+          <Input defaultValue="Valid value" />
+          <FormMessage type="info">This is an informational message.</FormMessage>
+        </FormControls>
+      </div>
+    </Form>
+  ),
+}
+
 export const LayoutStacked: Story = {
   name: 'Layout Stacked',
   render: () => (
@@ -219,52 +242,144 @@ export const CustomControls: Story = {
   ),
 }
 
-export const Validation: Story = {
-  render: () => (
-    <Form layout="stacked">
-      <div className="uk-margin">
-        <FormLabel htmlFor="email">Email</FormLabel>
-        <FormControls>
-          <Input
-            id="email"
-            type="email"
-            placeholder="email@example.com"
-            defaultValue="invalid-email"
-            status="danger"
-          />
-          <FormError>Please enter a valid email address.</FormError>
-        </FormControls>
-      </div>
+export const ValidationAnimated: Story = {
+  name: 'Validation (Animated)',
+  render: () => {
+    const [showErrors, setShowErrors] = useState(false)
+    return (
+      <div>
+        <Button
+          onClick={() => setShowErrors(!showErrors)}
+          className="uk-margin-bottom"
+        >
+          Toggle Errors
+        </Button>
+        <Form layout="stacked">
+          <motion.div layout className="uk-margin">
+            <FormLabel htmlFor="email-anim">Email</FormLabel>
+            <FormControls>
+              <Input
+                id="email-anim"
+                type="email"
+                placeholder="email@example.com"
+                status={showErrors ? 'danger' : undefined}
+                defaultValue="invalid-email"
+              />
+              <AnimatePresence>
+                {showErrors && (
+                  <FormMessage>Please enter a valid email address.</FormMessage>
+                )}
+              </AnimatePresence>
+            </FormControls>
+          </motion.div>
 
-      <div className="uk-margin">
-        <FormLabel htmlFor="password">Password</FormLabel>
-        <FormControls>
-          <Input
-            id="password"
-            type="password"
-            defaultValue="12345"
-            status="danger"
-          />
-          <FormError>Password is too short.</FormError>
-        </FormControls>
-      </div>
+          <motion.div layout className="uk-margin">
+            <FormLabel htmlFor="password-anim">Password</FormLabel>
+            <FormControls>
+              <Input
+                id="password-anim"
+                type="password"
+                status={showErrors ? 'danger' : undefined}
+                defaultValue="12345"
+              />
+              <AnimatePresence>
+                {showErrors && <FormMessage>Password is too short.</FormMessage>}
+              </AnimatePresence>
+            </FormControls>
+          </motion.div>
 
-      <div className="uk-margin">
-        <FormLabel htmlFor="confirm-password">Confirm Password</FormLabel>
-        <FormControls>
-          <Input
-            id="confirm-password"
-            type="password"
-            defaultValue="54321"
-            status="danger"
-          />
-          <FormError>Passwords do not match.</FormError>
-        </FormControls>
+          <Button variant="primary" type="button">
+            Register
+          </Button>
+        </Form>
       </div>
+    )
+  },
+}
 
-      <Button variant="primary" type="submit">
-        Register
-      </Button>
-    </Form>
-  ),
+export const ValidationFocus: Story = {
+  name: 'Validation (Focus-aware)',
+  render: () => {
+    const [passwordFocused, setPasswordFocused] = useState(false)
+    const [confirmFocused, setConfirmFocused] = useState(false)
+    const [password, setPassword] = useState('')
+    const [confirm, setConfirm] = useState('')
+
+    const passwordError =
+      password && !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,64}$/.test(password)
+        ? 'Password must be 8-64 characters and include at least one uppercase letter, one lowercase letter, and one digit.'
+        : null
+
+    const confirmError =
+      confirm && confirm !== password ? 'Passwords do not match.' : null
+
+    // Simulate "required" error if touched and empty (simple toggle for demo)
+    const [touched, setTouched] = useState(false)
+    const requiredError = touched && !confirm ? 'Confirm password is required.' : null
+
+    return (
+      <Form layout="stacked">
+        <p className="uk-text-muted">
+          Notice how the danger status only appears after blur, and specific
+          errors are hidden during focus.
+        </p>
+        <motion.div layout className="uk-margin">
+          <FormLabel htmlFor="pw-focus">Password</FormLabel>
+          <FormControls>
+            <Input
+              id="pw-focus"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onFocus={() => setPasswordFocused(true)}
+              onBlur={() => setPasswordFocused(false)}
+              status={passwordError && !passwordFocused ? 'danger' : undefined}
+              placeholder="Type to see requirements..."
+            />
+            <AnimatePresence>
+              {(passwordFocused || passwordError) && (
+                <FormMessage type={passwordFocused ? 'info' : 'error'}>
+                  {passwordFocused
+                    ? 'Password must be 8-64 characters and include at least one uppercase letter, one lowercase letter, and one digit.'
+                    : passwordError}
+                </FormMessage>
+              )}
+            </AnimatePresence>
+          </FormControls>
+        </motion.div>
+
+        <motion.div layout className="uk-margin">
+          <FormLabel htmlFor="confirm-focus">Confirm Password</FormLabel>
+          <FormControls>
+            <Input
+              id="confirm-focus"
+              type="password"
+              value={confirm}
+              onChange={(e) => setConfirm(e.target.value)}
+              onFocus={() => setConfirmFocused(true)}
+              onBlur={() => {
+                setConfirmFocused(false)
+                setTouched(true)
+              }}
+              status={(confirmError || requiredError) && !confirmFocused ? 'danger' : undefined}
+              placeholder="Confirm your password..."
+            />
+            <AnimatePresence>
+              {confirmFocused ? (
+                confirmError && (
+                  <FormMessage type="info">{confirmError}</FormMessage>
+                )
+              ) : (
+                (confirmError || requiredError) && (
+                  <FormMessage type="error">
+                    {confirmError || requiredError}
+                  </FormMessage>
+                )
+              )}
+            </AnimatePresence>
+          </FormControls>
+        </motion.div>
+      </Form>
+    )
+  },
 }

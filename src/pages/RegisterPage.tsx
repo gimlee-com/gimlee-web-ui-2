@@ -7,21 +7,107 @@ import type { RegisterRequestDto } from '../types/api';
 import { Button } from '../components/uikit/Button/Button';
 import { Alert } from '../components/uikit/Alert/Alert';
 import { Heading } from '../components/uikit/Heading/Heading';
+import { Form, FormLabel, FormControls, Input, FormMessage, AnimatePresence, motion } from '../components/uikit/Form/Form';
+
+interface RegisterFormValues extends RegisterRequestDto {
+  confirmPassword?: string;
+}
 
 const RegisterPage: React.FC = () => {
   const { t } = useTranslation();
-  const { register, handleSubmit, formState: { errors } } = useForm<RegisterRequestDto>();
+  const { register, handleSubmit, formState: { errors, isValid }, watch, trigger } = useForm<RegisterFormValues>({
+    mode: 'onChange'
+  });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState<'register' | 'verify'>('register');
   const [verificationCode, setVerificationCode] = useState('');
+  const [passwordFocused, setPasswordFocused] = useState(false);
+  const [confirmPasswordFocused, setConfirmPasswordFocused] = useState(false);
   const navigate = useNavigate();
 
-  const onRegisterSubmit = async (data: RegisterRequestDto) => {
+  const password = watch('password');
+  
+  const timeoutRefs = React.useRef<Record<string, any>>({});
+  const resolveRefs = React.useRef<Record<string, any>>({});
+
+  const debouncedValidate = (fieldName: string, fn: (value: any, values: RegisterFormValues) => Promise<string | boolean | undefined>) => {
+    return (value: any, values: RegisterFormValues): Promise<string | boolean | undefined> => {
+      if (timeoutRefs.current[fieldName]) {
+        clearTimeout(timeoutRefs.current[fieldName]);
+      }
+      if (resolveRefs.current[fieldName]) {
+        resolveRefs.current[fieldName](true);
+      }
+      return new Promise((resolve) => {
+        resolveRefs.current[fieldName] = resolve;
+        timeoutRefs.current[fieldName] = setTimeout(async () => {
+          const result = await fn(value, values);
+          resolve(result);
+          delete resolveRefs.current[fieldName];
+        }, 500);
+      });
+    };
+  };
+
+  const validateUsername = React.useMemo(() => debouncedValidate('username', async (value) => {
+    if (!value) return true;
+    try {
+      const res = await authService.checkUsername(value);
+      return res.available || t('auth.errors.usernameTaken');
+    } catch {
+      return t('auth.errors.generic') as string;
+    }
+  }), [t]);
+
+  const validateEmailFormat = (value: string | undefined) => {
+    if (!value) return true;
+    return /^[\w-\.]+@([\w-]+\.)+[\w-]{2,}$/.test(value) || t('auth.errors.invalidEmail');
+  };
+
+  const validateEmailAvailability = React.useMemo(() => debouncedValidate('email', async (value) => {
+    if (!value || !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,}$/.test(value)) return true;
+    try {
+      const res = await authService.checkEmail(value);
+      return res.available || t('auth.errors.emailTaken');
+    } catch {
+      return t('auth.errors.generic') as string;
+    }
+  }), [t]);
+
+  const validatePassword = (value: string | undefined) => {
+    if (!value) return true;
+    const passwordRule = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,64}$/;
+    return passwordRule.test(value) || t('auth.errors.passwordRequirements');
+  };
+
+  const validateConfirmPassword = (value: string | undefined, values: RegisterFormValues) => {
+    if (!value) return true;
+    return value === values.password || t('auth.errors.passwordsDoNotMatch');
+  };
+
+  const passwordRegister = register('password', { 
+    required: t('auth.errors.required', { field: t('auth.password') }), 
+    validate: validatePassword
+  });
+
+  const confirmPasswordRegister = register('confirmPassword', { 
+    required: t('auth.errors.required', { field: t('auth.confirmPassword') }),
+    validate: validateConfirmPassword
+  });
+
+  React.useEffect(() => {
+    if (password) {
+      trigger('confirmPassword');
+    }
+  }, [password, trigger]);
+
+  const onRegisterSubmit = async (data: RegisterFormValues) => {
+    const { confirmPassword, ...registerData } = data;
     setLoading(true);
     setError(null);
     try {
-      await authService.register(data);
+      await authService.register(registerData);
       setStep('verify');
     } catch (err: any) {
       setError(err.message || 'An error occurred during registration.');
@@ -51,10 +137,9 @@ const RegisterPage: React.FC = () => {
           <Heading as="h3" className="uk-text-center">{t('auth.verifyTitle')}</Heading>
           <p className="uk-text-center">{t('auth.verifyText')}</p>
           {error && <Alert variant="danger">{error}</Alert>}
-          <form onSubmit={onVerifySubmit}>
+          <Form onSubmit={onVerifySubmit}>
             <div className="uk-margin">
-              <input
-                className="uk-input"
+              <Input
                 type="text"
                 value={verificationCode}
                 onChange={(e) => setVerificationCode(e.target.value)}
@@ -67,7 +152,7 @@ const RegisterPage: React.FC = () => {
                 {loading ? t('auth.verifying') : t('auth.verifyButton')}
               </Button>
             </div>
-          </form>
+          </Form>
         </div>
       </div>
     );
@@ -78,65 +163,100 @@ const RegisterPage: React.FC = () => {
       <div className="uk-card uk-card-default uk-card-body uk-width-large">
         <Heading as="h3" className="uk-text-center">{t('auth.registerTitle')}</Heading>
         {error && <Alert variant="danger">{error}</Alert>}
-        <form onSubmit={handleSubmit(onRegisterSubmit)}>
-          <div className="uk-margin">
-            <label className="uk-form-label">{t('auth.username')}</label>
-            <div className="uk-form-controls">
-              <input
+        <Form layout="stacked" onSubmit={handleSubmit(onRegisterSubmit)}>
+          <motion.div layout className="uk-margin">
+            <FormLabel>{t('auth.username')}</FormLabel>
+            <FormControls>
+              <Input
                 {...register('username', { 
                   required: t('auth.errors.required', { field: t('auth.username') }),
-                  validate: async (value) => {
-                    const res = await authService.checkUsername(value);
-                    return res.available || t('auth.errors.generic'); // Or add a specific "taken" key
-                  }
+                  validate: validateUsername
                 })}
-                className={`uk-input ${errors.username ? 'uk-form-danger' : ''}`}
+                status={errors.username ? 'danger' : undefined}
                 type="text"
                 placeholder={t('auth.username')}
               />
-              {errors.username && <span className="uk-text-danger uk-text-small">{errors.username.message}</span>}
-            </div>
-          </div>
-          <div className="uk-margin">
-            <label className="uk-form-label">{t('auth.email')}</label>
-            <div className="uk-form-controls">
-              <input
+              <AnimatePresence>
+                {errors.username && <FormMessage>{errors.username.message}</FormMessage>}
+              </AnimatePresence>
+            </FormControls>
+          </motion.div>
+          <motion.div layout className="uk-margin">
+            <FormLabel>{t('auth.email')}</FormLabel>
+            <FormControls>
+              <Input
                 {...register('email', { 
                   required: t('auth.errors.required', { field: t('auth.email') }),
-                  pattern: { value: /^\S+@\S+$/i, message: t('auth.errors.generic') },
-                  validate: async (value) => {
-                    const res = await authService.checkEmail(value);
-                    return res.available || t('auth.errors.generic');
+                  validate: {
+                    format: validateEmailFormat,
+                    availability: validateEmailAvailability
                   }
                 })}
-                className={`uk-input ${errors.email ? 'uk-form-danger' : ''}`}
+                status={errors.email ? 'danger' : undefined}
                 type="email"
                 placeholder={t('auth.email')}
               />
-              {errors.email && <span className="uk-text-danger uk-text-small">{errors.email.message}</span>}
-            </div>
-          </div>
-          <div className="uk-margin">
-            <label className="uk-form-label">{t('auth.password')}</label>
-            <div className="uk-form-controls">
-              <input
-                {...register('password', { 
-                  required: t('auth.errors.required', { field: t('auth.password') }), 
-                  minLength: { value: 6, message: t('auth.errors.minLength', { count: 6 }) } 
-                })}
-                className={`uk-input ${errors.password ? 'uk-form-danger' : ''}`}
+              <AnimatePresence>
+                {errors.email && <FormMessage>{errors.email.message}</FormMessage>}
+              </AnimatePresence>
+            </FormControls>
+          </motion.div>
+          <motion.div layout className="uk-margin">
+            <FormLabel>{t('auth.password')}</FormLabel>
+            <FormControls>
+              <Input
+                {...passwordRegister}
+                onFocus={() => setPasswordFocused(true)}
+                onBlur={(e) => {
+                  passwordRegister.onBlur(e);
+                  setPasswordFocused(false);
+                }}
+                status={errors.password && !passwordFocused ? 'danger' : undefined}
                 type="password"
                 placeholder={t('auth.password')}
               />
-              {errors.password && <span className="uk-text-danger uk-text-small">{errors.password.message}</span>}
-            </div>
-          </div>
-          <div className="uk-margin">
-            <Button type="submit" variant="primary" className="uk-width-1-1" disabled={loading}>
+              <AnimatePresence>
+                {(passwordFocused || errors.password) && (
+                  <FormMessage type={passwordFocused ? 'info' : 'error'}>
+                    {passwordFocused ? t('auth.errors.passwordRequirements') : errors.password?.message}
+                  </FormMessage>
+                )}
+              </AnimatePresence>
+            </FormControls>
+          </motion.div>
+          <motion.div layout className="uk-margin">
+            <FormLabel>{t('auth.confirmPassword')}</FormLabel>
+            <FormControls>
+              <Input
+                {...confirmPasswordRegister}
+                onFocus={() => setConfirmPasswordFocused(true)}
+                onBlur={(e) => {
+                  confirmPasswordRegister.onBlur(e);
+                  setConfirmPasswordFocused(false);
+                }}
+                status={errors.confirmPassword && !confirmPasswordFocused ? 'danger' : undefined}
+                type="password"
+                placeholder={t('auth.confirmPassword')}
+              />
+              <AnimatePresence>
+                {errors.confirmPassword && (
+                  confirmPasswordFocused ? (
+                    errors.confirmPassword.type === 'validate' && (
+                      <FormMessage type="info">{errors.confirmPassword.message}</FormMessage>
+                    )
+                  ) : (
+                    <FormMessage type="error">{errors.confirmPassword.message}</FormMessage>
+                  )
+                )}
+              </AnimatePresence>
+            </FormControls>
+          </motion.div>
+          <motion.div layout className="uk-margin">
+            <Button type="submit" variant="primary" className="uk-width-1-1" disabled={!isValid || loading}>
               {loading ? t('auth.registering') : t('auth.registerTitle')}
             </Button>
-          </div>
-        </form>
+          </motion.div>
+        </Form>
         <div className="uk-text-center uk-margin-top">
           {t('auth.hasAccount')} <Link to="/login">{t('navbar.login')}</Link>
         </div>

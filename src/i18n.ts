@@ -30,6 +30,7 @@ const resources = {
         "registerTitle": "Register",
         "username": "Username",
         "password": "Password",
+        "confirmPassword": "Confirm Password",
         "email": "Email",
         "loggingIn": "Logging in...",
         "registering": "Registering...",
@@ -43,7 +44,12 @@ const resources = {
           "loginFailed": "Login failed. Please check your credentials.",
           "generic": "An error occurred.",
           "required": "{{field}} is required",
-          "minLength": "Must be at least {{count}} characters"
+          "minLength": "Must be at least {{count}} characters",
+          "invalidEmail": "Please enter a valid email address",
+          "passwordRequirements": "Password must be 8-64 characters and include at least one uppercase letter, one lowercase letter, and one digit",
+          "passwordsDoNotMatch": "Passwords do not match",
+          "usernameTaken": "Username is already taken",
+          "emailTaken": "Email is already taken"
         }
       },
       "ads": {
@@ -114,6 +120,7 @@ const resources = {
         "registerTitle": "Rejestracja",
         "username": "Nazwa użytkownika",
         "password": "Hasło",
+        "confirmPassword": "Potwierdź hasło",
         "email": "Email",
         "loggingIn": "Logowanie...",
         "registering": "Rejestracja...",
@@ -127,7 +134,12 @@ const resources = {
           "loginFailed": "Logowanie nieudane. Sprawdź swoje dane.",
           "generic": "Wystąpił błąd.",
           "required": "{{field}} jest wymagane",
-          "minLength": "Musi mieć co najmniej {{count}} znaków"
+          "minLength": "Musi mieć co najmniej {{count}} znaków",
+          "invalidEmail": "Wprowadź poprawny adres e-mail",
+          "passwordRequirements": "Hasło musi mieć 8-64 znaki i zawierać co najmniej jedną wielką literę, jedną małą literę i jedną cyfrę",
+          "passwordsDoNotMatch": "Hasła nie zgadzają się",
+          "usernameTaken": "Nazwa użytkownika jest już zajęta",
+          "emailTaken": "Email jest już zajęty"
         }
       },
       "ads": {
