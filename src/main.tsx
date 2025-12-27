@@ -9,7 +9,6 @@ import App from './App.tsx'
 uikit.use(Icons)
 
 createRoot(document.getElementById('root')!).render(
-// ... existing code ...
   <StrictMode>
     <App />
   </StrictMode>,

@@ -33,10 +33,15 @@ class ApiClient {
       headers,
     });
 
-    if (response.status === 403) {
+    if (response.status === 401) {
       this.setToken(null);
-      window.location.href = '/login';
+      const currentPath = window.location.pathname + window.location.search;
+      window.location.href = `/login?redirect=${encodeURIComponent(currentPath)}`;
       throw new Error('Unauthorized');
+    }
+
+    if (response.status === 403) {
+      throw new Error('Not Found');
     }
 
     if (!response.ok) {

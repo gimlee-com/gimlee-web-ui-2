@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import { authService } from '../services/authService';
@@ -19,6 +19,9 @@ const LoginPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const { login: authLogin } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  const redirect = searchParams.get('redirect') || '/';
 
   const passwordRule = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,64}$/;
 
@@ -34,7 +37,7 @@ const LoginPage: React.FC = () => {
       const response = await authService.login(data);
       if (response.success && response.accessToken) {
         authLogin(response.accessToken);
-        navigate('/');
+        navigate(redirect);
       } else {
         setError(t('auth.errors.loginFailed'));
       }
