@@ -1,9 +1,9 @@
 import type { Preview } from '@storybook/react'
-import UIkit from 'uikit'
+import uikit from 'uikit'
 import Icons from 'uikit/dist/js/uikit-icons'
 import '../src/styles/main.scss'
 
-UIkit.use(Icons)
+uikit.use(Icons)
 
 const preview: Preview = {
   parameters: {
