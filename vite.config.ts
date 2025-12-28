@@ -11,7 +11,7 @@ import { playwright } from '@vitest/browser-playwright';
 const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
 
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
     visualizer({
@@ -30,6 +30,9 @@ export default defineConfig({
     },
   },
   css: {
+    modules: {
+      generateScopedName: mode === 'production' ? '[hash:base64:5]' : '[name]__[local]___[hash:base64:5]',
+    },
     preprocessorOptions: {
       scss: {
         silenceDeprecations: ['import'],
@@ -71,4 +74,4 @@ export default defineConfig({
       }
     ]
   }
-});
+}));

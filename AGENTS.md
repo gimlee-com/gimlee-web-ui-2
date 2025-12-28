@@ -56,6 +56,18 @@ Our forms prioritize a "friendly" user experience over immediate error shouting:
 - Every UIkit component wrapper must have a corresponding `.stories.tsx` file.
 - Stories should demonstrate not just the basic component, but complex states like "Animated Validation" or "Focus-aware behavior" to ensure UI consistency.
 
+#### **F. SASS & Styling Strategy**
+- **No Inline Styles**: Avoid `style={{ ... }}`. Use UIkit utility classes or SASS.
+- **Component Styles (CSS Modules)**:
+    - Use CSS Modules for component-specific styles.
+    - Name the file `[ComponentName].module.scss` and co-locate it with the component (e.g., `src/pages/AdDetailsPage.module.scss`).
+    - Import directly into the component: `import styles from "./[ComponentName].module.scss"`.
+    - This ensures class names are scoped (shortened/hashed in production) and maintenance is localized.
+- **Global Overrides**:
+    - Global UIkit variable overrides go in `src/styles/uikit-variables.scss`.
+    - Global theme customizations go in `src/styles/main.scss`.
+- **Extend, Don't Redefine**: Use existing UIkit variables (e.g., `$global-muted-background`) and classes (e.g., `uk-object-cover`) whenever possible.
+
 ---
 
 ### 4. Code Structure Standards

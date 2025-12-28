@@ -1,4 +1,6 @@
-import React, { forwardRef, useMemo } from 'react'
+import React, { forwardRef } from 'react'
+import { useUIKit } from '../../../hooks/useUIkit'
+import { useMergeRefs } from '../../../hooks/useMergeRefs'
 
 type SliderProps = React.HTMLAttributes<HTMLDivElement> & {
   autoplay?: boolean
@@ -40,27 +42,7 @@ export const Slider = forwardRef<HTMLDivElement, SliderProps>(
     },
     ref
   ) => {
-    const classNames = []
-    if (customClassName) classNames.push(customClassName)
-
-    const sliderOptions = useMemo(() => {
-      const opts: string[] = []
-      if (autoplay !== undefined) opts.push(`autoplay: ${autoplay}`)
-      if (autoplayInterval !== undefined) opts.push(`autoplay-interval: ${autoplayInterval}`)
-      if (center !== undefined) opts.push(`center: ${center}`)
-      if (draggable !== undefined) opts.push(`draggable: ${draggable}`)
-      if (easing) opts.push(`easing: ${easing}`)
-      if (finite !== undefined) opts.push(`finite: ${finite}`)
-      if (index !== undefined) opts.push(`index: ${index}`)
-      if (active) opts.push(`active: ${active}`)
-      if (pauseOnHover !== undefined) opts.push(`pause-on-hover: ${pauseOnHover}`)
-      if (sets !== undefined) opts.push(`sets: ${sets}`)
-      if (velocity !== undefined) opts.push(`velocity: ${velocity}`)
-      if (parallax !== undefined) opts.push(`parallax: ${parallax}`)
-      if (parallaxStart !== undefined) opts.push(`parallax-start: ${parallaxStart}`)
-      if (parallaxEnd !== undefined) opts.push(`parallax-end: ${parallaxEnd}`)
-      return opts.join('; ')
-    }, [
+    const { ref: uikitRef } = useUIKit<any, HTMLDivElement>('slider', {
       autoplay,
       autoplayInterval,
       center,
@@ -75,13 +57,18 @@ export const Slider = forwardRef<HTMLDivElement, SliderProps>(
       parallax,
       parallaxStart,
       parallaxEnd,
-    ])
+    })
+
+    const mergedRef = useMergeRefs(uikitRef, ref)
+
+    const classNames = []
+    if (customClassName) classNames.push(customClassName)
 
     return (
       <div
-        ref={ref}
+        ref={mergedRef}
         className={classNames.join(' ') || undefined}
-        uk-slider={sliderOptions || ''}
+        uk-slider=""
         {...props}
       >
         {children}

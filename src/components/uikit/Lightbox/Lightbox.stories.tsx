@@ -116,17 +116,32 @@ export const Navigations: Story = {
       <div className="uk-h3">Thumbnav</div>
       <Lightbox nav="thumbnav" slidenav={false} className="uk-child-width-1-3@m" uk-grid="">
         <div>
-          <LightboxItem className="uk-inline" href={IMAGES.photo} caption="Caption 1">
+          <LightboxItem 
+            className="uk-inline" 
+            href={IMAGES.photo} 
+            caption="Caption 1"
+            thumb={IMAGES.photo}
+          >
             <img src={IMAGES.photo} width="1800" height="1200" alt="" />
           </LightboxItem>
         </div>
         <div>
-          <LightboxItem className="uk-inline" href={IMAGES.dark} caption="Caption 2">
+          <LightboxItem 
+            className="uk-inline" 
+            href={IMAGES.dark} 
+            caption="Caption 2"
+            thumb={IMAGES.dark}
+          >
             <img src={IMAGES.dark} width="1800" height="1200" alt="" />
           </LightboxItem>
         </div>
         <div>
-          <LightboxItem className="uk-inline" href={IMAGES.light} caption="Caption 3">
+          <LightboxItem 
+            className="uk-inline" 
+            href={IMAGES.light} 
+            caption="Caption 3"
+            thumb={IMAGES.light}
+          >
             <img src={IMAGES.light} width="1800" height="1200" alt="" />
           </LightboxItem>
         </div>

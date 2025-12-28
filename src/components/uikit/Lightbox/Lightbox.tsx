@@ -1,4 +1,6 @@
-import React, { forwardRef, useMemo } from 'react'
+import React, { forwardRef } from 'react'
+import { useUIKit } from '../../../hooks/useUIkit'
+import { useMergeRefs } from '../../../hooks/useMergeRefs'
 
 export type LightboxProps = React.HTMLAttributes<HTMLDivElement> & {
   animation?: 'slide' | 'fade' | 'scale'
@@ -38,26 +40,7 @@ export const Lightbox = forwardRef<HTMLDivElement, LightboxProps>(
     },
     ref
   ) => {
-    const classNames = []
-    if (customClassName) classNames.push(customClassName)
-
-    const lightboxOptions = useMemo(() => {
-      const opts: string[] = []
-      if (animation) opts.push(`animation: ${animation}`)
-      if (autoplay !== undefined) opts.push(`autoplay: ${autoplay}`)
-      if (autoplayInterval !== undefined) opts.push(`autoplay-interval: ${autoplayInterval}`)
-      if (pauseOnHover !== undefined) opts.push(`pause-on-hover: ${pauseOnHover}`)
-      if (videoAutoplay !== undefined) opts.push(`video-autoplay: ${videoAutoplay}`)
-      if (counter !== undefined) opts.push(`counter: ${counter}`)
-      if (nav !== undefined) opts.push(`nav: ${nav}`)
-      if (slidenav !== undefined) opts.push(`slidenav: ${slidenav}`)
-      if (index !== undefined) opts.push(`index: ${index}`)
-      if (delayControls !== undefined) opts.push(`delay-controls: ${delayControls}`)
-      if (toggle) opts.push(`toggle: ${toggle}`)
-      if (template) opts.push(`template: ${template}`)
-      if (bgClose !== undefined) opts.push(`bg-close: ${bgClose}`)
-      return opts.join('; ')
-    }, [
+    const { ref: uikitRef } = useUIKit<any, HTMLDivElement>('lightbox', {
       animation,
       autoplay,
       autoplayInterval,
@@ -71,13 +54,18 @@ export const Lightbox = forwardRef<HTMLDivElement, LightboxProps>(
       toggle,
       template,
       bgClose,
-    ])
+    })
+
+    const mergedRef = useMergeRefs(uikitRef, ref)
+
+    const classNames = []
+    if (customClassName) classNames.push(customClassName)
 
     return (
       <div
-        ref={ref}
+        ref={mergedRef}
         className={classNames.join(' ') || undefined}
-        uk-lightbox={lightboxOptions || ''}
+        uk-lightbox=""
         {...props}
       >
         {children}
@@ -89,18 +77,20 @@ export const Lightbox = forwardRef<HTMLDivElement, LightboxProps>(
 export type LightboxItemProps = React.AnchorHTMLAttributes<HTMLAnchorElement> & {
   caption?: string
   alt?: string
+  thumb?: string
   poster?: string
   type?: 'image' | 'video' | 'iframe'
   attrs?: string
 }
 
 export const LightboxItem = forwardRef<HTMLAnchorElement, LightboxItemProps>(
-  ({ children, caption, alt, poster, type, attrs, ...props }, ref) => {
+  ({ children, caption, alt, thumb, poster, type, attrs, ...props }, ref) => {
     return (
       <a
         ref={ref}
         data-caption={caption}
         data-alt={alt}
+        data-thumb={thumb}
         data-poster={poster}
         data-type={type}
         data-attrs={attrs}
