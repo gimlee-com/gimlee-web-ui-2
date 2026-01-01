@@ -67,13 +67,6 @@ Our forms prioritize a "friendly" user experience over immediate error shouting:
     - Global UIkit variable overrides go in `src/styles/uikit-variables.scss`.
     - Global theme customizations go in `src/styles/main.scss`.
 - **Extend, Don't Redefine**: Use existing UIkit variables (e.g., `$global-muted-background`) and classes (e.g., `uk-object-cover`) whenever possible.
-
-#### **G. API Documentation (.http files)**
-For any module that exposes REST endpoints, we maintain `.http` files (IntelliJ HTTP Client format) to document and test the API.
-- **Supplement Controllers**: Every Controller must be supplemented with `.http` files that explore its full functionality with example requests.
-- **Detailed Commentary**: These files must contain commentary explaining what is supposed to happen when calling the endpoint and describing expected responses.
-- **Stay in Sync**: Any addition or modification to Controllers requires corresponding updates to their respective `.http` files to ensure examples and commentary remain accurate.
-
 ---
 
 ### 4. Code Structure Standards
