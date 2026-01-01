@@ -15,11 +15,13 @@ interface RegisterFormValues extends RegisterRequestDto {
 
 const RegisterPage: React.FC = () => {
   const { t } = useTranslation();
-  const { register, handleSubmit, formState: { errors, isValid }, watch, trigger } = useForm<RegisterFormValues>({
+  const { register, handleSubmit, formState: { errors, isValid, touchedFields }, watch, trigger } = useForm<RegisterFormValues>({
     mode: 'onChange'
   });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [usernameFocused, setUsernameFocused] = useState(false);
+  const [emailFocused, setEmailFocused] = useState(false);
   const [passwordFocused, setPasswordFocused] = useState(false);
   const [confirmPasswordFocused, setConfirmPasswordFocused] = useState(false);
   const navigate = useNavigate();
@@ -43,7 +45,7 @@ const RegisterPage: React.FC = () => {
           const result = await fn(value, values);
           resolve(result);
           delete resolveRefs.current[fieldName];
-        }, 500);
+        }, 250);
       });
     };
   };
@@ -83,6 +85,19 @@ const RegisterPage: React.FC = () => {
     if (!value) return true;
     return value === values.password || t('auth.errors.passwordsDoNotMatch');
   };
+
+  const usernameRegister = register('username', { 
+    required: t('auth.errors.required', { field: t('auth.username') }),
+    validate: validateUsername
+  });
+
+  const emailRegister = register('email', { 
+    required: t('auth.errors.required', { field: t('auth.email') }),
+    validate: {
+      format: validateEmailFormat,
+      availability: validateEmailAvailability
+    }
+  });
 
   const passwordRegister = register('password', { 
     required: t('auth.errors.required', { field: t('auth.password') }), 
@@ -124,16 +139,20 @@ const RegisterPage: React.FC = () => {
             <FormLabel>{t('auth.username')}</FormLabel>
             <FormControls>
               <Input
-                {...register('username', { 
-                  required: t('auth.errors.required', { field: t('auth.username') }),
-                  validate: validateUsername
-                })}
-                status={errors.username ? 'danger' : undefined}
+                {...usernameRegister}
+                onFocus={() => setUsernameFocused(true)}
+                onBlur={(e) => {
+                  usernameRegister.onBlur(e);
+                  setUsernameFocused(false);
+                }}
+                status={errors.username && !usernameFocused && touchedFields.username ? 'danger' : undefined}
                 type="text"
                 placeholder={t('auth.username')}
               />
               <AnimatePresence>
-                {errors.username && <FormMessage>{errors.username.message}</FormMessage>}
+                {errors.username && !usernameFocused && touchedFields.username && (
+                  <FormMessage>{errors.username.message}</FormMessage>
+                )}
               </AnimatePresence>
             </FormControls>
           </motion.div>
@@ -141,19 +160,20 @@ const RegisterPage: React.FC = () => {
             <FormLabel>{t('auth.email')}</FormLabel>
             <FormControls>
               <Input
-                {...register('email', { 
-                  required: t('auth.errors.required', { field: t('auth.email') }),
-                  validate: {
-                    format: validateEmailFormat,
-                    availability: validateEmailAvailability
-                  }
-                })}
-                status={errors.email ? 'danger' : undefined}
+                {...emailRegister}
+                onFocus={() => setEmailFocused(true)}
+                onBlur={(e) => {
+                  emailRegister.onBlur(e);
+                  setEmailFocused(false);
+                }}
+                status={errors.email && !emailFocused && touchedFields.email ? 'danger' : undefined}
                 type="email"
                 placeholder={t('auth.email')}
               />
               <AnimatePresence>
-                {errors.email && <FormMessage>{errors.email.message}</FormMessage>}
+                {errors.email && !emailFocused && touchedFields.email && (
+                  <FormMessage>{errors.email.message}</FormMessage>
+                )}
               </AnimatePresence>
             </FormControls>
           </motion.div>
@@ -167,12 +187,12 @@ const RegisterPage: React.FC = () => {
                   passwordRegister.onBlur(e);
                   setPasswordFocused(false);
                 }}
-                status={errors.password && !passwordFocused ? 'danger' : undefined}
+                status={errors.password && !passwordFocused && touchedFields.password ? 'danger' : undefined}
                 type="password"
                 placeholder={t('auth.password')}
               />
               <AnimatePresence>
-                {(passwordFocused || errors.password) && (
+                {(passwordFocused || (errors.password && touchedFields.password)) && (
                   <FormMessage type={passwordFocused ? 'info' : 'error'}>
                     {passwordFocused ? t('auth.errors.passwordRequirements') : errors.password?.message}
                   </FormMessage>
@@ -190,12 +210,12 @@ const RegisterPage: React.FC = () => {
                   confirmPasswordRegister.onBlur(e);
                   setConfirmPasswordFocused(false);
                 }}
-                status={errors.confirmPassword && !confirmPasswordFocused ? 'danger' : undefined}
+                status={errors.confirmPassword && !confirmPasswordFocused && touchedFields.confirmPassword ? 'danger' : undefined}
                 type="password"
                 placeholder={t('auth.confirmPassword')}
               />
               <AnimatePresence>
-                {errors.confirmPassword && (
+                {errors.confirmPassword && (touchedFields.confirmPassword || confirmPasswordFocused) && (
                   confirmPasswordFocused ? (
                     errors.confirmPassword.type === 'validate' && (
                       <FormMessage type="info">{errors.confirmPassword.message}</FormMessage>
