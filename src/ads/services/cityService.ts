@@ -1,5 +1,5 @@
-import { apiClient } from './apiClient';
-import type { CitySuggestion } from '../types/api';
+import { apiClient } from '../../services/apiClient';
+import type { CitySuggestion } from '../../types/api';
 
 export const cityService = {
   getSuggestions: (query: string) =>

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { adService } from '../services/adService';
+import { adService } from '../ads/services/adService';
 import type { AdPreviewDto } from '../types/api';
-import { AdCard } from '../components/ads/AdCard';
+import { AdCard } from '../ads/components/AdCard';
 import { Grid } from '../components/uikit/Grid/Grid';
 import { Heading } from '../components/uikit/Heading/Heading';
 import { Spinner } from '../components/uikit/Spinner/Spinner';

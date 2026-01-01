@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { paymentService } from '../services/paymentService';
-import type { PirateChainTransaction } from '../types/api';
-import { Heading } from '../components/uikit/Heading/Heading';
-import { Button } from '../components/uikit/Button/Button';
-import { Alert } from '../components/uikit/Alert/Alert';
-import { Table } from '../components/uikit/Table/Table';
-import { Spinner } from '../components/uikit/Spinner/Spinner';
+import { paymentService } from '../../payments/services/paymentService';
+import type { PirateChainTransaction } from '../../types/api';
+import { Heading } from '../../components/uikit/Heading/Heading';
+import { Button } from '../../components/uikit/Button/Button';
+import { Alert } from '../../components/uikit/Alert/Alert';
+import { Table } from '../../components/uikit/Table/Table';
+import { Spinner } from '../../components/uikit/Spinner/Spinner';
 
 const ProfilePage: React.FC = () => {
   const { t, i18n } = useTranslation();

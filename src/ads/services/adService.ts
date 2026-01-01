@@ -1,10 +1,10 @@
-import { apiClient } from './apiClient';
+import { apiClient } from '../../services/apiClient';
 import type { 
   AdDetailsDto, 
   PageAdPreviewDto, 
   CreateAdRequestDto, 
   UpdateAdRequestDto,
-} from '../types/api';
+} from '../../types/api';
 
 export const adService = {
   getFeaturedAds: () => 

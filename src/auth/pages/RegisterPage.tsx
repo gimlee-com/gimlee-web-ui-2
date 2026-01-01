@@ -3,11 +3,11 @@ import { useForm } from 'react-hook-form';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { authService } from '../services/authService';
-import type { RegisterRequestDto } from '../types/api';
-import { Button } from '../components/uikit/Button/Button';
-import { Alert } from '../components/uikit/Alert/Alert';
-import { Heading } from '../components/uikit/Heading/Heading';
-import { Form, FormLabel, FormControls, Input, FormMessage, AnimatePresence, motion } from '../components/uikit/Form/Form';
+import type { RegisterRequestDto } from '../../types/api';
+import { Button } from '../../components/uikit/Button/Button';
+import { Alert } from '../../components/uikit/Alert/Alert';
+import { Heading } from '../../components/uikit/Heading/Heading';
+import { Form, FormLabel, FormControls, Input, FormMessage, AnimatePresence, motion } from '../../components/Form/Form';
 
 interface RegisterFormValues extends RegisterRequestDto {
   confirmPassword?: string;

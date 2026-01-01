@@ -1,11 +1,11 @@
-import { apiClient } from './apiClient';
+import { apiClient } from '../../services/apiClient';
 import type { 
   LoginRequestDto, 
   RegisterRequestDto, 
   IdentityVerificationResponse, 
   AvailabilityStatusResponseDto, 
   VerifyUserRequestDto 
-} from '../types/api';
+} from '../../types/api';
 
 export const authService = {
   login: (data: LoginRequestDto) => 

@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { adService } from '../services/adService';
-import type { PageAdPreviewDto } from '../types/api';
-import { AdCard } from '../components/ads/AdCard';
-import { Grid } from '../components/uikit/Grid/Grid';
-import { Heading } from '../components/uikit/Heading/Heading';
-import { Spinner } from '../components/uikit/Spinner/Spinner';
-import { Pagination as UkPagination, PaginationItem, PaginationPrevious, PaginationNext } from '../components/uikit/Pagination/Pagination';
+import type { PageAdPreviewDto } from '../../types/api';
+import { AdCard } from '../components/AdCard';
+import { Grid } from '../../components/uikit/Grid/Grid';
+import { Heading } from '../../components/uikit/Heading/Heading';
+import { Spinner } from '../../components/uikit/Spinner/Spinner';
+import { Pagination as UkPagination, PaginationItem, PaginationPrevious, PaginationNext } from '../../components/uikit/Pagination/Pagination';
 
 const AdListingPage: React.FC = () => {
   const { t } = useTranslation();

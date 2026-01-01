@@ -1,5 +1,5 @@
-import { apiClient } from './apiClient';
-import type { PirateChainTransaction } from '../types/api';
+import { apiClient } from '../../services/apiClient';
+import type { PirateChainTransaction } from '../../types/api';
 
 export const paymentService = {
   addPirateChainViewKey: (viewKey: string) =>

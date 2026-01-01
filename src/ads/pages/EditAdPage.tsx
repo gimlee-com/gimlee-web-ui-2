@@ -3,13 +3,13 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { adService } from '../services/adService';
-import { apiClient } from '../services/apiClient';
+import { apiClient } from '../../services/apiClient';
 import { cityService } from '../services/cityService';
-import type { AdDetailsDto, UpdateAdRequestDto, CitySuggestion } from '../types/api';
-import { Heading } from '../components/uikit/Heading/Heading';
-import { Spinner } from '../components/uikit/Spinner/Spinner';
-import { Button } from '../components/uikit/Button/Button';
-import { Alert } from '../components/uikit/Alert/Alert';
+import type { AdDetailsDto, UpdateAdRequestDto, CitySuggestion } from '../../types/api';
+import { Heading } from '../../components/uikit/Heading/Heading';
+import { Spinner } from '../../components/uikit/Spinner/Spinner';
+import { Button } from '../../components/uikit/Button/Button';
+import { Alert } from '../../components/uikit/Alert/Alert';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
 

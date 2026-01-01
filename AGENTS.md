@@ -60,7 +60,7 @@ Our forms prioritize a "friendly" user experience over immediate error shouting:
 - **No Inline Styles**: Avoid `style={{ ... }}`. Use UIkit utility classes or SASS.
 - **Component Styles (CSS Modules)**:
     - Use CSS Modules for component-specific styles.
-    - Name the file `[ComponentName].module.scss` and co-locate it with the component (e.g., `src/pages/AdDetailsPage.module.scss`).
+    - Name the file `[ComponentName].module.scss` and co-locate it with the component (e.g., `src/ads/pages/AdDetailsPage.module.scss`).
     - Import directly into the component: `import styles from "./[ComponentName].module.scss"`.
     - This ensures class names are scoped (shortened/hashed in production) and maintenance is localized.
 - **Global Overrides**:
@@ -68,15 +68,40 @@ Our forms prioritize a "friendly" user experience over immediate error shouting:
     - Global theme customizations go in `src/styles/main.scss`.
 - **Extend, Don't Redefine**: Use existing UIkit variables (e.g., `$global-muted-background`) and classes (e.g., `uk-object-cover`) whenever possible.
 
+#### **G. API Documentation (.http files)**
+For any module that exposes REST endpoints, we maintain `.http` files (IntelliJ HTTP Client format) to document and test the API.
+- **Supplement Controllers**: Every Controller must be supplemented with `.http` files that explore its full functionality with example requests.
+- **Detailed Commentary**: These files must contain commentary explaining what is supposed to happen when calling the endpoint and describing expected responses.
+- **Stay in Sync**: Any addition or modification to Controllers requires corresponding updates to their respective `.http` files to ensure examples and commentary remain accurate.
+
 ---
 
 ### 4. Code Structure Standards
-- **Components**: `src/components/uikit/[ComponentName]/`
-    - `ComponentName.tsx` (Logic and Structure)
-    - `ComponentName.stories.tsx` (Documentation and Testing)
-- **Pages**: `src/pages/` (High-level layouts and form orchestration)
-- **Services**: `src/services/` (API logic and debounced validators)
-- **Hooks**: `src/hooks/` (Reusable logic like `useUIKit` or `useMergeRefs`)
+The project follows a modular, business-oriented directory structure to ensure scalability and maintainability.
+
+#### **A. Shared & Global Resources**
+Code that is reusable across the entire application remains in top-level directories under `src/`:
+- **`src/components/uikit/`**: React wrappers for UIkit components. These should be pure, not depend on global state or context, and not involve any extra dependencies (e.g., `motion/react`).
+- **`src/components/`**: Custom, universal React components that are not UIKit wrappers or are extending the look and feel of the UIkit wrappers.
+- **`src/pages/`**: High-level layouts and error pages.
+- **`src/hooks/`**: Global reusable hooks (e.g., `useUIKit`, `useMergeRefs`).
+- **`src/context/`**: Global application state (e.g., `AuthContext`).
+- **`src/utils/`**, **`src/types/`**: Shared helper functions and TypeScript definitions.
+- **`src/styles/`**: Global SASS variables and theme overrides.
+
+#### **B. Business-Oriented Modules**
+Logic specific to a particular business domain (e.g., Ads, Profile, Auth) is encapsulated within its own directory under `src/` (e.g., `src/ads/`). Each module mirrors a simplified project structure:
+- **`src/[module]/pages/`**: High-level layouts and form orchestration specific to the domain.
+- **`src/[module]/components/`**: Components used exclusively within this module.
+- **`src/[module]/services/`**: API clients and business logic for the module.
+- **`src/[module]/context/`**, **`src/[module]/hooks/`**: State and logic scoped to the module.
+- **`src/[module]/utils/`**, **`src/[module]/types/`**: Helpers and types relevant only to this domain.
+
+#### **C. Component Layout**
+Every component (whether shared or module-specific) follows the same pattern:
+- **`[ComponentName].tsx`**: The main React component.
+- **`[ComponentName].stories.tsx`**: Storybook documentation and visual testing.
+- **`[ComponentName].module.scss`**: Scoped CSS Module (if specific styling is required).
 
 ---
 
@@ -85,3 +110,4 @@ Our forms prioritize a "friendly" user experience over immediate error shouting:
 2. **Be helpful, not aggressive**: Use info messages and primary colors for guidance; save red danger colors for when the user has finished interacting with a field.
 3. **Types Matter**: Use TypeScript interfaces for all component props and API payloads.
 4. **Lifecycle Management**: Always clean up UIkit JS instances to prevent memory leaks in the SPA.
+5. **Keep API Docs Current**: Supplement Controllers with example `.http` files and ensure they are updated alongside any controller modifications.

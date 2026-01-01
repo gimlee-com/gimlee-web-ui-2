@@ -1,7 +1,10 @@
 import React, { forwardRef } from 'react'
-import { useUIKit } from '../../../hooks/useUIkit'
-import { useMergeRefs } from '../../../hooks/useMergeRefs'
+import { motion } from 'motion/react'
+import { useUIKit } from '../../hooks/useUIkit'
+import { useMergeRefs } from '../../hooks/useMergeRefs'
 import UIkit from 'uikit'
+
+export { motion, AnimatePresence } from 'motion/react'
 
 export type FormLayout = 'stacked' | 'horizontal'
 
@@ -16,14 +19,17 @@ export const Form = forwardRef<HTMLFormElement, FormProps>(
     if (layout === 'horizontal') classNames.push('uk-form-horizontal')
     if (customClassName) classNames.push(customClassName)
 
+    const { onDrag: _onDrag, ...rest } = props as any
+
     return (
-      <form
-        ref={ref}
-        className={classNames.join(' ') || undefined}
-        {...props}
+      <motion.form
+        ref={ref as any}
+        layout
+        className={classNames.join(' ')}
+        {...rest}
       >
         {children}
-      </form>
+      </motion.form>
     )
   }
 )
@@ -35,14 +41,17 @@ export const Fieldset = forwardRef<HTMLFieldSetElement, FieldsetProps>(
     const classNames = ['uk-fieldset']
     if (customClassName) classNames.push(customClassName)
 
+    const { onDrag: _onDrag, ...rest } = props as any
+
     return (
-      <fieldset
-        ref={ref}
-        className={classNames.join(' ') || undefined}
-        {...props}
+      <motion.fieldset
+        ref={ref as any}
+        layout
+        className={classNames.join(' ')}
+        {...rest}
       >
         {children}
-      </fieldset>
+      </motion.fieldset>
     )
   }
 )
@@ -54,14 +63,17 @@ export const Legend = forwardRef<HTMLLegendElement, LegendProps>(
     const classNames = ['uk-legend']
     if (customClassName) classNames.push(customClassName)
 
+    const { onDrag: _onDrag, ...rest } = props as any
+
     return (
-      <legend
-        ref={ref}
-        className={classNames.join(' ') || undefined}
-        {...props}
+      <motion.legend
+        ref={ref as any}
+        layout
+        className={classNames.join(' ')}
+        {...rest}
       >
         {children}
-      </legend>
+      </motion.legend>
     )
   }
 )
@@ -120,12 +132,15 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     if (formWidth) classNames.push(`uk-form-width-${formWidth}`)
     if (customClassName) classNames.push(customClassName)
 
+    const { onDrag: _onDrag, ...rest } = props as any
+
     return (
-      <input
-        ref={ref}
+      <motion.input
+        ref={ref as any}
+        layout
         className={classNames.join(' ') || undefined}
         type={type}
-        {...props}
+        {...rest}
       />
     )
   }
@@ -161,14 +176,17 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
     if (formWidth) classNames.push(`uk-form-width-${formWidth}`)
     if (customClassName) classNames.push(customClassName)
 
+    const { onDrag: _onDrag, ...rest } = props as any
+
     return (
-      <select
-        ref={ref}
-        className={classNames.join(' ') || undefined}
-        {...props}
+      <motion.select
+        ref={ref as any}
+        layout
+        className={classNames.join(' ')}
+        {...rest}
       >
         {children}
-      </select>
+      </motion.select>
     )
   }
 )
@@ -176,7 +194,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
 export interface TextAreaProps
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   status?: FormStatus
-  variant?: 'blank' | 'default'
+  variant?: 'blank'
   formWidth?: 'xsmall' | 'small' | 'medium' | 'large'
 }
 
@@ -188,11 +206,14 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
     if (formWidth) classNames.push(`uk-form-width-${formWidth}`)
     if (customClassName) classNames.push(customClassName)
 
+    const { onDrag: _onDrag, ...rest } = props as any
+
     return (
-      <textarea
-        ref={ref}
-        className={classNames.join(' ') || undefined}
-        {...props}
+      <motion.textarea
+        ref={ref as any}
+        layout
+        className={classNames.join(' ')}
+        {...rest}
       />
     )
   }
@@ -205,14 +226,17 @@ export const FormLabel = forwardRef<HTMLLabelElement, FormLabelProps>(
     const classNames = ['uk-form-label']
     if (customClassName) classNames.push(customClassName)
 
+    const { onDrag: _onDrag, ...rest } = props as any
+
     return (
-      <label
-        ref={ref}
-        className={classNames.join(' ') || undefined}
-        {...props}
+      <motion.label
+        ref={ref as any}
+        layout
+        className={classNames.join(' ')}
+        {...rest}
       >
         {children}
-      </label>
+      </motion.label>
     )
   }
 )
@@ -224,14 +248,51 @@ export const FormControls = forwardRef<HTMLDivElement, FormControlsProps>(
     const classNames = ['uk-form-controls']
     if (customClassName) classNames.push(customClassName)
 
+    const { onDrag: _onDrag, ...rest } = props as any
+
     return (
-      <div
-        ref={ref}
-        className={classNames.join(' ') || undefined}
-        {...props}
+      <motion.div
+        ref={ref as any}
+        layout
+        className={classNames.join(' ')}
+        {...rest}
       >
         {children}
-      </div>
+      </motion.div>
+    )
+  }
+)
+
+export interface FormMessageProps extends React.HTMLAttributes<HTMLDivElement> {
+  type?: 'error' | 'info'
+}
+
+/**
+ * A component for displaying validation or informational messages below inputs.
+ */
+export const FormMessage = forwardRef<HTMLDivElement, FormMessageProps>(
+  ({ children, className: customClassName, type = 'error', ...props }, ref) => {
+    const classNames = ['uk-margin-remove-top']
+    if (type === 'error') classNames.push('uk-text-danger')
+    if (type === 'info') classNames.push('uk-text-primary')
+    if (customClassName) classNames.push(customClassName)
+
+    const { onDrag: _onDrag, ...rest } = props as any
+
+    return (
+      <motion.div
+        ref={ref as any}
+        layout
+        initial={{ opacity: 0, height: 0 }}
+        animate={{ opacity: 1, height: 'auto' }}
+        exit={{ opacity: 0, height: 0 }}
+        transition={{ type: 'spring', stiffness: 600, damping: 30 }}
+        className={classNames.join(' ')}
+        style={{ overflow: 'hidden' }}
+        {...rest}
+      >
+        <small>{children}</small>
+      </motion.div>
     )
   }
 )
@@ -305,7 +366,7 @@ export const FormInputContainer = forwardRef<
   const classNames = ['uk-inline']
   if (customClassName) classNames.push(customClassName)
   return (
-    <div ref={ref} className={classNames.join(' ') || undefined} {...props}>
+    <div ref={ref} className={classNames.join(' ')} {...props}>
       {children}
     </div>
   )

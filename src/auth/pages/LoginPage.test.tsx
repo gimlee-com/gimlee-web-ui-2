@@ -1,11 +1,11 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import LoginPage from './LoginPage';
-import { AuthProvider } from '../context/AuthContext';
+import { AuthProvider } from '../../context/AuthContext';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { authService } from '../services/authService';
 import { I18nextProvider } from 'react-i18next';
-import i18n from '../i18n';
+import i18n from '../../i18n';
 
 vi.mock('../services/authService', () => ({
   authService: {

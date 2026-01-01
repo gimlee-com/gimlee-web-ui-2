@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import type { AdPreviewDto } from '../../types/api';
-import { Card, CardMedia, CardBody, CardTitle } from '../uikit/Card/Card';
+import { Card, CardMedia, CardBody, CardTitle } from '../../components/uikit/Card/Card';
 
 interface AdCardProps {
   ad: AdPreviewDto;

@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { adService } from '../services/adService';
-import type { AdPreviewDto } from '../types/api';
-import { Heading } from '../components/uikit/Heading/Heading';
-import { Spinner } from '../components/uikit/Spinner/Spinner';
-import { Button } from '../components/uikit/Button/Button';
-import { Table } from '../components/uikit/Table/Table';
-import { Label } from '../components/uikit/Label/Label';
+import type { AdPreviewDto } from '../../types/api';
+import { Heading } from '../../components/uikit/Heading/Heading';
+import { Spinner } from '../../components/uikit/Spinner/Spinner';
+import { Button } from '../../components/uikit/Button/Button';
+import { Table } from '../../components/uikit/Table/Table';
+import { Label } from '../../components/uikit/Label/Label';
 
 const MyAdsPage: React.FC = () => {
   const { t } = useTranslation();

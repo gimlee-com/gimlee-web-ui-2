@@ -3,12 +3,12 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { authService } from '../services/authService';
-import { useAuth } from '../context/AuthContext';
-import { Button } from '../components/uikit/Button/Button';
-import { Alert } from '../components/uikit/Alert/Alert';
-import { Heading } from '../components/uikit/Heading/Heading';
-import { Form, Input, FormControls, FormMessage, AnimatePresence, motion } from '../components/uikit/Form/Form';
-import type { VerifyUserRequestDto } from '../types/api';
+import { useAuth } from '../../context/AuthContext';
+import { Button } from '../../components/uikit/Button/Button';
+import { Alert } from '../../components/uikit/Alert/Alert';
+import { Heading } from '../../components/uikit/Heading/Heading';
+import { Form, Input, FormControls, FormMessage, AnimatePresence, motion } from '../../components/Form/Form';
+import type { VerifyUserRequestDto } from '../../types/api';
 
 const VerifyPage: React.FC = () => {
   const { t } = useTranslation();

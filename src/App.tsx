@@ -3,14 +3,14 @@ import { AuthProvider } from './context/AuthContext';
 import './i18n';
 import Navbar from './components/layout/Navbar';
 import HomePage from './pages/HomePage';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-import VerifyPage from './pages/VerifyPage';
-import AdListingPage from './pages/AdListingPage';
-import AdDetailsPage from './pages/AdDetailsPage';
-import MyAdsPage from './pages/MyAdsPage';
-import EditAdPage from './pages/EditAdPage';
-import ProfilePage from './pages/ProfilePage';
+import LoginPage from './auth/pages/LoginPage';
+import RegisterPage from './auth/pages/RegisterPage';
+import VerifyPage from './auth/pages/VerifyPage';
+import AdListingPage from './ads/pages/AdListingPage';
+import AdDetailsPage from './ads/pages/AdDetailsPage';
+import MyAdsPage from './ads/pages/MyAdsPage';
+import EditAdPage from './ads/pages/EditAdPage';
+import ProfilePage from './profile/pages/ProfilePage';
 import './App.css';
 
 function App() {
