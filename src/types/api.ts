@@ -32,7 +32,10 @@ export interface AdPreviewDto {
   price?: CurrencyAmountDto;
   mainPhotoPath?: string;
   location?: LocationWithCityDetailsDto;
-  status?: 'ACTIVE' | 'INACTIVE' | 'SOLD';
+  status?: 'ACTIVE' | 'INACTIVE' | 'SOLD' | 'DELETED';
+  createdAt?: string;
+  stock?: number;
+  availableStock?: number;
 }
 
 export interface AdDetailsDto {
@@ -43,10 +46,13 @@ export interface AdDetailsDto {
   price?: CurrencyAmountDto;
   mediaPaths?: string[];
   mainPhotoPath?: string;
-  status?: 'ACTIVE' | 'INACTIVE' | 'SOLD';
+  status?: 'ACTIVE' | 'INACTIVE' | 'SOLD' | 'DELETED';
   userId?: string;
   createdAt?: string;
   updatedAt?: string;
+  stock?: number;
+  availableStock?: number;
+  lockedStock?: number;
 }
 
 export interface CreateAdRequestDto {

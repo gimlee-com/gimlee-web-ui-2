@@ -49,7 +49,7 @@ const EditAdPage: React.FC = () => {
             currency: data.price?.currency,
             mainPhotoPath: data.mainPhotoPath,
             mediaPaths: data.mediaPaths,
-            // stock: data.stock // AdDetailsDto in my api.ts doesn't have stock yet, but I added it to UpdateAdRequestDto
+            stock: data.stock
           });
         })
         .catch(err => setError(err.message || 'Failed to load ad'))
@@ -190,6 +190,11 @@ const EditAdPage: React.FC = () => {
             </Select>
           </div>
         </Grid>
+
+        <div className="uk-margin">
+          <label className="uk-form-label">{t('ads.stock')}</label>
+          <Input {...register('stock')} type="number" min="0" />
+        </div>
 
         <div className="uk-margin">
           <label className="uk-form-label">{t('ads.media')}</label>

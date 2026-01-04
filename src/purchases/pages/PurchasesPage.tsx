@@ -5,6 +5,7 @@ import { purchaseService } from '../services/purchaseService';
 import type { PagePurchaseHistoryDto } from '../../types/api';
 import { Heading } from '../../components/uikit/Heading/Heading';
 import { Spinner } from '../../components/uikit/Spinner/Spinner';
+import { Grid } from '../../components/uikit/Grid/Grid';
 import { SmartPagination } from '../../components/SmartPagination';
 import { OrderItemCard } from '../../components/OrderItemCard';
 
@@ -50,20 +51,22 @@ const PurchasesPage: React.FC = () => {
         </div>
       ) : (
         <div>
-          <AnimatePresence mode="popLayout">
-            {purchasesPage?.content.map((purchase) => (
-              <motion.div
-                key={purchase.id}
-                layout
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              >
-                <OrderItemCard order={purchase} type="purchase" />
-              </motion.div>
-            ))}
-          </AnimatePresence>
+          <Grid gap="medium" className="uk-child-width-1-1 uk-child-width-1-2@m">
+            <AnimatePresence mode="popLayout">
+              {purchasesPage?.content.map((purchase) => (
+                <motion.div
+                  key={purchase.id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                >
+                  <OrderItemCard order={purchase} type="purchase" />
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </Grid>
           {purchasesPage?.content.length === 0 && (
             <div className="uk-text-center uk-text-muted uk-padding-large">
               {t('purchases.noPurchases')}

@@ -92,44 +92,55 @@ export const OrderItemCard: React.FC<OrderItemCardProps> = ({ order, type }) => 
   };
 
   return (
-    <Card className="uk-margin-small-bottom uk-border-rounded uk-box-shadow-small uk-box-shadow-hover-medium transition-all">
-      <CardBody className="uk-padding-small">
+    <Card className="uk-margin-small-bottom uk-border-rounded uk-box-shadow-small uk-box-shadow-hover-medium transition-all uk-height-1-1 uk-flex uk-flex-column">
+      <CardBody className="uk-padding-small uk-flex-1">
         <div 
-          className="uk-flex uk-flex-between uk-flex-middle uk-cursor-pointer" 
+          className="uk-cursor-pointer" 
           onClick={handleExpand}
         >
-          <div className="uk-width-expand">
-            <div className="uk-flex uk-flex-middle uk-margin-small-bottom">
-              <span className="uk-text-meta uk-margin-small-right">#{order.id.substring(0, 8)}...</span>
-              <Label variant={getStatusVariant(order.status)} size="small">
-                {getStatusLabel(order.status)}
-              </Label>
+          <div className="uk-flex uk-flex-between uk-flex-top uk-margin-small-bottom">
+            <div className="uk-width-expand uk-min-width-0">
+              <Grid gap="small" className="uk-flex-middle uk-child-width-1-1 uk-child-width-auto@s">
+                <div>
+                  <span className="uk-text-meta">#{order.id.substring(0, 8)}</span>
+                </div>
+                <div className="uk-min-width-0">
+                  <Label 
+                    variant={getStatusVariant(order.status)} 
+                    size="small"
+                    className="uk-text-truncate uk-display-inline-block"
+                    title={getStatusLabel(order.status)}
+                  >
+                    {getStatusLabel(order.status)}
+                  </Label>
+                </div>
+              </Grid>
             </div>
-            
-            <h4 className="uk-margin-remove uk-text-bold">
-              {order.items.map(item => item.title).join(', ')}
-            </h4>
-            
-            <div className="uk-text-meta uk-margin-small-top">
-              <span className="uk-margin-small-right">
+            <div className="uk-text-bold uk-text-primary uk-margin-small-left uk-text-nowrap">
+              {order.totalAmount} {order.currency}
+            </div>
+          </div>
+          
+          <h4 className="uk-margin-remove uk-text-bold uk-text-break">
+            {order.items.map(item => item.title).join(', ')}
+          </h4>
+          
+          <div className="uk-flex uk-flex-between uk-flex-middle uk-margin-small-top">
+            <div className="uk-text-meta uk-flex uk-flex-wrap uk-flex-middle">
+              <span className="uk-margin-small-right uk-text-nowrap">
                 <Icon icon={isPurchase ? 'cart' : 'tag'} ratio={0.8} className="uk-margin-small-right" />
-                {isPurchase ? t('purchases.seller') : t('sales.buyer')}: <span className="uk-text-emphasis">{counterparty}</span>
+                <span className="uk-text-emphasis">{counterparty}</span>
               </span>
-              <span>
+              <span className="uk-margin-small-right uk-text-muted uk-visible@s">•</span>
+              <span className="uk-text-nowrap">
                 <Icon icon="calendar" ratio={0.8} className="uk-margin-small-right" />
                 {formatDate(order.createdAt)}
               </span>
             </div>
-          </div>
-          
-          <div className="uk-text-right uk-margin-left">
-            <div className="uk-text-large uk-text-bold uk-text-primary">
-              {order.totalAmount} {order.currency}
-            </div>
             <Icon 
               icon={isExpanded ? 'chevron-up' : 'chevron-down'} 
-              ratio={1.2} 
-              className="uk-text-muted uk-margin-small-top" 
+              ratio={1.1} 
+              className="uk-text-muted uk-margin-small-left" 
             />
           </div>
         </div>
@@ -148,16 +159,20 @@ export const OrderItemCard: React.FC<OrderItemCardProps> = ({ order, type }) => 
                 <Heading as="h5" className="uk-margin-small-bottom">{t('purchases.items' as any, 'Items')}</Heading>
                 <ul className="uk-list uk-list-divider uk-margin-remove">
                   {order.items.map((item, index) => (
-                    <li key={index} className="uk-flex uk-flex-between uk-flex-middle">
-                      <div>
-                        <span className="uk-text-bold">{item.title}</span>
-                        <div className="uk-text-meta">
-                          {item.quantity} x {item.unitPrice} {order.currency}
+                    <li key={index}>
+                      <Grid gap="small" className="uk-flex-middle">
+                        <div className="uk-width-expand">
+                          <div className="uk-text-bold">{item.title}</div>
+                          <div className="uk-text-meta">
+                            {item.quantity} x {item.unitPrice} {order.currency}
+                          </div>
                         </div>
-                      </div>
-                      <div className="uk-text-emphasis">
-                        {(item.quantity * item.unitPrice).toFixed(2)} {order.currency}
-                      </div>
+                        <div className="uk-width-auto uk-text-right">
+                          <div className="uk-text-emphasis">
+                            {(item.quantity * item.unitPrice).toFixed(2)} {order.currency}
+                          </div>
+                        </div>
+                      </Grid>
                     </li>
                   ))}
                 </ul>

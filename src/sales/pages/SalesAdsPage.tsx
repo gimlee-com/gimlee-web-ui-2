@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'motion/react';
 import { salesService } from '../services/salesService';
@@ -8,8 +8,8 @@ import type { AdPreviewDto, PageAdPreviewDto } from '../../types/api';
 import { Heading } from '../../components/uikit/Heading/Heading';
 import { Spinner } from '../../components/uikit/Spinner/Spinner';
 import { Button } from '../../components/uikit/Button/Button';
-import { Table } from '../../components/uikit/Table/Table';
-import { Label } from '../../components/uikit/Label/Label';
+import { Grid } from '../../components/uikit/Grid/Grid';
+import { SalesAdCard } from '../components/SalesAdCard';
 import { SmartPagination } from '../../components/SmartPagination';
 import SalesSubNav from '../components/SalesSubNav';
 
@@ -77,71 +77,22 @@ const SalesAdsPage: React.FC = () => {
         <div className="uk-alert-danger" uk-alert="">
           <p>{error}</p>
         </div>
-      ) : (
-        <div className="uk-overflow-auto">
-          <Table striped hover responsive>
-            <thead>
-              <tr>
-                <th>{t('ads.title')}</th>
-                <th>{t('ads.price')}</th>
-                <th>{t('common.status')}</th>
-                <th className="uk-text-right">{t('common.actions')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <AnimatePresence mode="popLayout">
-                {adsPage?.content.map((ad) => (
-                  <motion.tr
-                    key={ad.id}
-                    layout
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                  >
-                    <td>
-                      <Link to={`/ads/${ad.id}`} className="uk-link-reset uk-text-bold">
-                        {ad.title}
-                      </Link>
-                    </td>
-                    <td>
-                      {ad.price ? `${ad.price.amount} ${ad.price.currency}` : '-'}
-                    </td>
-                    <td>
-                      <Label variant={ad.status === 'ACTIVE' ? 'success' : 'warning'}>
-                        {ad.status}
-                      </Label>
-                    </td>
-                    <td className="uk-text-right">
-                      <div className="uk-button-group">
-                        <Link 
-                          to={`/sales/ads/edit/${ad.id}`} 
-                          className="uk-button uk-button-default uk-button-small"
-                        >
-                          {t('common.edit')}
-                        </Link>
-                        <Button 
-                          size="small" 
-                          variant={ad.status === 'ACTIVE' ? 'default' : 'primary'}
-                          onClick={() => handleToggleStatus(ad)}
-                          className="uk-margin-small-left"
-                        >
-                          {ad.status === 'ACTIVE' ? t('ads.deactivate') : t('ads.activate')}
-                        </Button>
-                      </div>
-                    </td>
-                  </motion.tr>
-                ))}
-              </AnimatePresence>
-              {adsPage?.content.length === 0 && (
-                <tr>
-                  <td colSpan={4} className="uk-text-center uk-text-muted uk-padding-large">
-                    {t('ads.noAdsYet')}
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </Table>
+      ) : adsPage?.content.length === 0 ? (
+        <div className="uk-text-center uk-text-muted uk-padding-large">
+          {t('ads.noAdsYet')}
         </div>
+      ) : (
+        <Grid gap="medium" match className="uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l">
+          <AnimatePresence mode="popLayout">
+            {adsPage?.content.map((ad) => (
+              <SalesAdCard 
+                key={ad.id} 
+                ad={ad} 
+                onToggleStatus={handleToggleStatus} 
+              />
+            ))}
+          </AnimatePresence>
+        </Grid>
       )}
 
       {adsPage && adsPage.totalPages > 1 && (

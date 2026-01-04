@@ -5,6 +5,7 @@ import { salesService } from '../services/salesService';
 import type { PageSalesOrderDto } from '../../types/api';
 import { Heading } from '../../components/uikit/Heading/Heading';
 import { Spinner } from '../../components/uikit/Spinner/Spinner';
+import { Grid } from '../../components/uikit/Grid/Grid';
 import { SmartPagination } from '../../components/SmartPagination';
 import { OrderItemCard } from '../../components/OrderItemCard';
 import SalesSubNav from '../components/SalesSubNav';
@@ -53,20 +54,22 @@ const SalesOrdersPage: React.FC = () => {
         </div>
       ) : (
         <div>
-          <AnimatePresence mode="popLayout">
-            {ordersPage?.content.map((order) => (
-              <motion.div
-                key={order.id}
-                layout
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              >
-                <OrderItemCard order={order} type="sale" />
-              </motion.div>
-            ))}
-          </AnimatePresence>
+          <Grid gap="medium" className="uk-child-width-1-1 uk-child-width-1-2@m">
+            <AnimatePresence mode="popLayout">
+              {ordersPage?.content.map((order) => (
+                <motion.div
+                  key={order.id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                >
+                  <OrderItemCard order={order} type="sale" />
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </Grid>
           {ordersPage?.content.length === 0 && (
             <div className="uk-text-center uk-text-muted uk-padding-large">
               {t('sales.noOrders')}

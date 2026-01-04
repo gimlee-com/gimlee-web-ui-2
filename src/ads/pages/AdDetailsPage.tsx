@@ -190,7 +190,14 @@ const AdDetailsPage: React.FC = () => {
               )}
             </>
           ) : (
-            <div className="uk-placeholder uk-text-center">{t('ads.noImages')}</div>
+            <div className="uk-width-1-1">
+              <img
+                src="/placeholder-image.svg"
+                alt={ad.title}
+                className={`uk-border-rounded uk-width-1-1 uk-background-muted uk-object-cover ${styles.adDetailsLightboxImage}`}
+                style={{ cursor: 'default' }}
+              />
+            </div>
           )}
         </div>
         <div className="uk-width-1-3@m">
