@@ -6,11 +6,12 @@ import { motion, AnimatePresence } from 'motion/react';
 import { salesService } from '../services/salesService';
 import { cityService } from '../../ads/services/cityService';
 import { apiClient } from '../../services/apiClient';
-import type { AdDetailsDto, UpdateAdRequestDto, CitySuggestion, MediaUploadResponseDto } from '../../types/api';
+import type { AdDetailsDto, UpdateAdRequestDto, CitySuggestion, CityDetailsDto, MediaUploadResponseDto } from '../../types/api';
 import { Heading } from '../../components/uikit/Heading/Heading';
 import { Spinner } from '../../components/uikit/Spinner/Spinner';
 import { Button } from '../../components/uikit/Button/Button';
 import { Alert } from '../../components/uikit/Alert/Alert';
+import { Label } from '../../components/uikit/Label/Label';
 import { Form, Input, TextArea, Select } from '../../components/uikit/Form/Form';
 import { Grid } from '../../components/uikit/Grid/Grid';
 
@@ -28,9 +29,10 @@ const EditAdPage: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [mediaPaths, setMediaPaths] = useState<string[]>([]);
+  const [mainPhotoPath, setMainPhotoPath] = useState<string | null>(null);
   const [citySearch, setCitySearch] = useState('');
   const [citySuggestions, setCitySuggestions] = useState<CitySuggestion[]>([]);
-  const [selectedCity, setSelectedCity] = useState<CitySuggestion | null>(null);
+  const [selectedCity, setSelectedCity] = useState<CityDetailsDto | null>(null);
 
   useEffect(() => {
     if (id) {
@@ -38,6 +40,7 @@ const EditAdPage: React.FC = () => {
         .then(data => {
           setAd(data);
           setMediaPaths(data.mediaPaths || []);
+          setMainPhotoPath(data.mainPhotoPath || null);
           if (data.location?.city) {
             setSelectedCity(data.location.city);
             setCitySearch(`${data.location.city.name}, ${data.location.city.country}`);
@@ -71,7 +74,7 @@ const EditAdPage: React.FC = () => {
     }
   };
 
-  const selectCity = (city: CitySuggestion) => {
+  const selectCity = (city: CityDetailsDto) => {
     setSelectedCity(city);
     setCitySearch(`${city.name}, ${city.country}`);
     setCitySuggestions([]);
@@ -82,9 +85,10 @@ const EditAdPage: React.FC = () => {
     setSaving(true);
     setError(null);
     try {
-      const updateData = {
+      const updateData: UpdateAdRequestDto = {
           ...data,
           mediaPaths,
+          mainPhotoPath: mainPhotoPath || undefined,
           location: selectedCity ? { cityId: selectedCity.id } : undefined
       };
       await salesService.updateAd(id, updateData);
@@ -111,7 +115,13 @@ const EditAdPage: React.FC = () => {
           newPaths = [response.path];
         }
 
-        setMediaPaths(prev => [...prev, ...newPaths]);
+        setMediaPaths(prev => {
+          const updated = [...prev, ...newPaths];
+          if (!mainPhotoPath && updated.length > 0) {
+            setMainPhotoPath(updated[0]);
+          }
+          return updated;
+        });
     } catch (err: any) {
         setError(err.message || 'Upload failed');
     }
@@ -163,10 +173,10 @@ const EditAdPage: React.FC = () => {
                   style={{ position: 'absolute', zIndex: 1000 }}
                 >
                   <ul className="uk-nav uk-dropdown-nav">
-                    {citySuggestions.map(city => (
-                      <li key={city.id}>
-                        <a href="#" onClick={(e) => { e.preventDefault(); selectCity(city); }}>
-                          {city.name}, {city.country}
+                    {citySuggestions.map(suggestion => (
+                      <li key={suggestion.city.id}>
+                        <a href="#" onClick={(e) => { e.preventDefault(); selectCity(suggestion.city); }}>
+                          {suggestion.city.name}, {suggestion.city.country}
                         </a>
                       </li>
                     ))}
@@ -224,16 +234,37 @@ const EditAdPage: React.FC = () => {
                     <img 
                       src={`${API_URL}/api/media?p=${path}`} 
                       alt="media" 
-                      style={{ height: '150px', width: '100%', objectFit: 'cover' }} 
+                      style={{ height: '150px', width: '100%', objectFit: 'cover', cursor: 'pointer' }} 
+                      onClick={() => setMainPhotoPath(path)}
                     />
+                    <div className="uk-position-top-left uk-padding-small">
+                        <button 
+                          type="button" 
+                          className={`uk-icon-button ${mainPhotoPath === path ? 'uk-button-primary' : 'uk-background-default'}`} 
+                          onClick={() => setMainPhotoPath(path)}
+                          title={t('ads.setAsMain')}
+                          uk-icon={`icon: ${mainPhotoPath === path ? 'star' : 'plus'}; ratio: 0.8`}
+                        ></button>
+                    </div>
                     <div className="uk-position-top-right uk-padding-small">
                         <button 
                           type="button" 
                           className="uk-close uk-background-default uk-border-circle uk-padding-small" 
-                          onClick={() => setMediaPaths(prev => prev.filter(p => p !== path))}
+                          onClick={() => {
+                            const updated = mediaPaths.filter(p => p !== path);
+                            setMediaPaths(updated);
+                            if (mainPhotoPath === path) {
+                              setMainPhotoPath(updated.length > 0 ? updated[0] : null);
+                            }
+                          }}
                           uk-icon="icon: close; ratio: 0.8"
                         ></button>
                     </div>
+                    {mainPhotoPath === path && (
+                      <div className="uk-position-bottom-center uk-margin-small-bottom">
+                        <Label variant="success">{t('ads.mainPhoto')}</Label>
+                      </div>
+                    )}
                   </div>
                 </motion.div>
               ))}

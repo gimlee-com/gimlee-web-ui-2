@@ -78,11 +78,11 @@ const SalesOrdersPage: React.FC = () => {
         </div>
       )}
 
-      {ordersPage && ordersPage.totalPages > 1 && (
+      {ordersPage && ordersPage.page.totalPages > 1 && (
         <div className="uk-margin-large-top">
           <SmartPagination 
-            currentPage={ordersPage.number} 
-            totalPages={ordersPage.totalPages} 
+            currentPage={ordersPage.page.number} 
+            totalPages={ordersPage.page.totalPages} 
             onPageChange={fetchOrders}
             className="uk-flex-center"
           />

@@ -231,7 +231,7 @@ export const PurchaseModal = forwardRef<HTMLDivElement, PurchaseModalProps>(
                   value={purchase.payment.qrCodeUri} 
                   size={200}
                   level="H"
-                  includeMargin={true}
+                  marginSize={8}
                   imageSettings={{
                     src: "/currencies/pirate-qr-logo.svg",
                     height: 45,

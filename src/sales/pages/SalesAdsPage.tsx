@@ -48,7 +48,7 @@ const SalesAdsPage: React.FC = () => {
       } else {
         await salesService.activateAd(ad.id);
       }
-      fetchAds(adsPage?.number || 0);
+      fetchAds(adsPage?.page.number || 0);
     } catch (err: any) {
       alert(err.message || 'Action failed');
     }
@@ -95,11 +95,11 @@ const SalesAdsPage: React.FC = () => {
         </Grid>
       )}
 
-      {adsPage && adsPage.totalPages > 1 && (
+      {adsPage && adsPage.page.totalPages > 1 && (
         <div className="uk-margin-large-top">
           <SmartPagination 
-            currentPage={adsPage.number} 
-            totalPages={adsPage.totalPages} 
+            currentPage={adsPage.page.number} 
+            totalPages={adsPage.page.totalPages} 
             onPageChange={fetchAds}
             className="uk-flex-center"
           />

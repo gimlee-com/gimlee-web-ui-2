@@ -66,11 +66,11 @@ const AdListingPage: React.FC = () => {
             ))}
           </Grid>
           
-          {data && data.totalPages > 1 && (
+          {data && data.page.totalPages > 1 && (
             <div className="uk-margin-large-top">
               <SmartPagination 
-                currentPage={data.number} 
-                totalPages={data.totalPages} 
+                currentPage={data.page.number} 
+                totalPages={data.page.totalPages} 
                 onPageChange={handlePageChange}
                 className="uk-flex-center"
               />

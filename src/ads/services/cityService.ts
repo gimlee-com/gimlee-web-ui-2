@@ -1,10 +1,10 @@
 import { apiClient } from '../../services/apiClient';
-import type { CitySuggestion } from '../../types/api';
+import type { CitySuggestion, CityDetailsDto } from '../../types/api';
 
 export const cityService = {
   getSuggestions: (query: string) =>
-    apiClient.get<CitySuggestion[]>(`/cities/suggestions/?q=${query}`),
+    apiClient.get<CitySuggestion[]>(`/cities/suggestions/?p=${query}`),
 
   getCityById: (id: string) =>
-    apiClient.get<CitySuggestion>(`/cities/${id}`),
+    apiClient.get<CityDetailsDto>(`/cities/${id}`),
 };

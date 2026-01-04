@@ -101,9 +101,8 @@ export interface MediaUploadResponseDto {
 }
 
 export interface CitySuggestion {
-  id: string;
-  name: string;
-  country: string;
+  city: CityDetailsDto;
+  score: number;
 }
 
 export interface PirateChainTransaction {
@@ -114,12 +113,16 @@ export interface PirateChainTransaction {
   zAddress: string;
 }
 
-export interface PageAdPreviewDto {
-  content: AdPreviewDto[];
-  totalPages: number;
-  totalElements: number;
+export interface PageMetadata {
   size: number;
   number: number;
+  totalElements: number;
+  totalPages: number;
+}
+
+export interface PageAdPreviewDto {
+  content: AdPreviewDto[];
+  page: PageMetadata;
 }
 
 export interface IdentityVerificationResponse {
@@ -212,10 +215,7 @@ export interface SalesOrderDto {
 
 export interface PageSalesOrderDto {
   content: SalesOrderDto[];
-  totalPages: number;
-  totalElements: number;
-  size: number;
-  number: number;
+  page: PageMetadata;
 }
 
 export interface PurchaseHistoryDto {
@@ -231,8 +231,5 @@ export interface PurchaseHistoryDto {
 
 export interface PagePurchaseHistoryDto {
   content: PurchaseHistoryDto[];
-  totalPages: number;
-  totalElements: number;
-  size: number;
-  number: number;
+  page: PageMetadata;
 }

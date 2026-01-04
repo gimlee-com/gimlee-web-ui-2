@@ -85,7 +85,9 @@ const resources = {
         "failedToCreate": "Failed to create ad",
         "failedToActivate": "Failed to activate ad",
         "failedToDeactivate": "Failed to deactivate ad",
-        "notFound": "Ad not found."
+        "notFound": "Ad not found.",
+        "mainPhoto": "Main Photo",
+        "setAsMain": "Set as main"
       },
       "sales": {
         "title": "Sales",
@@ -221,7 +223,9 @@ const resources = {
         "failedToCreate": "Nie udało się utworzyć ogłoszenia",
         "failedToActivate": "Nie udało się aktywować ogłoszenia",
         "failedToDeactivate": "Nie udało się dezaktywować ogłoszenia",
-        "notFound": "Ogłoszenie nie znalezione."
+        "notFound": "Ogłoszenie nie znalezione.",
+        "mainPhoto": "Główne zdjęcie",
+        "setAsMain": "Ustaw jako główne"
       },
       "sales": {
         "title": "Sprzedaż",

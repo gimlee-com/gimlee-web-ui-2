@@ -22,7 +22,6 @@ export const OrderItemCard: React.FC<OrderItemCardProps> = ({ order, type }) => 
   const isPurchase = type === 'purchase';
   const [isExpanded, setIsExpanded] = useState(false);
   const [statusDetails, setStatusDetails] = useState<PurchaseStatusResponseDto | null>(null);
-  const [loadingStatus, setLoadingStatus] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [activePurchaseFromStorage, setActivePurchaseFromStorage] = useState<PurchaseResponseDto | null>(null);
 
@@ -40,14 +39,11 @@ export const OrderItemCard: React.FC<OrderItemCardProps> = ({ order, type }) => 
 
   const fetchStatus = async () => {
     if (!isPurchase || order.status !== 'AWAITING_PAYMENT') return;
-    setLoadingStatus(true);
     try {
       const details = await purchaseService.getPurchaseStatus(order.id);
       setStatusDetails(details);
     } catch (error) {
       console.error('Failed to fetch status', error);
-    } finally {
-      setLoadingStatus(false);
     }
   };
 
@@ -107,7 +103,6 @@ export const OrderItemCard: React.FC<OrderItemCardProps> = ({ order, type }) => 
                 <div className="uk-min-width-0">
                   <Label 
                     variant={getStatusVariant(order.status)} 
-                    size="small"
                     className="uk-text-truncate uk-display-inline-block"
                     title={getStatusLabel(order.status)}
                   >
