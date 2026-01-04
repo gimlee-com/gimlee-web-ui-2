@@ -30,6 +30,7 @@ This file serves as a comprehensive guide for AI agents and developers working o
 Instead of using raw HTML and UIkit classes, we use specialized React wrappers located in `src/components/uikit/`.
 - **`forwardRef`**: Every component must use `forwardRef` to allow integration with libraries like `react-hook-form`.
 - **`useUIKit` Hook**: Components that require UIkit's JavaScript logic (e.g., `Grid`, `Navbar`, `Sticky`) must use the custom `useUIKit` hook to manage the lifecycle (initialization and `$destroy`) of the UIkit instance.
+    - **Event Handling**: When listening for UIkit events (e.g., `show`, `hide`), use `useEffect` with the `instance` or `ref` provided by `useUIKit` to ensure proper cleanup and React-state synchronization.
 - **Prop Logic**: Components should map UIkit's class-based options (like `uk-button-primary` or `uk-form-width-medium`) to clean React props (`variant="primary"`, `formWidth="medium"`).
 
 #### **B. Animation & Motion Design**
@@ -76,6 +77,7 @@ The project follows a modular, business-oriented directory structure to ensure s
 Code that is reusable across the entire application remains in top-level directories under `src/`:
 - **`src/components/uikit/`**: React wrappers for UIkit components. These should be pure, not depend on global state or context, and not involve any extra dependencies (e.g., `motion/react`).
 - **`src/components/`**: Custom, universal React components that are not UIKit wrappers or are extending the look and feel of the UIkit wrappers.
+    - **`SmartPagination.tsx`**: A standardized component for paginated lists that handles large page counts with ellipses (`...`).
 - **`src/pages/`**: High-level layouts and error pages.
 - **`src/hooks/`**: Global reusable hooks (e.g., `useUIKit`, `useMergeRefs`).
 - **`src/context/`**: Global application state (e.g., `AuthContext`).
@@ -86,7 +88,7 @@ Code that is reusable across the entire application remains in top-level directo
 Logic specific to a particular business domain (e.g., Ads, Profile, Auth) is encapsulated within its own directory under `src/` (e.g., `src/ads/`). Each module mirrors a simplified project structure:
 - **`src/[module]/pages/`**: High-level layouts and form orchestration specific to the domain.
 - **`src/[module]/components/`**: Components used exclusively within this module.
-- **`src/[module]/services/`**: API clients and business logic for the module.
+- **`src/[module]/services/`**: API clients and business logic for the module. Services should use `apiClient` and typed DTOs from `src/types/api.ts`.
 - **`src/[module]/context/`**, **`src/[module]/hooks/`**: State and logic scoped to the module.
 - **`src/[module]/utils/`**, **`src/[module]/types/`**: Helpers and types relevant only to this domain.
 
@@ -104,3 +106,4 @@ Every component (whether shared or module-specific) follows the same pattern:
 3. **Types Matter**: Use TypeScript interfaces for all component props and API payloads.
 4. **Lifecycle Management**: Always clean up UIkit JS instances to prevent memory leaks in the SPA.
 5. **Keep API Docs Current**: Supplement Controllers with example `.http` files and ensure they are updated alongside any controller modifications.
+6. **Standardize Common Patterns**: Reuse standardized components (like `SmartPagination`) and logic (like `useUIKit` event patterns) across all modules to maintain a unified user experience.

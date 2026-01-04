@@ -7,7 +7,7 @@ import { AdCard } from '../components/AdCard';
 import { Grid } from '../../components/uikit/Grid/Grid';
 import { Heading } from '../../components/uikit/Heading/Heading';
 import { Spinner } from '../../components/uikit/Spinner/Spinner';
-import { Pagination as UkPagination, PaginationItem, PaginationPrevious, PaginationNext } from '../../components/uikit/Pagination/Pagination';
+import { SmartPagination } from '../../components/SmartPagination';
 
 const AdListingPage: React.FC = () => {
   const { t } = useTranslation();
@@ -33,35 +33,6 @@ const AdListingPage: React.FC = () => {
     const newParams = new URLSearchParams(searchParams);
     newParams.set('p', page.toString());
     setSearchParams(newParams);
-  };
-
-  const renderPagination = () => {
-    if (!data || data.totalPages <= 1) return null;
-    
-    const pages = [];
-    for (let i = 0; i < data.totalPages; i++) {
-      pages.push(
-        <PaginationItem key={i} active={i === data.number}>
-          <a href="#" onClick={(e) => { e.preventDefault(); handlePageChange(i); }}>{i + 1}</a>
-        </PaginationItem>
-      );
-    }
-    
-    return (
-      <UkPagination className="uk-flex-center">
-        <PaginationItem disabled={data.number === 0}>
-          <a href="#" onClick={(e) => { e.preventDefault(); if (data.number > 0) handlePageChange(data.number - 1); }}>
-            <PaginationPrevious />
-          </a>
-        </PaginationItem>
-        {pages}
-        <PaginationItem disabled={data.number === data.totalPages - 1}>
-          <a href="#" onClick={(e) => { e.preventDefault(); if (data.number < data.totalPages - 1) handlePageChange(data.number + 1); }}>
-            <PaginationNext />
-          </a>
-        </PaginationItem>
-      </UkPagination>
-    );
   };
 
   return (
@@ -95,9 +66,16 @@ const AdListingPage: React.FC = () => {
             ))}
           </Grid>
           
-          <div className="uk-margin-large-top">
-            {renderPagination()}
-          </div>
+          {data && data.totalPages > 1 && (
+            <div className="uk-margin-large-top">
+              <SmartPagination 
+                currentPage={data.number} 
+                totalPages={data.totalPages} 
+                onPageChange={handlePageChange}
+                className="uk-flex-center"
+              />
+            </div>
+          )}
           
           {data?.content.length === 0 && (
             <div className="uk-text-center uk-margin-large-top">

@@ -8,7 +8,7 @@ import type {
 
 export const adService = {
   getFeaturedAds: () => 
-    apiClient.get<PageAdPreviewDto>('/ads/featured'),
+    apiClient.get<PageAdPreviewDto>('/ads/featured/'),
 
   searchAds: (params: any) => {
     const query = new URLSearchParams(params).toString();

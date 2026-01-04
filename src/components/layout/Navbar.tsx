@@ -82,7 +82,7 @@ const Navbar: React.FC = () => {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
           >
-            <Link to="/my-ads">{t('navbar.myAds')}</Link>
+            <Link to="/sales/ads">{t('navbar.myAds')}</Link>
           </MotionNavbarItem>
           <MotionNavbarItem
             key="profile"
@@ -144,7 +144,7 @@ const Navbar: React.FC = () => {
               exit={{ opacity: 0, x: 20 }}
               transition={{ duration: 0.2, delay: 0.1 }}
             >
-              <Link to="/my-ads" uk-toggle="target: #mobile-menu">{t('navbar.myAds')}</Link>
+              <Link to="/sales/ads" uk-toggle="target: #mobile-menu">{t('navbar.myAds')}</Link>
             </MotionNavItem>
             <MotionNavItem
               key="profile-off"
@@ -258,7 +258,7 @@ const Navbar: React.FC = () => {
                   exit={{ opacity: 0, x: 20 }}
                   transition={{ duration: 0.2, delay: 0.05 }}
                 >
-                  <Link to="/ads" uk-toggle="target: #mobile-menu">Browse Ads</Link>
+                  <Link to="/ads" uk-toggle="target: #mobile-menu">{t('navbar.browseAds')}</Link>
                 </MotionNavItem>
               )}
             </AnimatePresence>

@@ -1,5 +1,7 @@
-import React, { createContext, useContext, useState, type ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import { apiClient } from '../services/apiClient';
+import { userService } from '../profile/services/userService';
+import i18n from '../i18n';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -11,6 +13,18 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!apiClient.getToken());
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      userService.getUserPreferences()
+        .then(prefs => {
+          if (prefs.language) {
+            i18n.changeLanguage(prefs.language);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [isAuthenticated]);
 
   const login = (token: string) => {
     apiClient.setToken(token);

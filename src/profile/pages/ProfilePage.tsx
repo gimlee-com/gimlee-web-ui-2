@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { paymentService } from '../../payments/services/paymentService';
+import { userService } from '../services/userService';
+import { useAuth } from '../../context/AuthContext';
 import type { PirateChainTransaction } from '../../types/api';
 import { Heading } from '../../components/uikit/Heading/Heading';
 import { Button } from '../../components/uikit/Button/Button';
@@ -10,6 +12,7 @@ import { Spinner } from '../../components/uikit/Spinner/Spinner';
 
 const ProfilePage: React.FC = () => {
   const { t, i18n } = useTranslation();
+  const { isAuthenticated } = useAuth();
   const [viewKey, setViewKey] = useState('');
   const [transactions, setTransactions] = useState<PirateChainTransaction[]>([]);
   const [loading, setLoading] = useState(true);
@@ -23,6 +26,17 @@ const ProfilePage: React.FC = () => {
       .catch(() => {}) // Ignore if not set up yet
       .finally(() => setLoading(false));
   }, []);
+
+  const handleLanguageChange = async (lang: string) => {
+    i18n.changeLanguage(lang);
+    if (isAuthenticated) {
+      try {
+        await userService.updateUserPreferences({ language: lang });
+      } catch (err) {
+        setError(t('profile.failedToSaveLanguage'));
+      }
+    }
+  };
 
   const handleSaveViewKey = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,15 +66,15 @@ const ProfilePage: React.FC = () => {
         <div className="uk-button-group">
           <Button
             size="small"
-            variant={i18n.resolvedLanguage === 'en' ? 'primary' : 'default'}
-            onClick={() => i18n.changeLanguage('en')}
+            variant={i18n.resolvedLanguage === 'en-US' ? 'primary' : 'default'}
+            onClick={() => handleLanguageChange('en-US')}
           >
             English
           </Button>
           <Button
             size="small"
-            variant={i18n.resolvedLanguage === 'pl' ? 'primary' : 'default'}
-            onClick={() => i18n.changeLanguage('pl')}
+            variant={i18n.resolvedLanguage === 'pl-PL' ? 'primary' : 'default'}
+            onClick={() => handleLanguageChange('pl-PL')}
           >
             Polski
           </Button>

@@ -8,8 +8,10 @@ import RegisterPage from './auth/pages/RegisterPage';
 import VerifyPage from './auth/pages/VerifyPage';
 import AdListingPage from './ads/pages/AdListingPage';
 import AdDetailsPage from './ads/pages/AdDetailsPage';
-import MyAdsPage from './ads/pages/MyAdsPage';
-import EditAdPage from './ads/pages/EditAdPage';
+import SalesAdsPage from './sales/pages/SalesAdsPage';
+import CreateAdPage from './sales/pages/CreateAdPage';
+import EditAdPage from './sales/pages/EditAdPage';
+import SalesOrdersPage from './sales/pages/SalesOrdersPage';
 import ProfilePage from './profile/pages/ProfilePage';
 import './App.css';
 
@@ -28,8 +30,10 @@ function App() {
                 <Route path="/verify" element={<VerifyPage />} />
                 <Route path="/ads" element={<AdListingPage />} />
                 <Route path="/ads/:id" element={<AdDetailsPage />} />
-                <Route path="/my-ads" element={<MyAdsPage />} />
-                <Route path="/my-ads/edit/:id" element={<EditAdPage />} />
+                <Route path="/sales/ads" element={<SalesAdsPage />} />
+                <Route path="/sales/ads/create" element={<CreateAdPage />} />
+                <Route path="/sales/ads/edit/:id" element={<EditAdPage />} />
+                <Route path="/sales/orders" element={<SalesOrdersPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
               </Routes>
             </div>

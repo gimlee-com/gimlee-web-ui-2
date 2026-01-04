@@ -1,8 +1,9 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import LanguageDetector from 'i18next-browser-languagedetector';
 
 const resources = {
-  en: {
+  "en-US": {
     translation: {
       "common": {
         "loading": "Loading...",
@@ -16,7 +17,7 @@ const resources = {
       },
       "navbar": {
         "browseAds": "Browse Ads",
-        "myAds": "My Ads",
+        "myAds": "Sales",
         "profile": "Profile",
         "logout": "Logout",
         "login": "Login",
@@ -63,6 +64,7 @@ const resources = {
         "createNew": "Create New Ad",
         "noAdsYet": "You have no ads yet.",
         "activate": "Activate",
+        "deactivate": "Deactivate",
         "price": "Price",
         "title": "Title",
         "description": "Description",
@@ -80,7 +82,39 @@ const resources = {
         "saving": "Saving...",
         "failedToCreate": "Failed to create ad",
         "failedToActivate": "Failed to activate ad",
+        "failedToDeactivate": "Failed to deactivate ad",
         "notFound": "Ad not found."
+      },
+      "sales": {
+        "title": "Sales",
+        "myAds": "My Ads",
+        "myOrders": "My Sales",
+        "orders": "Orders",
+        "noOrders": "You have no sales yet.",
+        "orderId": "Order ID",
+        "buyer": "Buyer",
+        "total": "Total",
+        "date": "Date"
+      },
+      "purchases": {
+        "buyNow": "Buy Now",
+        "quantity": "Quantity",
+        "paymentTitle": "Complete Payment",
+        "sendAmount": "Please send exactly",
+        "toAddress": "to the following address",
+        "memo": "Memo (required)",
+        "statusAwaiting": "Awaiting payment...",
+        "statusComplete": "Payment complete!",
+        "statusFailedTimeout": "Payment timed out.",
+        "statusFailedUnderpaid": "Payment underpaid.",
+        "statusCancelled": "Purchase cancelled.",
+        "cancelPurchase": "Cancel Purchase",
+        "confirmCancel": "Are you sure you want to cancel this purchase?",
+        "partialPaymentWarning": "Warning: You have already paid {{paid}} {{currency}}. Cancelling this purchase will result in permanent loss of these funds. Are you sure you want to proceed?",
+        "close": "Close",
+        "timeLeft": "Time left: {{time}}",
+        "paymentProgress": "Payment progress: {{paid}} / {{total}} {{currency}}",
+        "storedPurchaseFound": "You have an active purchase. Click here to view it."
       },
       "profile": {
         "title": "Profile & Settings",
@@ -91,11 +125,12 @@ const resources = {
         "saveKey": "Save Key",
         "recentTransactions": "Recent Pirate Chain Transactions",
         "noTransactions": "No transactions found.",
-        "keyUpdated": "Viewing key updated successfully."
+        "keyUpdated": "Viewing key updated successfully.",
+        "failedToSaveLanguage": "Failed to save language preference."
       }
     }
   },
-  pl: {
+  "pl-PL": {
     translation: {
       "common": {
         "loading": "Ładowanie...",
@@ -109,7 +144,7 @@ const resources = {
       },
       "navbar": {
         "browseAds": "Przeglądaj ogłoszenia",
-        "myAds": "Moje ogłoszenia",
+        "myAds": "Sprzedaż",
         "profile": "Profil",
         "logout": "Wyloguj",
         "login": "Zaloguj",
@@ -156,6 +191,7 @@ const resources = {
         "createNew": "Dodaj ogłoszenie",
         "noAdsYet": "Nie masz jeszcze żadnych ogłoszeń.",
         "activate": "Aktywuj",
+        "deactivate": "Dezaktywuj",
         "price": "Cena",
         "title": "Tytuł",
         "description": "Opis",
@@ -173,7 +209,39 @@ const resources = {
         "saving": "Zapisywanie...",
         "failedToCreate": "Nie udało się utworzyć ogłoszenia",
         "failedToActivate": "Nie udało się aktywować ogłoszenia",
+        "failedToDeactivate": "Nie udało się dezaktywować ogłoszenia",
         "notFound": "Ogłoszenie nie znalezione."
+      },
+      "sales": {
+        "title": "Sprzedaż",
+        "myAds": "Moje ogłoszenia",
+        "myOrders": "Moja sprzedaż",
+        "orders": "Zamówienia",
+        "noOrders": "Nie masz jeszcze żadnej sprzedaży.",
+        "orderId": "ID zamówienia",
+        "buyer": "Kupujący",
+        "total": "Suma",
+        "date": "Data"
+      },
+      "purchases": {
+        "buyNow": "Kup teraz",
+        "quantity": "Ilość",
+        "paymentTitle": "Dokończ płatność",
+        "sendAmount": "Proszę wyślij dokładnie",
+        "toAddress": "na poniższy adres",
+        "memo": "Memo (wymagane)",
+        "statusAwaiting": "Oczekiwanie na płatność...",
+        "statusComplete": "Płatność zakończona!",
+        "statusFailedTimeout": "Upłynął limit czasu płatności.",
+        "statusFailedUnderpaid": "Niedopłata płatności.",
+        "statusCancelled": "Zakup anulowany.",
+        "cancelPurchase": "Anuluj zakup",
+        "confirmCancel": "Czy na pewno chcesz anulować ten zakup?",
+        "partialPaymentWarning": "Uwaga: Zapłacono już {{paid}} {{currency}}. Anulowanie tego zakupu spowoduje trwałą utratę tych środków. Czy na pewno chcesz kontynuować?",
+        "close": "Zamknij",
+        "timeLeft": "Pozostały czas: {{time}}",
+        "paymentProgress": "Postęp płatności: {{paid}} / {{total}} {{currency}}",
+        "storedPurchaseFound": "Masz aktywny zakup. Kliknij tutaj, aby go zobaczyć."
       },
       "profile": {
         "title": "Profil i ustawienia",
@@ -184,20 +252,26 @@ const resources = {
         "saveKey": "Zapisz klucz",
         "recentTransactions": "Ostatnie transakcje Pirate Chain",
         "noTransactions": "Nie znaleziono transakcji.",
-        "keyUpdated": "Klucz podglądu został zaktualizowany."
+        "keyUpdated": "Klucz podglądu został zaktualizowany.",
+        "failedToSaveLanguage": "Nie udało się zapisać preferencji języka."
       }
     }
   }
 };
 
 i18n
+  .use(LanguageDetector)
   .use(initReactI18next)
   .init({
     resources,
-    lng: "en", // default language
-    fallbackLng: "en",
+    fallbackLng: "en-US",
+    load: 'currentOnly',
     interpolation: {
       escapeValue: false
+    },
+    detection: {
+      order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
+      caches: ['localStorage', 'cookie']
     }
   });
 

@@ -2,6 +2,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import AdDetailsPage from './AdDetailsPage';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { AuthProvider } from '../../context/AuthContext';
 import { adService } from '../services/adService';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '../../i18n';
@@ -25,11 +26,13 @@ const mockAd = {
 const renderAdDetailsPage = (id = '1') => {
   return render(
     <I18nextProvider i18n={i18n}>
-      <MemoryRouter initialEntries={[`/ads/${id}`]}>
-        <Routes>
-          <Route path="/ads/:id" element={<AdDetailsPage />} />
-        </Routes>
-      </MemoryRouter>
+      <AuthProvider>
+        <MemoryRouter initialEntries={[`/ads/${id}`]}>
+          <Routes>
+            <Route path="/ads/:id" element={<AdDetailsPage />} />
+          </Routes>
+        </MemoryRouter>
+      </AuthProvider>
     </I18nextProvider>
   );
 };

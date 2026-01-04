@@ -61,6 +61,7 @@ export interface UpdateAdRequestDto {
   location?: LocationDto;
   mediaPaths?: string[];
   mainPhotoPath?: string;
+  stock?: number;
 }
 
 export interface RegisterRequestDto {
@@ -83,7 +84,14 @@ export interface AvailabilityStatusResponseDto {
 }
 
 export interface MediaUploadResponseDto {
-  paths: string[];
+  id: string;
+  filename: string;
+  extension: string;
+  dateTime: string;
+  path: string;
+  xsThumbPath: string;
+  smThumbPath: string;
+  mdThumbPath: string;
 }
 
 export interface CitySuggestion {
@@ -113,6 +121,14 @@ export interface IdentityVerificationResponse {
   accessToken?: string;
 }
 
+export interface UserPreferencesDto {
+  language: string;
+}
+
+export interface UpdateUserPreferencesRequestDto {
+  language: string;
+}
+
 export interface FetchAdsRequestDto {
   t?: string;
   cty?: string;
@@ -121,4 +137,77 @@ export interface FetchAdsRequestDto {
   by?: 'CREATED_DATE' | 'PRICE';
   dir?: 'ASC' | 'DESC';
   p?: number;
+}
+
+export type PurchaseStatus = 'AWAITING_PAYMENT' | 'COMPLETE' | 'FAILED_PAYMENT_TIMEOUT' | 'FAILED_PAYMENT_UNDERPAID' | 'CANCELLED';
+
+export interface PurchaseItemRequestDto {
+  adId: string;
+  quantity: number;
+  unitPrice: number;
+}
+
+export interface PurchaseRequestDto {
+  items: PurchaseItemRequestDto[];
+  currency: Currency;
+}
+
+export interface PaymentDetailsDto {
+  address: string;
+  amount: number;
+  paidAmount: number;
+  memo: string;
+  deadline: string;
+  qrCodeUri: string;
+}
+
+export interface PurchaseResponseDto {
+  purchaseId: string;
+  status: PurchaseStatus;
+  payment: PaymentDetailsDto;
+}
+
+export interface PurchaseStatusResponseDto {
+  purchaseId: string;
+  status: PurchaseStatus;
+  paymentStatus: string;
+  paymentDeadline?: string;
+  totalAmount?: number;
+  paidAmount?: number;
+}
+
+export interface SellerInfoDto {
+  id: string;
+  username: string;
+}
+
+export interface SalesOrderItemDto {
+  adId: string;
+  title: string;
+  quantity: number;
+  unitPrice: number;
+}
+
+export interface BuyerInfoDto {
+  id: string;
+  username: string;
+}
+
+export interface SalesOrderDto {
+  id: string;
+  status: PurchaseStatus;
+  paymentStatus: string;
+  createdAt: string;
+  totalAmount: number;
+  currency: string;
+  items: SalesOrderItemDto[];
+  buyer: BuyerInfoDto;
+}
+
+export interface PageSalesOrderDto {
+  content: SalesOrderDto[];
+  totalPages: number;
+  totalElements: number;
+  size: number;
+  number: number;
 }
