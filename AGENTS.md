@@ -32,6 +32,8 @@ Instead of using raw HTML and UIkit classes, we use specialized React wrappers l
 - **`useUIKit` Hook**: Components that require UIkit's JavaScript logic (e.g., `Grid`, `Navbar`, `Sticky`) must use the custom `useUIKit` hook to manage the lifecycle (initialization and `$destroy`) of the UIkit instance.
     - **Event Handling**: When listening for UIkit events (e.g., `show`, `hide`), use `useEffect` with the `instance` or `ref` provided by `useUIKit` to ensure proper cleanup and React-state synchronization.
 - **Prop Logic**: Components should map UIkit's class-based options (like `uk-button-primary` or `uk-form-width-medium`) to clean React props (`variant="primary"`, `formWidth="medium"`).
+- **State Synchronization**: When syncing React state with complex UIkit instances (e.g., `Slider`), avoid re-initializing the component (which happens if the `index` prop changes frequently). Instead, use `useEffect` to call programmatic methods like `instance.show(index)` only when the internal UIkit index differs from the React state.
+- **Handling Cloned Elements**: Components like `Slider` with `infinite: true` clone DOM elements. To robustly identify items in event listeners (like `itemshow`), use `data-index` attributes on the items. Clones will carry these attributes, allowing you to accurately map them back to your data.
 
 #### **B. Animation & Motion Design**
 - **Spring Physics**: We use Framer Motion to create a "tactile" feel. Transitions (especially for validation messages) should use `type: 'spring'` with high stiffness and damping for a snappy, physical response.
@@ -73,6 +75,7 @@ Our forms prioritize a "friendly" user experience over immediate error shouting:
 #### **G. Data Presentation Layouts**
 - **Cards Over Tables**: Avoid using "soulless" tabular views for complex business entities (like Sales or Purchases). Instead, use rich, interactive card-based layouts.
 - **Progressive Disclosure**: Use expandable cards to keep the UI clean. Show high-level info (ID, Status, Date, Total) on the card surface and detailed item lists or payment instructions within an expandable section.
+- **Progressive Image Loading**: For media-heavy views (like galleries), use a progressive approach. Load lightweight thumbnails (`thumb-xs`) initially and upgrade to higher-resolution versions (`thumb-md`) only when an item becomes active or is swiped into view.
 ---
 
 ### 4. Code Structure Standards
@@ -114,3 +117,6 @@ Every component (whether shared or module-specific) follows the same pattern:
 6. **Standardize Common Patterns**: Reuse standardized components (like `SmartPagination`) and logic (like `useUIKit` event patterns) across all modules to maintain a unified user experience.
 7. **Avoid "Soulless" Tables**: Favor rich, card-based interfaces for complex business objects to provide a more engaging and interactive user experience.
 8. **Meaningful Test Naming**: Test cases should describe the feature or behavior being validated. Avoid redundant or temporary-sounding phrases like "without crashing".
+9. **Optimize for Bandwidth**: Use progressive image loading for galleries to ensure fast initial loads and reduced data usage.
+10. **Robustness in Clones**: Always use stable identifiers (like `data-index`) when working with UI libraries that clone DOM elements for infinite scrolling or looping.
+11. **JSDOM Compatibility**: Be aware of JSDOM limitations (e.g., lack of `DOMMatrix`, `IntersectionObserver`). Use appropriate polyfills in `src/vitest-setup.ts` to ensure UIkit's layout logic works correctly during testing.

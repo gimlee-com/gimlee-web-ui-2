@@ -1,23 +1,28 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import UIkit from 'uikit';
 import { useAuth } from '../../context/AuthContext';
 import { adService } from '../services/adService';
 import { purchaseService } from '../services/purchaseService';
 import { PurchaseModal } from '../components/PurchaseModal';
-import type { AdDetailsDto, PurchaseResponseDto } from '../../types/api';
+import type { AdDetailsDto, PurchaseResponseDto, PurchaseStatus } from '../../types/api';
 import { Heading } from '../../components/uikit/Heading/Heading';
 import { Spinner } from '../../components/uikit/Spinner/Spinner';
 import { Grid } from '../../components/uikit/Grid/Grid';
 import { Button } from '../../components/uikit/Button/Button';
 import { Card, CardBody } from '../../components/uikit/Card/Card';
 import { Lightbox, LightboxItem } from '../../components/uikit/Lightbox/Lightbox';
-import { Slider, SliderContainer, SliderItem } from '../../components/uikit/Slider/Slider';
+import { Slider, SliderContainer, SliderItem, SliderItems } from '../../components/uikit/Slider/Slider';
 import { Thumbnav } from '../../components/uikit/Thumbnav/Thumbnav';
 import { Slidenav } from '../../components/uikit/Slidenav/Slidenav';
 import styles from './AdDetailsPage.module.scss';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
+
+interface UIkitSliderInstance extends UIkit.UIkitSliderElement {
+  index: number;
+}
 
 const AdDetailsPage: React.FC = () => {
   const { t } = useTranslation();
@@ -27,17 +32,90 @@ const AdDetailsPage: React.FC = () => {
   const [ad, setAd] = useState<AdDetailsDto | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [visitedIndices, setVisitedIndices] = useState<number[]>([0]);
   const [showLightboxThumbnav, setShowLightboxThumbnav] = useState(window.innerWidth >= 960);
   const [quantity, setQuantity] = useState(1);
   const [activePurchase, setActivePurchase] = useState<PurchaseResponseDto | null>(null);
   const [isPurchasing, setIsPurchasing] = useState(false);
+  const mainSliderRef = useRef<HTMLDivElement>(null);
+  const thumbSliderRef = useRef<HTMLDivElement>(null);
+
+  const activeIndexRef = useRef(activeIndex);
+  const targetIndexRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    activeIndexRef.current = activeIndex;
+  }, [activeIndex]);
+
+  useEffect(() => {
+    setActiveIndex(0);
+    setVisitedIndices([0]);
+  }, [id]);
+
+  useEffect(() => {
+    setVisitedIndices(prev => {
+      if (prev.includes(activeIndex)) return prev;
+      return [...prev, activeIndex];
+    });
+  }, [activeIndex]);
+
+  useEffect(() => {
+    if (mainSliderRef.current) {
+      const instance = UIkit.slider(mainSliderRef.current) as unknown as UIkitSliderInstance;
+      if (instance && instance.index !== activeIndex) {
+        targetIndexRef.current = activeIndex;
+        instance.show(activeIndex);
+      }
+    }
+    if (thumbSliderRef.current) {
+      const instance = UIkit.slider(thumbSliderRef.current) as unknown as UIkitSliderInstance;
+      if (instance && instance.index !== activeIndex) {
+        instance.show(activeIndex);
+      }
+    }
+  }, [activeIndex]);
+
+  useEffect(() => {
+    const el = mainSliderRef.current;
+    if (!el) return;
+
+    const handleItemShow = (e: Event) => {
+      const target = e.target as HTMLElement;
+      // Use data-index to robustly identify the item, even if cloned by infinite slider
+      const item = target.closest('[data-index]');
+      if (item) {
+        const indexStr = item.getAttribute('data-index');
+        if (indexStr !== null) {
+          const index = parseInt(indexStr, 10);
+          
+          if (targetIndexRef.current !== null) {
+            if (index === targetIndexRef.current) {
+              targetIndexRef.current = null;
+            } else {
+              // Ignore intermediate slides during programmatic jump
+              return;
+            }
+          }
+
+          const currentActive = activeIndexRef.current;
+          
+          if (!isNaN(index) && index !== currentActive) {
+            setActiveIndex(index);
+          }
+        }
+      }
+    };
+
+    el.addEventListener('itemshow', handleItemShow);
+    return () => el.removeEventListener('itemshow', handleItemShow);
+  }, [ad, loading]); // Depend on ad and loading to ensure listener is attached when slider is rendered
 
   useEffect(() => {
     const stored = localStorage.getItem('activePurchase');
     if (stored) {
       try {
         setActivePurchase(JSON.parse(stored));
-      } catch (e) {
+      } catch {
         localStorage.removeItem('activePurchase');
       }
     }
@@ -81,7 +159,7 @@ const AdDetailsPage: React.FC = () => {
     setActivePurchase(null);
   };
 
-  const handlePurchaseStatusChange = (status: any) => {
+  const handlePurchaseStatusChange = (status: PurchaseStatus) => {
     if (activePurchase) {
       const updatedPurchase = { ...activePurchase, status };
       setActivePurchase(updatedPurchase);
@@ -137,24 +215,28 @@ const AdDetailsPage: React.FC = () => {
           {images.length > 0 ? (
             <>
               <Lightbox nav={showLightboxThumbnav ? 'thumbnav' : undefined}>
-                <div className="uk-margin-bottom">
-                  {images.map((img, index) => (
-                    <div key={index} className={index === activeIndex ? '' : 'uk-hidden'}>
-                      <LightboxItem href={img.original} caption={img.alt} thumb={img.thumbXs}>
-                        <img
-                          src={img.thumbMd}
-                          alt={img.alt}
-                          className={`uk-border-rounded uk-width-1-1 uk-background-muted uk-object-cover ${styles.adDetailsLightboxImage}`}
-                        />
-                      </LightboxItem>
-                    </div>
-                  ))}
-                </div>
+                <Slider ref={mainSliderRef}>
+                  <SliderContainer className="uk-margin-bottom">
+                    <SliderItems className="uk-child-width-1-1">
+                      {images.map((img, index) => (
+                        <SliderItem key={index} data-index={index}>
+                          <LightboxItem href={img.original} caption={img.alt} thumb={img.thumbXs}>
+                            <img
+                              src={visitedIndices.includes(index) ? img.thumbMd : img.thumbXs}
+                              alt={img.alt}
+                              className={`uk-border-rounded uk-width-1-1 uk-background-muted uk-object-cover ${styles.adDetailsLightboxImage}`}
+                            />
+                          </LightboxItem>
+                        </SliderItem>
+                      ))}
+                    </SliderItems>
+                  </SliderContainer>
+                </Slider>
               </Lightbox>
 
               {images.length > 1 && (
                 <div className="uk-position-relative uk-visible-toggle" tabIndex={-1}>
-                  <Slider finite>
+                  <Slider finite ref={thumbSliderRef}>
                     <SliderContainer>
                       <Thumbnav className="uk-slider-items uk-flex-nowrap">
                         {images.map((img, index) => (
@@ -190,13 +272,14 @@ const AdDetailsPage: React.FC = () => {
               )}
             </>
           ) : (
-            <div className="uk-width-1-1">
+            <div className="uk-width-1-1 uk-text-center">
               <img
                 src="/placeholder-image.svg"
                 alt={ad.title}
                 className={`uk-border-rounded uk-width-1-1 uk-background-muted uk-object-cover ${styles.adDetailsLightboxImage}`}
                 style={{ cursor: 'default' }}
               />
+              <p className="uk-text-muted uk-margin-small-top">{t('ads.noImages')}</p>
             </div>
           )}
         </div>
