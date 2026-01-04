@@ -18,6 +18,7 @@ const resources = {
       "navbar": {
         "browseAds": "Browse Ads",
         "myAds": "Sales",
+        "purchases": "Purchases",
         "profile": "Profile",
         "logout": "Logout",
         "login": "Login",
@@ -97,6 +98,10 @@ const resources = {
         "date": "Date"
       },
       "purchases": {
+        "title": "Purchases",
+        "myPurchases": "My Purchases",
+        "noPurchases": "You have no purchases yet.",
+        "seller": "Seller",
         "buyNow": "Buy Now",
         "quantity": "Quantity",
         "paymentTitle": "Complete Payment",
@@ -114,7 +119,10 @@ const resources = {
         "close": "Close",
         "timeLeft": "Time left: {{time}}",
         "paymentProgress": "Payment progress: {{paid}} / {{total}} {{currency}}",
-        "storedPurchaseFound": "You have an active purchase. Click here to view it."
+        "storedPurchaseFound": "You have an active purchase. Click here to view it.",
+        "items": "Items",
+        "paymentInstructions": "Payment is currently being processed.",
+        "viewPaymentInfo": "View Payment Info"
       },
       "profile": {
         "title": "Profile & Settings",
@@ -145,6 +153,7 @@ const resources = {
       "navbar": {
         "browseAds": "Przeglądaj ogłoszenia",
         "myAds": "Sprzedaż",
+        "purchases": "Zakupy",
         "profile": "Profil",
         "logout": "Wyloguj",
         "login": "Zaloguj",
@@ -224,6 +233,10 @@ const resources = {
         "date": "Data"
       },
       "purchases": {
+        "title": "Zakupy",
+        "myPurchases": "Moje zakupy",
+        "noPurchases": "Nie masz jeszcze żadnych zakupów.",
+        "seller": "Sprzedawca",
         "buyNow": "Kup teraz",
         "quantity": "Ilość",
         "paymentTitle": "Dokończ płatność",
@@ -241,7 +254,10 @@ const resources = {
         "close": "Zamknij",
         "timeLeft": "Pozostały czas: {{time}}",
         "paymentProgress": "Postęp płatności: {{paid}} / {{total}} {{currency}}",
-        "storedPurchaseFound": "Masz aktywny zakup. Kliknij tutaj, aby go zobaczyć."
+        "storedPurchaseFound": "Masz aktywny zakup. Kliknij tutaj, aby go zobaczyć.",
+        "items": "Produkty",
+        "paymentInstructions": "Płatność jest obecnie przetwarzana.",
+        "viewPaymentInfo": "Pokaż dane do płatności"
       },
       "profile": {
         "title": "Profil i ustawienia",

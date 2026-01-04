@@ -211,3 +211,22 @@ export interface PageSalesOrderDto {
   size: number;
   number: number;
 }
+
+export interface PurchaseHistoryDto {
+  id: string;
+  status: PurchaseStatus;
+  paymentStatus: string;
+  createdAt: string;
+  totalAmount: number;
+  currency: string;
+  items: SalesOrderItemDto[];
+  seller: SellerInfoDto;
+}
+
+export interface PagePurchaseHistoryDto {
+  content: PurchaseHistoryDto[];
+  totalPages: number;
+  totalElements: number;
+  size: number;
+  number: number;
+}

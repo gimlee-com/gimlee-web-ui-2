@@ -1,35 +1,34 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'motion/react';
-import { salesService } from '../services/salesService';
-import type { PageSalesOrderDto } from '../../types/api';
+import { purchaseService } from '../services/purchaseService';
+import type { PagePurchaseHistoryDto } from '../../types/api';
 import { Heading } from '../../components/uikit/Heading/Heading';
 import { Spinner } from '../../components/uikit/Spinner/Spinner';
 import { SmartPagination } from '../../components/SmartPagination';
 import { OrderItemCard } from '../../components/OrderItemCard';
-import SalesSubNav from '../components/SalesSubNav';
 
-const SalesOrdersPage: React.FC = () => {
+const PurchasesPage: React.FC = () => {
   const { t } = useTranslation();
-  const [ordersPage, setOrdersPage] = useState<PageSalesOrderDto | null>(null);
+  const [purchasesPage, setPurchasesPage] = useState<PagePurchaseHistoryDto | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchOrders = useCallback(async (page: number = 0) => {
+  const fetchPurchases = useCallback(async (page: number = 0) => {
     setLoading(true);
     try {
-      const response = await salesService.getSalesOrders(page);
-      setOrdersPage(response);
+      const response = await purchaseService.getPurchases(page);
+      setPurchasesPage(response);
     } catch (err: any) {
-      setError(err.message || 'Failed to fetch sales orders');
+      setError(err.message || 'Failed to fetch purchases');
     } finally {
       setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    fetchOrders();
-  }, [fetchOrders]);
+    fetchPurchases();
+  }, [fetchPurchases]);
 
   return (
     <motion.div
@@ -38,12 +37,10 @@ const SalesOrdersPage: React.FC = () => {
       transition={{ type: 'spring', stiffness: 300, damping: 30 }}
     >
       <div className="uk-flex uk-flex-between uk-flex-middle uk-margin-bottom">
-        <Heading as="h2">{t('sales.title')}</Heading>
+        <Heading as="h2">{t('purchases.title')}</Heading>
       </div>
 
-      <SalesSubNav />
-
-      {loading && !ordersPage ? (
+      {loading && !purchasesPage ? (
         <div className="uk-flex uk-flex-center uk-margin-large-top">
           <Spinner ratio={2} />
         </div>
@@ -54,33 +51,33 @@ const SalesOrdersPage: React.FC = () => {
       ) : (
         <div>
           <AnimatePresence mode="popLayout">
-            {ordersPage?.content.map((order) => (
+            {purchasesPage?.content.map((purchase) => (
               <motion.div
-                key={order.id}
+                key={purchase.id}
                 layout
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 30 }}
               >
-                <OrderItemCard order={order} type="sale" />
+                <OrderItemCard order={purchase} type="purchase" />
               </motion.div>
             ))}
           </AnimatePresence>
-          {ordersPage?.content.length === 0 && (
+          {purchasesPage?.content.length === 0 && (
             <div className="uk-text-center uk-text-muted uk-padding-large">
-              {t('sales.noOrders')}
+              {t('purchases.noPurchases')}
             </div>
           )}
         </div>
       )}
 
-      {ordersPage && ordersPage.totalPages > 1 && (
+      {purchasesPage && purchasesPage.totalPages > 1 && (
         <div className="uk-margin-large-top">
           <SmartPagination 
-            currentPage={ordersPage.number} 
-            totalPages={ordersPage.totalPages} 
-            onPageChange={fetchOrders}
+            currentPage={purchasesPage.number} 
+            totalPages={purchasesPage.totalPages} 
+            onPageChange={fetchPurchases}
             className="uk-flex-center"
           />
         </div>
@@ -89,4 +86,4 @@ const SalesOrdersPage: React.FC = () => {
   );
 };
 
-export default SalesOrdersPage;
+export default PurchasesPage;

@@ -35,8 +35,9 @@ Instead of using raw HTML and UIkit classes, we use specialized React wrappers l
 
 #### **B. Animation & Motion Design**
 - **Spring Physics**: We use Framer Motion to create a "tactile" feel. Transitions (especially for validation messages) should use `type: 'spring'` with high stiffness and damping for a snappy, physical response.
-- **Layout Transitions**: Use the `layout` prop on `motion` components within forms. This ensures that when an error message appears, the elements below it smoothly "push down" rather than jumping instantly.
-- **AnimatePresence**: Always wrap conditional elements like `FormMessage` in `AnimatePresence` to enable smooth exit animations.
+- **Layout Transitions**: Use the `layout` prop on `motion` components. This ensures that when elements appear or disappear (like error messages or expanded card details), the surrounding UI smoothly adjusts rather than jumping instantly.
+- **AnimatePresence**: Always wrap conditional elements (like `FormMessage` or expanded details) in `AnimatePresence` to enable smooth exit animations.
+- **Detail Expansion**: For expandable cards, combine `layout` on the wrapper and `AnimatePresence` for the content to create a "tactile" expansion effect.
 
 #### **C. Form & Validation Philosophy**
 Our forms prioritize a "friendly" user experience over immediate error shouting:
@@ -68,6 +69,10 @@ Our forms prioritize a "friendly" user experience over immediate error shouting:
     - Global UIkit variable overrides go in `src/styles/uikit-variables.scss`.
     - Global theme customizations go in `src/styles/main.scss`.
 - **Extend, Don't Redefine**: Use existing UIkit variables (e.g., `$global-muted-background`) and classes (e.g., `uk-object-cover`) whenever possible.
+
+#### **G. Data Presentation Layouts**
+- **Cards Over Tables**: Avoid using "soulless" tabular views for complex business entities (like Sales or Purchases). Instead, use rich, interactive card-based layouts.
+- **Progressive Disclosure**: Use expandable cards to keep the UI clean. Show high-level info (ID, Status, Date, Total) on the card surface and detailed item lists or payment instructions within an expandable section.
 ---
 
 ### 4. Code Structure Standards
@@ -107,3 +112,5 @@ Every component (whether shared or module-specific) follows the same pattern:
 4. **Lifecycle Management**: Always clean up UIkit JS instances to prevent memory leaks in the SPA.
 5. **Keep API Docs Current**: Supplement Controllers with example `.http` files and ensure they are updated alongside any controller modifications.
 6. **Standardize Common Patterns**: Reuse standardized components (like `SmartPagination`) and logic (like `useUIKit` event patterns) across all modules to maintain a unified user experience.
+7. **Avoid "Soulless" Tables**: Favor rich, card-based interfaces for complex business objects to provide a more engaging and interactive user experience.
+8. **Meaningful Test Naming**: Test cases should describe the feature or behavior being validated. Avoid redundant or temporary-sounding phrases like "without crashing".

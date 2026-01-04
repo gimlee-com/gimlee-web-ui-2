@@ -12,6 +12,7 @@ import SalesAdsPage from './sales/pages/SalesAdsPage';
 import CreateAdPage from './sales/pages/CreateAdPage';
 import EditAdPage from './sales/pages/EditAdPage';
 import SalesOrdersPage from './sales/pages/SalesOrdersPage';
+import PurchasesPage from './purchases/pages/PurchasesPage';
 import ProfilePage from './profile/pages/ProfilePage';
 import './App.css';
 
@@ -34,6 +35,7 @@ function App() {
                 <Route path="/sales/ads/create" element={<CreateAdPage />} />
                 <Route path="/sales/ads/edit/:id" element={<EditAdPage />} />
                 <Route path="/sales/orders" element={<SalesOrdersPage />} />
+                <Route path="/purchases" element={<PurchasesPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
               </Routes>
             </div>

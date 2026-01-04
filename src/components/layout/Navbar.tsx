@@ -85,12 +85,22 @@ const Navbar: React.FC = () => {
             <Link to="/sales/ads">{t('navbar.myAds')}</Link>
           </MotionNavbarItem>
           <MotionNavbarItem
-            key="profile"
+            key="purchases"
             className="uk-visible@m"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2, delay: 0.05 }}
+          >
+            <Link to="/purchases">{t('navbar.purchases')}</Link>
+          </MotionNavbarItem>
+          <MotionNavbarItem
+            key="profile"
+            className="uk-visible@m"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2, delay: 0.1 }}
           >
             <Link to="/profile">{t('navbar.profile')}</Link>
           </MotionNavbarItem>
@@ -100,7 +110,7 @@ const Navbar: React.FC = () => {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2, delay: 0.1 }}
+            transition={{ duration: 0.2, delay: 0.15 }}
           >
             <Link to="#" onClick={handleLogout}>{t('navbar.logout')}</Link>
           </MotionNavbarItem>
@@ -147,11 +157,20 @@ const Navbar: React.FC = () => {
               <Link to="/sales/ads" uk-toggle="target: #mobile-menu">{t('navbar.myAds')}</Link>
             </MotionNavItem>
             <MotionNavItem
-              key="profile-off"
+              key="purchases-off"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
               transition={{ duration: 0.2, delay: 0.15 }}
+            >
+              <Link to="/purchases" uk-toggle="target: #mobile-menu">{t('navbar.purchases')}</Link>
+            </MotionNavItem>
+            <MotionNavItem
+              key="profile-off"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.2, delay: 0.2 }}
             >
               <Link to="/profile" uk-toggle="target: #mobile-menu">{t('navbar.profile')}</Link>
             </MotionNavItem>
@@ -160,7 +179,7 @@ const Navbar: React.FC = () => {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.2, delay: 0.2 }}
+              transition={{ duration: 0.2, delay: 0.25 }}
             >
               <Link to="#" onClick={handleLogout} uk-toggle="target: #mobile-menu">{t('navbar.logout')}</Link>
             </MotionNavItem>
