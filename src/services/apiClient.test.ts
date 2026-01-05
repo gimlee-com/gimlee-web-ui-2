@@ -13,6 +13,7 @@ vi.hoisted(() => {
 });
 
 import { apiClient } from './apiClient';
+import i18n from '../i18n';
 
 describe('ApiClient', () => {
   const originalLocation = window.location;
@@ -28,6 +29,27 @@ describe('ApiClient', () => {
     // @ts-ignore
     window.location = originalLocation;
     vi.restoreAllMocks();
+  });
+
+  it('should include Accept-Language header matching i18n language', async () => {
+    (fetch as any).mockResolvedValue({
+      status: 200,
+      ok: true,
+      json: () => Promise.resolve({}),
+    });
+
+    // Mock i18n language
+    const originalLanguage = i18n.language;
+    Object.defineProperty(i18n, 'language', { value: 'pl-PL', configurable: true });
+
+    await apiClient.get('/test');
+
+    const fetchCall = (fetch as any).mock.calls[0];
+    const headers = fetchCall[1].headers;
+    expect(headers.get('Accept-Language')).toBe('pl-PL');
+
+    // Restore i18n language
+    Object.defineProperty(i18n, 'language', { value: originalLanguage, configurable: true });
   });
 
   it('should redirect to login on 401 error', async () => {

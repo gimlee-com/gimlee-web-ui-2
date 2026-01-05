@@ -1,3 +1,5 @@
+import i18n from '../i18n';
+
 const API_URL = import.meta.env.VITE_API_URL || '';
 
 class ApiClient {
@@ -23,6 +25,8 @@ class ApiClient {
     if (this.token) {
       headers.set('Authorization', `Bearer ${this.token}`);
     }
+
+    headers.set('Accept-Language', i18n.language);
 
     if (!(options.body instanceof FormData)) {
         headers.set('Content-Type', 'application/json');
