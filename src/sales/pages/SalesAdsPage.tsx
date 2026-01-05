@@ -9,6 +9,7 @@ import { Heading } from '../../components/uikit/Heading/Heading';
 import { Spinner } from '../../components/uikit/Spinner/Spinner';
 import { Button } from '../../components/uikit/Button/Button';
 import { Grid } from '../../components/uikit/Grid/Grid';
+import { Alert } from '../../components/uikit/Alert/Alert';
 import { SalesAdCard } from '../components/SalesAdCard';
 import { SmartPagination } from '../../components/SmartPagination';
 import SalesSubNav from '../components/SalesSubNav';
@@ -31,11 +32,11 @@ const SalesAdsPage: React.FC = () => {
       const response = await salesService.getMyAds(params);
       setAdsPage(response);
     } catch (err: any) {
-      setError(err.message || 'Failed to fetch ads');
+      setError(err.message || t('auth.errors.generic'));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     fetchAds();
@@ -50,7 +51,7 @@ const SalesAdsPage: React.FC = () => {
       }
       fetchAds(adsPage?.page.number || 0);
     } catch (err: any) {
-      alert(err.message || 'Action failed');
+      alert(err.message || t('auth.errors.generic'));
     }
   };
 
@@ -74,9 +75,9 @@ const SalesAdsPage: React.FC = () => {
           <Spinner ratio={2} />
         </div>
       ) : error ? (
-        <div className="uk-alert-danger" uk-alert="">
-          <p>{error}</p>
-        </div>
+        <Alert variant="danger">
+          {error}
+        </Alert>
       ) : adsPage?.content.length === 0 ? (
         <div className="uk-text-center uk-text-muted uk-padding-large">
           {t('ads.noAdsYet')}

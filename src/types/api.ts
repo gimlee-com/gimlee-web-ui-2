@@ -125,8 +125,17 @@ export interface PageAdPreviewDto {
   page: PageMetadata;
 }
 
+export interface StatusResponseDto {
+  success: boolean;
+  status: string;
+  message?: string;
+  data?: any;
+}
+
 export interface IdentityVerificationResponse {
   success: boolean;
+  status?: string;
+  message?: string;
   accessToken?: string;
 }
 

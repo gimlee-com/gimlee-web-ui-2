@@ -48,7 +48,7 @@ const LoginPage: React.FC = () => {
           navigate(redirect);
         }
       } else {
-        setError(t('auth.errors.loginFailed'));
+        setError(response.message || t('auth.errors.loginFailed'));
       }
     } catch (err: any) {
       setError(err.message || t('auth.errors.generic'));

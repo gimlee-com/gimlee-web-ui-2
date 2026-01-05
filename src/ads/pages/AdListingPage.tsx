@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { adService } from '../services/adService';
 import type { PageAdPreviewDto } from '../../types/api';
 import { AdCard } from '../components/AdCard';
+import { Alert } from '../../components/uikit/Alert/Alert';
 import { Grid } from '../../components/uikit/Grid/Grid';
 import { Heading } from '../../components/uikit/Heading/Heading';
 import { Spinner } from '../../components/uikit/Spinner/Spinner';
@@ -14,15 +15,18 @@ const AdListingPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [data, setData] = useState<PageAdPreviewDto | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [searchText, setSearchText] = useState(searchParams.get('t') || '');
 
   useEffect(() => {
     setLoading(true);
+    setError(null);
     const params = Object.fromEntries(searchParams.entries());
     adService.searchAds(params)
       .then(setData)
+      .catch(err => setError(err.message || t('auth.errors.generic')))
       .finally(() => setLoading(false));
-  }, [searchParams]);
+  }, [searchParams, t]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,6 +60,10 @@ const AdListingPage: React.FC = () => {
         <div className="uk-flex uk-flex-center">
           <Spinner ratio={2} />
         </div>
+      ) : error ? (
+        <Alert variant="danger">
+          {error}
+        </Alert>
       ) : (
         <>
           <Grid gap="small" match className="uk-child-width-1-2@s uk-child-width-1-4@m">

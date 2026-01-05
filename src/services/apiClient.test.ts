@@ -70,11 +70,11 @@ describe('ApiClient', () => {
     expect(window.location.href).toContain('reason=unauthorized');
   });
 
-  it('should not redirect and throw "Not Found" on 403 error', async () => {
+  it('should not redirect and throw error from body on 403 error', async () => {
     (fetch as any).mockResolvedValue({
       status: 403,
       ok: false,
-      json: () => Promise.resolve({ message: 'Forbidden' }),
+      json: () => Promise.resolve({ message: 'Forbidden localized message' }),
     });
 
     let error: any;
@@ -85,7 +85,7 @@ describe('ApiClient', () => {
     }
 
     expect(window.location.href).not.toContain('/login');
-    expect(error.message).toBe('Not Found');
+    expect(error.message).toBe('Forbidden localized message');
   });
 
   it('should not clear token on 403 error', async () => {

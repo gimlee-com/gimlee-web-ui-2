@@ -55,7 +55,7 @@ const EditAdPage: React.FC = () => {
             stock: data.stock
           });
         })
-        .catch(err => setError(err.message || 'Failed to load ad'))
+        .catch(err => setError(err.message || t('auth.errors.generic')))
         .finally(() => setLoading(false));
     }
   }, [id, reset]);
@@ -94,7 +94,7 @@ const EditAdPage: React.FC = () => {
       await salesService.updateAd(id, updateData);
       navigate('/sales/ads');
     } catch (err: any) {
-      setError(err.message || 'Failed to update ad');
+      setError(err.message || t('auth.errors.generic'));
     } finally {
       setSaving(false);
     }
@@ -123,12 +123,12 @@ const EditAdPage: React.FC = () => {
           return updated;
         });
     } catch (err: any) {
-        setError(err.message || 'Upload failed');
+        setError(err.message || t('auth.errors.generic'));
     }
   };
 
   if (loading) return <div className="uk-flex uk-flex-center uk-margin-large-top"><Spinner ratio={2} /></div>;
-  if (!ad) return <Alert variant="danger">{t('ads.notFound')}</Alert>;
+  if (!ad) return <Alert variant="danger">{error || t('ads.notFound')}</Alert>;
 
   return (
     <motion.div

@@ -20,7 +20,7 @@ This file serves as a comprehensive guide for AI agents and developers working o
 - **Animations**: Framer Motion (`motion/react`)
 - **Forms**: React Hook Form
 - **I18n**: react-i18next
-- **API Client**: Axios (wrapped in `apiClient`)
+- **API Client**: `fetch` (wrapped in `apiClient`)
 
 ---
 
@@ -76,6 +76,15 @@ Our forms prioritize a "friendly" user experience over immediate error shouting:
 - **Cards Over Tables**: Avoid using "soulless" tabular views for complex business entities (like Sales or Purchases). Instead, use rich, interactive card-based layouts.
 - **Progressive Disclosure**: Use expandable cards to keep the UI clean. Show high-level info (ID, Status, Date, Total) on the card surface and detailed item lists or payment instructions within an expandable section.
 - **Progressive Image Loading**: For media-heavy views (like galleries), use a progressive approach. Load lightweight thumbnails (`thumb-xs`) initially and upgrade to higher-resolution versions (`thumb-md`) only when an item becomes active or is swiped into view.
+
+#### **H. Backend Error Handling**
+To ensure a consistent user experience, especially with localized messages, we follow a standardized approach for handling API failures:
+- **`StatusResponseDto`**: The backend returns this DTO for most failures. It contains a `message` field with a localized error description and a `status` string for machine-readable error codes.
+- **Priority of Messages**: Components must prioritize the `message` field from the API error response when displaying errors to the user.
+- **I18n Fallbacks**: Always provide a generic fallback message using `t('auth.errors.generic')` or a domain-specific key (e.g., `t('ads.notFound')`) in case the backend does not provide a message or the request fails at the network level.
+- **Global vs. Local Handling**:
+    - **401 (Unauthorized)**: Handled globally by `apiClient`, which clears the token and redirects to the login page.
+    - **403 (Forbidden)**: Handled locally by components. The `apiClient` throws the response body, allowing components to display specific reasons (e.g., "XYZ role required").
 ---
 
 ### 4. Code Structure Standards
@@ -120,3 +129,4 @@ Every component (whether shared or module-specific) follows the same pattern:
 9. **Optimize for Bandwidth**: Use progressive image loading for galleries to ensure fast initial loads and reduced data usage.
 10. **Robustness in Clones**: Always use stable identifiers (like `data-index`) when working with UI libraries that clone DOM elements for infinite scrolling or looping.
 11. **JSDOM Compatibility**: Be aware of JSDOM limitations (e.g., lack of `DOMMatrix`, `IntersectionObserver`). Use appropriate polyfills in `src/vitest-setup.ts` to ensure UIkit's layout logic works correctly during testing.
+12. **Prioritize Backend Messages**: Always display the localized `message` returned by the API (via `StatusResponseDto`).

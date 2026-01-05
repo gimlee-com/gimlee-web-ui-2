@@ -123,7 +123,7 @@ const RegisterPage: React.FC = () => {
       await authService.register(registerData);
       navigate(`/login?registered=true&email=${encodeURIComponent(data.email)}`);
     } catch (err: any) {
-      setError(err.message || 'An error occurred during registration.');
+      setError(err.message || t('auth.errors.generic'));
     } finally {
       setLoading(false);
     }

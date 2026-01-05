@@ -44,10 +44,6 @@ class ApiClient {
       throw new Error('Unauthorized');
     }
 
-    if (response.status === 403) {
-      throw new Error('Not Found');
-    }
-
     if (!response.ok) {
       const error = await response.json().catch(() => ({ message: 'An error occurred' }));
       throw error;

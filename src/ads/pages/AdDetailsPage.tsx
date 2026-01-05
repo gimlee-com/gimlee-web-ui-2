@@ -11,6 +11,7 @@ import { Heading } from '../../components/uikit/Heading/Heading';
 import { Spinner } from '../../components/uikit/Spinner/Spinner';
 import { Grid } from '../../components/uikit/Grid/Grid';
 import { Button } from '../../components/uikit/Button/Button';
+import { Alert } from '../../components/uikit/Alert/Alert';
 import { Card, CardBody } from '../../components/uikit/Card/Card';
 import { Lightbox, LightboxItem } from '../../components/uikit/Lightbox/Lightbox';
 import { Slider, SliderContainer, SliderItem, SliderItems } from '../../components/uikit/Slider/Slider';
@@ -31,6 +32,7 @@ const AdDetailsPage: React.FC = () => {
   const { isAuthenticated } = useAuth();
   const [ad, setAd] = useState<AdDetailsDto | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [visitedIndices, setVisitedIndices] = useState<number[]>([0]);
   const [showLightboxThumbnav, setShowLightboxThumbnav] = useState(window.innerWidth >= 960);
@@ -143,9 +145,9 @@ const AdDetailsPage: React.FC = () => {
       });
       setActivePurchase(response);
       localStorage.setItem('activePurchase', JSON.stringify(response));
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to create purchase', error);
-      alert(t('auth.errors.generic'));
+      alert(error.message || t('auth.errors.generic'));
     } finally {
       setIsPurchasing(false);
     }
@@ -181,14 +183,25 @@ const AdDetailsPage: React.FC = () => {
 
   useEffect(() => {
     if (id) {
+      setLoading(true);
+      setError(null);
       adService.getAdById(id)
         .then(setAd)
+        .catch(err => setError(err.message || t('auth.errors.generic')))
         .finally(() => setLoading(false));
     }
-  }, [id]);
+  }, [id, t]);
 
   if (loading) {
     return <div className="uk-flex uk-flex-center"><Spinner ratio={2} /></div>;
+  }
+
+  if (error) {
+    return (
+      <Alert variant="danger">
+        {error}
+      </Alert>
+    );
   }
 
   if (!ad) {

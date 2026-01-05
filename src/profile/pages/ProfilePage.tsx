@@ -51,7 +51,7 @@ const ProfilePage: React.FC = () => {
       const txs = await paymentService.getPirateChainTransactions();
       setTransactions(txs);
     } catch (err: any) {
-      setError(err.message || 'Failed to update viewing key.');
+      setError(err.message || t('auth.errors.generic'));
     } finally {
       setSaving(false);
     }

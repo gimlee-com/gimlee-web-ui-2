@@ -6,17 +6,20 @@ import { AdCard } from '../ads/components/AdCard';
 import { Grid } from '../components/uikit/Grid/Grid';
 import { Heading } from '../components/uikit/Heading/Heading';
 import { Spinner } from '../components/uikit/Spinner/Spinner';
+import { Alert } from '../components/uikit/Alert/Alert';
 
 const HomePage: React.FC = () => {
   const { t } = useTranslation();
   const [featuredAds, setFeaturedAds] = useState<AdPreviewDto[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     adService.getFeaturedAds()
       .then(response => setFeaturedAds(response.content))
+      .catch(err => setError(err.message || t('auth.errors.generic')))
       .finally(() => setLoading(false));
-  }, []);
+  }, [t]);
 
   return (
     <div>
@@ -28,6 +31,10 @@ const HomePage: React.FC = () => {
           <div className="uk-flex uk-flex-center">
             <Spinner ratio={2} />
           </div>
+        ) : error ? (
+          <Alert variant="danger">
+            {error}
+          </Alert>
         ) : (
           <Grid gap="small" match className="uk-child-width-1-2@s uk-child-width-1-4@m">
             {featuredAds.map(ad => (

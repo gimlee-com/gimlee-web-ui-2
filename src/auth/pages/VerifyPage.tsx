@@ -25,11 +25,11 @@ const VerifyPage: React.FC = () => {
     setError(null);
     try {
       const response = await authService.verifyUser(data);
-      if (response && response.accessToken) {
+      if (response && response.success && response.accessToken) {
         login(response.accessToken);
         navigate('/');
       } else {
-        navigate('/login');
+        setError(response.message || t('auth.errors.generic'));
       }
     } catch (err: any) {
       setError(err.message || t('auth.errors.generic'));

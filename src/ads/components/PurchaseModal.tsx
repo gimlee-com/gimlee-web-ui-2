@@ -121,8 +121,9 @@ export const PurchaseModal = forwardRef<HTMLDivElement, PurchaseModalProps>(
           await purchaseService.cancelPurchase(purchase.purchaseId);
           setStatus('CANCELLED');
           onStatusChange?.('CANCELLED');
-        } catch (error) {
+        } catch (error: any) {
           console.error('Failed to cancel purchase', error);
+          alert(error.message || t('auth.errors.generic'));
         } finally {
           setIsCancelling(false);
         }

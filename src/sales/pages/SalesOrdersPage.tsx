@@ -6,6 +6,7 @@ import type { PageSalesOrderDto } from '../../types/api';
 import { Heading } from '../../components/uikit/Heading/Heading';
 import { Spinner } from '../../components/uikit/Spinner/Spinner';
 import { Grid } from '../../components/uikit/Grid/Grid';
+import { Alert } from '../../components/uikit/Alert/Alert';
 import { SmartPagination } from '../../components/SmartPagination';
 import { OrderItemCard } from '../../components/OrderItemCard';
 import SalesSubNav from '../components/SalesSubNav';
@@ -22,7 +23,7 @@ const SalesOrdersPage: React.FC = () => {
       const response = await salesService.getSalesOrders(page);
       setOrdersPage(response);
     } catch (err: any) {
-      setError(err.message || 'Failed to fetch sales orders');
+      setError(err.message || t('auth.errors.generic'));
     } finally {
       setLoading(false);
     }
@@ -49,9 +50,9 @@ const SalesOrdersPage: React.FC = () => {
           <Spinner ratio={2} />
         </div>
       ) : error ? (
-        <div className="uk-alert-danger" uk-alert="">
-          <p>{error}</p>
-        </div>
+        <Alert variant="danger">
+          {error}
+        </Alert>
       ) : (
         <div>
           <Grid gap="medium" className="uk-child-width-1-1 uk-child-width-1-2@m">
