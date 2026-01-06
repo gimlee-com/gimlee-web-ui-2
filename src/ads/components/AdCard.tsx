@@ -10,7 +10,7 @@ interface AdCardProps {
 const API_URL = import.meta.env.VITE_API_URL || '';
 
 export const AdCard: React.FC<AdCardProps> = ({ ad }) => {
-  const photoUrl = ad.mainPhotoPath ? `${API_URL}/api/media?p=/thumbs-sm/${ad.mainPhotoPath}` : '/placeholder-image.svg';
+  const photoUrl = ad.mainPhotoPath ? `${API_URL}/api/media?p=/thumbs-sm${ad.mainPhotoPath}` : '/placeholder-image.svg';
 
   return (
     <Card variant="hover" className="uk-height-1-1">
