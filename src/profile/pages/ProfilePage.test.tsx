@@ -18,6 +18,8 @@ vi.mock('../../payments/services/paymentService', () => ({
   paymentService: {
     getPirateChainTransactions: vi.fn().mockResolvedValue([]),
     addPirateChainViewKey: vi.fn(),
+    getYCashTransactions: vi.fn().mockResolvedValue([]),
+    addYCashViewKey: vi.fn(),
   },
 }));
 

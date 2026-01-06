@@ -1,5 +1,5 @@
 import { apiClient } from '../../services/apiClient';
-import type { PirateChainTransaction } from '../../types/api';
+import type { PirateChainTransaction, YCashTransaction } from '../../types/api';
 
 export const paymentService = {
   addPirateChainViewKey: (viewKey: string) =>
@@ -7,4 +7,10 @@ export const paymentService = {
 
   getPirateChainTransactions: () =>
     apiClient.get<PirateChainTransaction[]>('/payments/piratechain/transactions'),
+
+  addYCashViewKey: (viewKey: string) =>
+    apiClient.post<void>('/payments/ycash/addresses/view-key', { viewKey }),
+
+  getYCashTransactions: () =>
+    apiClient.get<YCashTransaction[]>('/payments/ycash/transactions'),
 };

@@ -35,6 +35,7 @@ describe('VerifyPage', () => {
 
   it('should navigate to home page after successful verification', async () => {
     (authService.verifyUser as any).mockResolvedValue({
+      success: true,
       accessToken: 'new-valid-token',
     });
 

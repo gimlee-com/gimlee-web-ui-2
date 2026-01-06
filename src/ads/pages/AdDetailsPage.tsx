@@ -134,7 +134,7 @@ const AdDetailsPage: React.FC = () => {
     setIsPurchasing(true);
     try {
       const response = await purchaseService.createPurchase({
-        currency: 'ARRR',
+        currency: ad.price.currency,
         items: [
           {
             adId: ad.id,
@@ -143,6 +143,10 @@ const AdDetailsPage: React.FC = () => {
           }
         ]
       });
+      // Ensure currency is set in response even if backend didn't (though it should)
+      if (!response.currency) {
+        response.currency = ad.price.currency;
+      }
       setActivePurchase(response);
       localStorage.setItem('activePurchase', JSON.stringify(response));
     } catch (error: any) {

@@ -1,4 +1,4 @@
-export type Currency = 'USD' | 'ARRR';
+export type Currency = 'ARRR' | 'YEC';
 
 export interface CurrencyAmountDto {
   amount: number;
@@ -113,6 +113,8 @@ export interface PirateChainTransaction {
   zAddress: string;
 }
 
+export type YCashTransaction = PirateChainTransaction;
+
 export interface PageMetadata {
   size: number;
   number: number;
@@ -183,6 +185,7 @@ export interface PurchaseResponseDto {
   purchaseId: string;
   status: PurchaseStatus;
   payment: PaymentDetailsDto;
+  currency: Currency;
 }
 
 export interface PurchaseStatusResponseDto {

@@ -19,7 +19,7 @@ const mockAd: AdDetailsDto = {
   id: '1',
   title: 'Test Ad',
   description: 'Test Description',
-  price: { amount: 100, currency: 'USD' },
+  price: { amount: 100, currency: 'ARRR' },
   mediaPaths: ['image1.jpg', 'image2.jpg'],
   location: { city: { id: 'c1', name: 'Test City', country: 'Test Country' } },
   status: 'ACTIVE'
@@ -52,7 +52,7 @@ describe('AdDetailsPage', () => {
     await waitFor(() => {
       expect(screen.getByText('Test Ad')).toBeInTheDocument();
       expect(screen.getByText('Test Description')).toBeInTheDocument();
-      expect(screen.getByText('100 USD')).toBeInTheDocument();
+      expect(screen.getByText('100 ARRR')).toBeInTheDocument();
       expect(screen.getByText('Test City, Test Country')).toBeInTheDocument();
     });
   });

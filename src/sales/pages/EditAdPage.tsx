@@ -195,8 +195,8 @@ const EditAdPage: React.FC = () => {
           <div className="uk-width-1-2@m">
             <label className="uk-form-label">{t('ads.currency')}</label>
             <Select {...register('currency')}>
-              <option value="USD">USD</option>
               <option value="ARRR">ARRR (Pirate Chain)</option>
+              <option value="YEC">YEC (YCash)</option>
             </Select>
           </div>
         </Grid>

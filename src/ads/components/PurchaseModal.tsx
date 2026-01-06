@@ -112,7 +112,7 @@ export const PurchaseModal = forwardRef<HTMLDivElement, PurchaseModalProps>(
 
     const handleCancel = async () => {
       const confirmMessage = paidAmount > 0 
-        ? t('purchases.partialPaymentWarning', { paid: paidAmount, currency: 'ARRR' })
+        ? t('purchases.partialPaymentWarning', { paid: paidAmount, currency: purchase.currency })
         : t('purchases.confirmCancel');
 
       if (window.confirm(confirmMessage)) {
@@ -156,7 +156,7 @@ export const PurchaseModal = forwardRef<HTMLDivElement, PurchaseModalProps>(
                   {t('purchases.paymentProgress', { 
                     paid: paidAmount, 
                     total: purchase.payment.amount, 
-                    currency: 'ARRR' 
+                    currency: purchase.currency 
                   })}
                 </p>
                 <Progress 
@@ -217,11 +217,16 @@ export const PurchaseModal = forwardRef<HTMLDivElement, PurchaseModalProps>(
           <ModalBody>
             <div className="uk-grid-small uk-flex-middle" uk-grid="">
               <div className="uk-width-auto">
-                <img src="/currencies/pirate-black.svg" alt="ARRR" width="40" height="40" />
+                <img 
+                  src={purchase.currency === 'YEC' ? '/currencies/yec-primary.svg' : '/currencies/pirate-black.svg'}
+                  alt={purchase.currency} 
+                  width="40" 
+                  height="40" 
+                />
               </div>
               <div className="uk-width-expand">
                 <p className="uk-margin-remove uk-text-large uk-text-bold">
-                  {purchase.payment.amount} ARRR
+                  {purchase.payment.amount} {purchase.currency}
                 </p>
               </div>
             </div>
@@ -234,7 +239,7 @@ export const PurchaseModal = forwardRef<HTMLDivElement, PurchaseModalProps>(
                   level="H"
                   marginSize={8}
                   imageSettings={{
-                    src: "/currencies/pirate-qr-logo.svg",
+                    src: purchase.currency === 'YEC' ? "/currencies/yec-qr-logo.svg" : "/currencies/pirate-qr-logo.svg",
                     height: 45,
                     width: 45,
                     excavate: true,
