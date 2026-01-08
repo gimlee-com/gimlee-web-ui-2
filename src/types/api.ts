@@ -245,3 +245,14 @@ export interface PagePurchaseHistoryDto {
   content: PurchaseHistoryDto[];
   page: PageMetadata;
 }
+
+export interface UserProfileDto {
+  userId: string;
+  avatarUrl: string;
+  updatedAt: number;
+}
+
+export interface SessionInitResponseDto {
+  accessToken: string;
+  userProfile: UserProfileDto | null;
+}

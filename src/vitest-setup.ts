@@ -60,3 +60,16 @@ global.DOMMatrix = class DOMMatrix {
   rotate() { return this; }
   inverse() { return this; }
 } as unknown as typeof DOMMatrix;
+
+vi.mock('./services/apiClient', () => ({
+  apiClient: {
+    getToken: vi.fn().mockReturnValue(null),
+    setToken: vi.fn(),
+    get: vi.fn().mockImplementation((url) => {
+      if (url.startsWith('/session/init')) {
+        return Promise.resolve({ accessToken: '', userProfile: null });
+      }
+      return Promise.resolve({});
+    }),
+  },
+}));

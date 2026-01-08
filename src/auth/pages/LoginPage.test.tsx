@@ -43,7 +43,7 @@ describe('LoginPage', () => {
 
     renderLoginPage();
 
-    fireEvent.change(screen.getByPlaceholderText(/Username/i), { target: { value: 'testuser' } });
+    fireEvent.change(await screen.findByPlaceholderText(/Username/i), { target: { value: 'testuser' } });
     fireEvent.change(screen.getByPlaceholderText(/Password/i), { target: { value: 'Password123' } });
     
     const submitButton = screen.getByRole('button', { name: /Login/i });
@@ -74,7 +74,7 @@ describe('LoginPage', () => {
 
     renderLoginPage(['/login?redirect=%2Ftarget']);
 
-    fireEvent.change(screen.getByPlaceholderText(/Username/i), { target: { value: 'testuser' } });
+    fireEvent.change(await screen.findByPlaceholderText(/Username/i), { target: { value: 'testuser' } });
     fireEvent.change(screen.getByPlaceholderText(/Password/i), { target: { value: 'Password123' } });
     
     const submitButton = screen.getByRole('button', { name: /Login/i });
@@ -90,15 +90,15 @@ describe('LoginPage', () => {
     });
   });
 
-  it('should display success alert when registered=true', () => {
+  it('should display success alert when registered=true', async () => {
     renderLoginPage(['/login?registered=true&email=test@example.com']);
-    expect(screen.getByText(/Your account has been registered/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Your account has been registered/i)).toBeInTheDocument();
     expect(screen.getByText(/test@example.com/i)).toBeInTheDocument();
   });
 
-  it('should display login required alert when reason=unauthorized', () => {
+  it('should display login required alert when reason=unauthorized', async () => {
     renderLoginPage(['/login?reason=unauthorized']);
-    expect(screen.getByText(/Almost there/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Almost there/i)).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /Register here/i })).toHaveAttribute('href', '/register');
   });
 
@@ -111,7 +111,7 @@ describe('LoginPage', () => {
 
     renderLoginPage();
 
-    fireEvent.change(screen.getByPlaceholderText(/Username/i), { target: { value: 'testuser' } });
+    fireEvent.change(await screen.findByPlaceholderText(/Username/i), { target: { value: 'testuser' } });
     fireEvent.change(screen.getByPlaceholderText(/Password/i), { target: { value: 'Password123' } });
     
     const submitButton = screen.getByRole('button', { name: /Login/i });

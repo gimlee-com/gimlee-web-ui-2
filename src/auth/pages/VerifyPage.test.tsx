@@ -41,7 +41,7 @@ describe('VerifyPage', () => {
 
     renderVerifyPage();
 
-    fireEvent.change(screen.getByPlaceholderText(/Verification code/i), { target: { value: '123456' } });
+    fireEvent.change(await screen.findByPlaceholderText(/Verification code/i), { target: { value: '123456' } });
     
     const submitButton = screen.getByRole('button', { name: /Verify/i });
     await waitFor(() => {
@@ -65,7 +65,7 @@ describe('VerifyPage', () => {
 
     renderVerifyPage();
 
-    fireEvent.change(screen.getByPlaceholderText(/Verification code/i), { target: { value: 'wrong' } });
+    fireEvent.change(await screen.findByPlaceholderText(/Verification code/i), { target: { value: 'wrong' } });
     
     const submitButton = screen.getByRole('button', { name: /Verify/i });
     await waitFor(() => {

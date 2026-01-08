@@ -26,7 +26,7 @@ const VerifyPage: React.FC = () => {
     try {
       const response = await authService.verifyUser(data);
       if (response && response.success && response.accessToken) {
-        login(response.accessToken);
+        await login(response.accessToken);
         navigate('/');
       } else {
         setError(response.message || t('auth.errors.generic'));
@@ -39,7 +39,12 @@ const VerifyPage: React.FC = () => {
   };
 
   return (
-    <div className="uk-flex uk-flex-center">
+    <motion.div
+      className="uk-flex uk-flex-center"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+    >
       <div className="uk-card uk-card-default uk-card-body uk-width-large">
         <Heading as="h3" className="uk-text-center">{t('auth.verifyTitle')}</Heading>
         <p className="uk-text-center">{t('auth.verifyText')}</p>
@@ -65,7 +70,7 @@ const VerifyPage: React.FC = () => {
           </motion.div>
         </Form>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

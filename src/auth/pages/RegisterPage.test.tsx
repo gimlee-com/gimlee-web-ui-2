@@ -37,7 +37,7 @@ describe('RegisterPage Validation', () => {
   it('should not show email invalid error while typing (focused)', async () => {
     renderRegisterPage();
     
-    const emailInput = screen.getByPlaceholderText(/Email/i);
+    const emailInput = await screen.findByPlaceholderText(/Email/i);
     
     // Start typing invalid email
     fireEvent.focus(emailInput);
@@ -61,7 +61,7 @@ describe('RegisterPage Validation', () => {
   it('should not show confirm password error when typing in password field', async () => {
     renderRegisterPage();
     
-    const passwordInput = screen.getByPlaceholderText(/^Password$/i);
+    const passwordInput = await screen.findByPlaceholderText(/^Password$/i);
     const confirmPasswordInput = screen.getByPlaceholderText(/Confirm Password/i);
     
     // Start typing in password field

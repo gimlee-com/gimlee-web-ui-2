@@ -85,6 +85,11 @@ To ensure a consistent user experience, especially with localized messages, we f
 - **Global vs. Local Handling**:
     - **401 (Unauthorized)**: Handled globally by `apiClient`, which clears the token and redirects to the login page.
     - **403 (Forbidden)**: Handled locally by components. The `apiClient` throws the response body, allowing components to display specific reasons (e.g., "XYZ role required").
+
+#### **I. Authentication & Session Management**
+- **Unified Initialization**: The application must bootstrap using the `/api/session/init` endpoint. This call should include all necessary `decorators` (e.g., `accessToken`, `userProfile`, `featureFlags`) as query parameters to retrieve the essential application state in a single network round-trip.
+- **Graceful Identity Fallbacks**: When a user is authenticated but lacks an explicit avatar, use `GeometricAvatar`. This ensures a visually rich and unique representation for every user.
+- **Async Context Strategy**: Components relying on `AuthContext` must account for its initial `loading` state. Ensure that critical UI elements (like the Navbar or protected routes) wait for the session to initialize to prevent flickering or incorrect "Guest" state flashes.
 ---
 
 ### 4. Code Structure Standards

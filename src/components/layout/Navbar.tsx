@@ -18,6 +18,7 @@ import { Container } from '../uikit/Container/Container';
 import { Offcanvas, OffcanvasBar, OffcanvasClose } from '../uikit/Offcanvas/Offcanvas';
 import { Nav, NavItem } from '../uikit/Nav/Nav';
 import { Sticky } from '../uikit/Sticky/Sticky';
+import { GeometricAvatar } from '../GeometricAvatar/GeometricAvatar';
 
 const APP_TITLE = import.meta.env.VITE_APP_TITLE || 'Gimlee';
 
@@ -26,7 +27,7 @@ const MotionNavItem = motion.create(NavItem);
 
 const Navbar: React.FC = () => {
   const { t } = useTranslation();
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout, userProfile, username, roles } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -95,24 +96,39 @@ const Navbar: React.FC = () => {
             <Link to="/purchases">{t('navbar.purchases')}</Link>
           </MotionNavbarItem>
           <MotionNavbarItem
-            key="profile"
+            key="user-menu"
             className="uk-visible@m"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2, delay: 0.1 }}
           >
-            <Link to="/profile">{t('navbar.profile')}</Link>
-          </MotionNavbarItem>
-          <MotionNavbarItem
-            key="logout"
-            className="uk-visible@m"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2, delay: 0.15 }}
-          >
-            <Link to="#" onClick={handleLogout}>{t('navbar.logout')}</Link>
+            <Link to="#">
+              <div className="uk-flex uk-flex-middle">
+                <div className="uk-border-circle uk-overflow-hidden" style={{ width: 32, height: 32 }}>
+                  {userProfile?.avatarUrl ? (
+                    <img
+                      src={userProfile.avatarUrl}
+                      className="uk-preserve-width"
+                      width="32"
+                      height="32"
+                      alt={username || ''}
+                    />
+                  ) : (
+                    <GeometricAvatar username={username || ''} size={32} />
+                  )}
+                </div>
+                <span className="uk-margin-small-left">{username}</span>
+                <span className="uk-margin-small-left" uk-icon="icon: triangle-down; ratio: 0.8"></span>
+              </div>
+            </Link>
+            <div className="uk-navbar-dropdown" uk-dropdown="mode: click; pos: bottom-right">
+              <ul className="uk-nav uk-navbar-dropdown-nav">
+                <li><Link to="/profile">{t('navbar.profile')}</Link></li>
+                <li className="uk-nav-divider"></li>
+                <li><Link to="#" onClick={handleLogout}>{t('navbar.logout')}</Link></li>
+              </ul>
+            </div>
           </MotionNavbarItem>
         </React.Fragment>
       ) : (
@@ -148,11 +164,45 @@ const Navbar: React.FC = () => {
         isAuthenticated ? (
           <React.Fragment key="auth-off">
             <MotionNavItem
-              key="my-ads-off"
+              key="user-info-off"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.2, delay: 0.05 }}
+              className="uk-nav-header"
+            >
+              <div className="uk-flex uk-flex-middle">
+                <div className="uk-border-circle uk-overflow-hidden" style={{ width: 40, height: 40 }}>
+                  {userProfile?.avatarUrl ? (
+                    <img src={userProfile.avatarUrl} width="40" height="40" alt={username || ''} />
+                  ) : (
+                    <GeometricAvatar username={username || ''} size={40} />
+                  )}
+                </div>
+                <div className="uk-margin-small-left">
+                  <div className="uk-text-bold uk-text-emphasis">{username}</div>
+                  <div className="uk-text-meta uk-text-lowercase uk-text-truncate" style={{ maxWidth: '150px' }}>
+                    {roles.join(', ')}
+                  </div>
+                </div>
+              </div>
+            </MotionNavItem>
+            <MotionNavItem
+              key="browse-off-auth"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
               transition={{ duration: 0.2, delay: 0.1 }}
+            >
+              <Link to="/ads" uk-toggle="target: #mobile-menu">{t('navbar.browseAds')}</Link>
+            </MotionNavItem>
+            <li className="uk-nav-divider"></li>
+            <MotionNavItem
+              key="my-ads-off"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.2, delay: 0.15 }}
             >
               <Link to="/sales/ads" uk-toggle="target: #mobile-menu">{t('navbar.myAds')}</Link>
             </MotionNavItem>
@@ -161,7 +211,7 @@ const Navbar: React.FC = () => {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.2, delay: 0.15 }}
+              transition={{ duration: 0.2, delay: 0.2 }}
             >
               <Link to="/purchases" uk-toggle="target: #mobile-menu">{t('navbar.purchases')}</Link>
             </MotionNavItem>
@@ -170,7 +220,7 @@ const Navbar: React.FC = () => {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.2, delay: 0.2 }}
+              transition={{ duration: 0.2, delay: 0.25 }}
             >
               <Link to="/profile" uk-toggle="target: #mobile-menu">{t('navbar.profile')}</Link>
             </MotionNavItem>
@@ -179,13 +229,22 @@ const Navbar: React.FC = () => {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.2, delay: 0.25 }}
+              transition={{ duration: 0.2, delay: 0.3 }}
             >
               <Link to="#" onClick={handleLogout} uk-toggle="target: #mobile-menu">{t('navbar.logout')}</Link>
             </MotionNavItem>
           </React.Fragment>
         ) : (
           <React.Fragment key="guest-off">
+            <MotionNavItem
+              key="browse-off-guest"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.2, delay: 0.05 }}
+            >
+              <Link to="/ads" uk-toggle="target: #mobile-menu">{t('navbar.browseAds')}</Link>
+            </MotionNavItem>
             <MotionNavItem
               key="login-off"
               initial={{ opacity: 0, x: 20 }}
@@ -268,19 +327,6 @@ const Navbar: React.FC = () => {
         <OffcanvasBar>
           <OffcanvasClose />
           <Nav variant="primary" className="uk-margin-large-top">
-            <AnimatePresence>
-              {isMenuOpen && (
-                <MotionNavItem
-                  key="browse"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
-                  transition={{ duration: 0.2, delay: 0.05 }}
-                >
-                  <Link to="/ads" uk-toggle="target: #mobile-menu">{t('navbar.browseAds')}</Link>
-                </MotionNavItem>
-              )}
-            </AnimatePresence>
             {offcanvasLinks}
           </Nav>
         </OffcanvasBar>

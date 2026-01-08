@@ -3,6 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import ProfilePage from './ProfilePage';
 import { AuthProvider } from '../../context/AuthContext';
 import { userService } from '../services/userService';
+import { apiClient } from '../../services/apiClient';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '../../i18n';
 import { MemoryRouter } from 'react-router-dom';
@@ -11,6 +12,14 @@ vi.mock('../services/userService', () => ({
   userService: {
     getUserPreferences: vi.fn(),
     updateUserPreferences: vi.fn(),
+  },
+}));
+
+vi.mock('../../services/apiClient', () => ({
+  apiClient: {
+    getToken: vi.fn(),
+    setToken: vi.fn(),
+    get: vi.fn(),
   },
 }));
 
@@ -30,10 +39,11 @@ describe('ProfilePage', () => {
   });
 
   it('should call updateUserPreferences when language is changed and user is authenticated', async () => {
-    // Mock authenticated state by ensuring apiClient has a token
-    // Actually, AuthContext checks apiClient.getToken()
-    const { apiClient } = await import('../../services/apiClient');
-    vi.spyOn(apiClient, 'getToken').mockReturnValue('fake-token');
+    (apiClient.get as any).mockResolvedValue({
+      accessToken: 'fake-token',
+      userProfile: { userId: '1', avatarUrl: '', updatedAt: 0 }
+    });
+    (userService.getUserPreferences as any).mockResolvedValue({ language: 'en-US' });
 
     render(
       <I18nextProvider i18n={i18n}>
@@ -45,7 +55,7 @@ describe('ProfilePage', () => {
       </I18nextProvider>
     );
 
-    const polishButton = screen.getByRole('button', { name: /Polski/i });
+    const polishButton = await screen.findByRole('button', { name: /Polski/i });
     fireEvent.click(polishButton);
 
     expect(i18n.language).toBe('pl-PL');
@@ -56,8 +66,10 @@ describe('ProfilePage', () => {
   });
 
   it('should NOT call updateUserPreferences when language is changed and user is NOT authenticated', async () => {
-    const { apiClient } = await import('../../services/apiClient');
-    vi.spyOn(apiClient, 'getToken').mockReturnValue(null);
+    (apiClient.get as any).mockResolvedValue({
+      accessToken: '',
+      userProfile: null
+    });
 
     render(
       <I18nextProvider i18n={i18n}>
@@ -69,7 +81,7 @@ describe('ProfilePage', () => {
       </I18nextProvider>
     );
 
-    const englishButton = screen.getByRole('button', { name: /English/i });
+    const englishButton = await screen.findByRole('button', { name: /English/i });
     fireEvent.click(englishButton);
 
     expect(i18n.language).toBe('en-US');

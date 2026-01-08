@@ -12,6 +12,8 @@ vi.hoisted(() => {
   } as any;
 });
 
+vi.unmock('./apiClient');
+
 import { apiClient } from './apiClient';
 import i18n from '../i18n';
 
