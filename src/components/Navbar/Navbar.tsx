@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'motion/react';
 import UIkit from 'uikit';
 import { useAuth } from '../../context/AuthContext';
 import { useUIKit } from '../../hooks/useUIkit';
 import {
   Navbar as UkNavbar,
-  NavbarContainer,
   NavbarLeft,
   NavbarRight,
   NavbarNav,
@@ -17,8 +16,8 @@ import {
 import { Container } from '../uikit/Container/Container';
 import { Offcanvas, OffcanvasBar, OffcanvasClose } from '../uikit/Offcanvas/Offcanvas';
 import { Nav, NavItem } from '../uikit/Nav/Nav';
-import { Sticky } from '../uikit/Sticky/Sticky';
 import { GeometricAvatar } from '../GeometricAvatar/GeometricAvatar';
+import styles from './Navbar.module.scss';
 
 const MotionNavbarItem = motion.create(NavbarItem);
 const MotionNavItem = motion.create(NavItem);
@@ -29,6 +28,12 @@ const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { scrollY } = useScroll();
+  const [isScrolled, setIsScrolled] = useState(scrollY.get() > 60);
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    setIsScrolled(latest > 60);
+  });
 
   const { ref: offcanvasRef, instance: offcanvasInstance } = useUIKit<
     UIkit.UIkitOffcanvasElement,
@@ -61,7 +66,7 @@ const Navbar: React.FC = () => {
       el.removeEventListener('show', handleShow);
       el.removeEventListener('hide', handleHide);
     };
-  }, [offcanvasRef, offcanvasInstance]);
+  }, [offcanvasRef]);
 
   const handleLogout = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -269,13 +274,31 @@ const Navbar: React.FC = () => {
 
   return (
     <>
-      <Sticky selTarget=".uk-navbar-container" clsActive="uk-navbar-sticky">
-        <NavbarContainer>
+      <div style={{ height: 80 }} />
+      <motion.nav
+        className={styles.navbarContainer}
+        initial={false}
+        animate={{
+          height: isScrolled ? 60 : 80,
+          backgroundColor: isScrolled ? 'rgba(255, 255, 255, 1)' : 'rgba(255, 255, 255, 0)',
+          boxShadow: isScrolled ? '0 2px 10px rgba(0,0,0,0.1)' : '0 0 0 rgba(0,0,0,0)',
+        }}
+        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+      >
+        <div className={styles.navbarWrapper}>
           <Container size="expand">
             <UkNavbar>
               <NavbarLeft>
                 <Link to="/" className="uk-navbar-item uk-logo">
-                  <img src="/gimlee.svg" alt="Gimlee" style={{ height: '40px' }} className="uk-margin-small-right" />
+                  <motion.img
+                    src="/gimlee.svg"
+                    alt="Gimlee"
+                    height="40"
+                    initial={false}
+                    animate={{ height: isScrolled ? 30 : 40 }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                    className="uk-margin-small-right"
+                  />
                 </Link>
                 <NavbarNav>
                   <NavbarItem>
@@ -317,8 +340,8 @@ const Navbar: React.FC = () => {
               </NavbarRight>
             </UkNavbar>
           </Container>
-        </NavbarContainer>
-      </Sticky>
+        </div>
+      </motion.nav>
 
       <Offcanvas ref={offcanvasRef} id="mobile-menu" overlay flip>
         <OffcanvasBar>

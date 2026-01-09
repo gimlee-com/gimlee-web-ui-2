@@ -1,0 +1,38 @@
+.navbarContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 980; // Below UIkit modals and such, but above content
+  display: flex;
+  align-items: center;
+  background-color: transparent;
+  width: 100%;
+}
+
+.navbarWrapper {
+  width: 100%;
+}
+
+:global(.uk-navbar-nav > li > a) {
+  transition: height 0.3s ease; // Simple transition for the links if needed, or we control it via parent
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+// Ensure the navbar content is vertically centered
+:global(.uk-navbar) {
+  min-height: 0 !important; // Override UIkit's min-height
+  height: 100%;
+}
+
+:global(.uk-navbar-nav > li),
+:global(.uk-navbar-nav > li > a),
+:global(.uk-navbar-item),
+:global(.uk-navbar-toggle) {
+  min-height: 0 !important;
+  height: 100% !important;
+}
