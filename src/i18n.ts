@@ -25,7 +25,11 @@ const resources = {
         "register": "Register"
       },
       "home": {
-        "featuredAds": "Featured Ads"
+        "featuredAds": "Featured Ads",
+        "disclaimer": {
+          "title": "Experimental Application",
+          "message": "Gimlee is currently in an experimental, work-in-progress phase. All transactions use testnet currencies (YCash and PirateChain) with mocked mining."
+        }
       },
       "auth": {
         "loginTitle": "Login",
@@ -166,7 +170,11 @@ const resources = {
         "register": "Zarejestruj"
       },
       "home": {
-        "featuredAds": "Wyróżnione ogłoszenia"
+        "featuredAds": "Wyróżnione ogłoszenia",
+        "disclaimer": {
+          "title": "Aplikacja Eksperymentalna",
+          "message": "Gimlee jest obecnie w fazie eksperymentalnej i rozwojowej. Wszystkie transakcje wykorzystują waluty operujące na sieciach testowych YCash i PirateChain z symulowanym wydobyciem."
+        }
       },
       "auth": {
         "loginTitle": "Logowanie",

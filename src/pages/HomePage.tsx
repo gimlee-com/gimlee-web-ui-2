@@ -7,6 +7,7 @@ import { Grid } from '../components/uikit/Grid/Grid';
 import { Heading } from '../components/uikit/Heading/Heading';
 import { Spinner } from '../components/uikit/Spinner/Spinner';
 import { Alert } from '../components/uikit/Alert/Alert';
+import { ExperimentalDisclaimer } from '../components/ExperimentalDisclaimer';
 
 const HomePage: React.FC = () => {
   const { t } = useTranslation();
@@ -23,6 +24,7 @@ const HomePage: React.FC = () => {
 
   return (
     <div>
+      <ExperimentalDisclaimer />
       <section className="uk-section uk-section-small">
         <div className="uk-flex uk-flex-between uk-flex-middle">
           <Heading as="h2">{t('home.featuredAds')}</Heading>
