@@ -20,8 +20,6 @@ import { Nav, NavItem } from '../uikit/Nav/Nav';
 import { Sticky } from '../uikit/Sticky/Sticky';
 import { GeometricAvatar } from '../GeometricAvatar/GeometricAvatar';
 
-const APP_TITLE = import.meta.env.VITE_APP_TITLE || 'Gimlee';
-
 const MotionNavbarItem = motion.create(NavbarItem);
 const MotionNavItem = motion.create(NavItem);
 
@@ -278,7 +276,6 @@ const Navbar: React.FC = () => {
               <NavbarLeft>
                 <Link to="/" className="uk-navbar-item uk-logo">
                   <img src="/gimlee.svg" alt="Gimlee" style={{ height: '40px' }} className="uk-margin-small-right" />
-                  <span className="uk-visible@m">{APP_TITLE}</span>
                 </Link>
                 <NavbarNav>
                   <NavbarItem>

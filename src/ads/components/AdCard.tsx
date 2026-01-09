@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'motion/react';
 import type { AdPreviewDto } from '../../types/api';
 import { Card, CardMedia, CardBody, CardTitle } from '../../components/uikit/Card/Card';
 
@@ -9,11 +10,25 @@ interface AdCardProps {
 
 const API_URL = import.meta.env.VITE_API_URL || '';
 
+const cardVariants = {
+  hidden: { opacity: 0, scale: 0.95 },
+  visible: { 
+    opacity: 1, 
+    scale: 1,
+    transition: { type: 'spring', stiffness: 300, damping: 30 }
+  }
+} as const;
+
 export const AdCard: React.FC<AdCardProps> = ({ ad }) => {
   const photoUrl = ad.mainPhotoPath ? `${API_URL}/api/media?p=/thumbs-sm${ad.mainPhotoPath}` : '/placeholder-image.svg';
 
   return (
-    <Card variant="hover" className="uk-height-1-1">
+    <motion.div
+      variants={cardVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      <Card variant="default" className="uk-height-1-1">
       <CardMedia position="top">
         <img src={photoUrl} alt={ad.title} style={{ height: '200px', objectFit: 'cover', width: '100%' }} />
       </CardMedia>
@@ -33,5 +48,6 @@ export const AdCard: React.FC<AdCardProps> = ({ ad }) => {
         )}
       </CardBody>
     </Card>
+  </motion.div>
   );
 };

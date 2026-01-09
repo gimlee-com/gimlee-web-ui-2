@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { motion, AnimatePresence, stagger } from 'motion/react';
 import { adService } from '../services/adService';
 import type { PageAdPreviewDto } from '../../types/api';
 import { AdCard } from '../components/AdCard';
@@ -9,6 +10,25 @@ import { Grid } from '../../components/uikit/Grid/Grid';
 import { Heading } from '../../components/uikit/Heading/Heading';
 import { Spinner } from '../../components/uikit/Spinner/Spinner';
 import { SmartPagination } from '../../components/SmartPagination';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      delayChildren: stagger(0.1)
+    }
+  }
+} as const;
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { type: 'spring', stiffness: 300, damping: 30 }
+  }
+} as const;
 
 const AdListingPage: React.FC = () => {
   const { t } = useTranslation();
@@ -40,59 +60,93 @@ const AdListingPage: React.FC = () => {
   };
 
   return (
-    <div>
-      <Heading as="h2">{t('ads.browseTitle')}</Heading>
+    <motion.div
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      <motion.div variants={itemVariants}>
+        <Heading as="h2">{t('ads.browseTitle')}</Heading>
+      </motion.div>
   
-      <form onSubmit={handleSearch} className="uk-margin-medium-bottom">
-        <div className="uk-inline uk-width-1-1">
-          <span className="uk-form-icon" uk-icon="icon: search"></span>
-          <input
-            className="uk-input"
-            type="text"
-            placeholder={t('ads.searchPlaceholder')}
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-          />
-        </div>
-      </form>
+      <motion.div variants={itemVariants}>
+        <form onSubmit={handleSearch} className="uk-margin-medium-bottom">
+          <div className="uk-inline uk-width-1-1">
+            <span className="uk-form-icon" uk-icon="icon: search"></span>
+            <input
+              className="uk-input"
+              type="text"
+              placeholder={t('ads.searchPlaceholder')}
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+            />
+          </div>
+        </form>
+      </motion.div>
 
-      {loading ? (
-        <div className="uk-flex uk-flex-center">
-          <Spinner ratio={2} />
-        </div>
-      ) : error ? (
-        <Alert variant="danger">
-          {error}
-        </Alert>
-      ) : (
-        <>
-          <Grid gap="small" match className="uk-child-width-1-2@s uk-child-width-1-4@m">
-            {data?.content.map(ad => (
-              <div key={ad.id}>
-                <AdCard ad={ad} />
-              </div>
-            ))}
-          </Grid>
-          
-          {data && data.page.totalPages > 1 && (
-            <div className="uk-margin-large-top">
-              <SmartPagination 
-                currentPage={data.page.number} 
-                totalPages={data.page.totalPages} 
-                onPageChange={handlePageChange}
-                className="uk-flex-center"
-              />
-            </div>
-          )}
-          
-          {data?.content.length === 0 && (
-            <div className="uk-text-center uk-margin-large-top">
-              <p>{t('ads.noAdsFound')}</p>
-            </div>
-          )}
-        </>
-      )}
-    </div>
+      <AnimatePresence mode="wait">
+        {loading ? (
+          <motion.div 
+            key="spinner"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="uk-flex uk-flex-center"
+          >
+            <Spinner ratio={2} />
+          </motion.div>
+        ) : error ? (
+          <motion.div
+            key="error"
+            variants={itemVariants}
+          >
+            <Alert variant="danger">
+              {error}
+            </Alert>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="content"
+            initial="hidden"
+            animate="visible"
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: {
+                  delayChildren: stagger(0.05)
+                }
+              }
+            }}
+          >
+            <Grid gap="medium" match className="uk-child-width-1-2@s uk-child-width-1-4@m">
+              <AnimatePresence mode="popLayout">
+                {data?.content.map(ad => (
+                  <AdCard key={ad.id} ad={ad} />
+                ))}
+              </AnimatePresence>
+            </Grid>
+            
+            {data && data.page.totalPages > 1 && (
+              <motion.div variants={itemVariants} className="uk-margin-large-top">
+                <SmartPagination 
+                  currentPage={data.page.number} 
+                  totalPages={data.page.totalPages} 
+                  onPageChange={handlePageChange}
+                  className="uk-flex-center"
+                />
+              </motion.div>
+            )}
+            
+            {data?.content.length === 0 && (
+              <motion.div variants={itemVariants} className="uk-text-center uk-margin-large-top">
+                <p>{t('ads.noAdsFound')}</p>
+              </motion.div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 };
 

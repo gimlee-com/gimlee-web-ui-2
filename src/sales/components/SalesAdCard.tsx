@@ -16,6 +16,15 @@ interface SalesAdCardProps {
 
 const API_URL = import.meta.env.VITE_API_URL || '';
 
+const cardVariants = {
+  hidden: { opacity: 0, scale: 0.9 },
+  visible: { 
+    opacity: 1, 
+    scale: 1,
+    transition: { type: 'spring', stiffness: 300, damping: 30 }
+  }
+} as const;
+
 export const SalesAdCard: React.FC<SalesAdCardProps> = ({ ad, onToggleStatus }) => {
   const { t } = useTranslation();
   const photoUrl = ad.mainPhotoPath 
@@ -27,12 +36,12 @@ export const SalesAdCard: React.FC<SalesAdCardProps> = ({ ad, onToggleStatus }) 
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
+      variants={cardVariants}
+      initial="hidden"
+      animate="visible"
       exit={{ opacity: 0, scale: 0.9 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
     >
-      <Card variant="hover" className="uk-height-1-1 uk-flex uk-flex-column">
+      <Card variant="default" className="uk-height-1-1 uk-flex uk-flex-column">
         <CardMedia position="top">
           <div className="uk-inline uk-width-1-1">
             <img 

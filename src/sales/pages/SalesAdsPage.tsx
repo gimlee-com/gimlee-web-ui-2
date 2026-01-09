@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, stagger } from 'motion/react';
 import { salesService } from '../services/salesService';
 import type { SalesAdsRequestDto } from '../services/salesService';
 import type { AdPreviewDto, PageAdPreviewDto } from '../../types/api';
@@ -13,6 +13,25 @@ import { Alert } from '../../components/uikit/Alert/Alert';
 import { SalesAdCard } from '../components/SalesAdCard';
 import { SmartPagination } from '../../components/SmartPagination';
 import SalesSubNav from '../components/SalesSubNav';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      delayChildren: stagger(0.1)
+    }
+  }
+} as const;
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { type: 'spring', stiffness: 300, damping: 30 }
+  }
+} as const;
 
 const SalesAdsPage: React.FC = () => {
   const { t } = useTranslation();
@@ -57,54 +76,88 @@ const SalesAdsPage: React.FC = () => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
     >
-      <div className="uk-flex uk-flex-between uk-flex-middle uk-margin-bottom">
+      <motion.div variants={itemVariants} className="uk-flex uk-flex-between uk-flex-middle uk-margin-bottom">
         <Heading as="h2">{t('sales.title')}</Heading>
         <Button variant="primary" onClick={() => navigate('/sales/ads/create')}>
           {t('ads.createNew')}
         </Button>
-      </div>
+      </motion.div>
 
-      <SalesSubNav />
+      <motion.div variants={itemVariants}>
+        <SalesSubNav />
+      </motion.div>
 
-      {loading && !adsPage ? (
-        <div className="uk-flex uk-flex-center uk-margin-large-top">
-          <Spinner ratio={2} />
-        </div>
-      ) : error ? (
-        <Alert variant="danger">
-          {error}
-        </Alert>
-      ) : adsPage?.content.length === 0 ? (
-        <div className="uk-text-center uk-text-muted uk-padding-large">
-          {t('ads.noAdsYet')}
-        </div>
-      ) : (
-        <Grid gap="medium" match className="uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l">
-          <AnimatePresence mode="popLayout">
-            {adsPage?.content.map((ad) => (
-              <SalesAdCard 
-                key={ad.id} 
-                ad={ad} 
-                onToggleStatus={handleToggleStatus} 
-              />
-            ))}
-          </AnimatePresence>
-        </Grid>
-      )}
+      <AnimatePresence mode="wait">
+        {loading && !adsPage ? (
+          <motion.div 
+            key="spinner"
+            initial={{ opacity: 0.5 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0.5 }}
+            className="uk-flex uk-flex-center uk-margin-large-top"
+          >
+            <Spinner ratio={2} />
+          </motion.div>
+        ) : error ? (
+          <motion.div
+            key="error"
+            variants={itemVariants}
+          >
+            <Alert variant="danger">
+              {error}
+            </Alert>
+          </motion.div>
+        ) : adsPage?.content.length === 0 ? (
+          <motion.div
+            key="empty"
+            variants={itemVariants}
+            className="uk-text-center uk-text-muted uk-padding-large"
+          >
+            {t('ads.noAdsYet')}
+          </motion.div>
+        ) : (
+          <motion.div
+            key="content"
+            initial="hidden"
+            animate="visible"
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: {
+                  delayChildren: stagger(0.05)
+                }
+              }
+            }}
+          >
+            <Grid gap="medium" match className="uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l">
+              <AnimatePresence mode="sync">
+                {adsPage?.content.map((ad) => (
+                  <SalesAdCard 
+                    key={ad.id} 
+                    ad={ad} 
+                    onToggleStatus={handleToggleStatus} 
+                  />
+                ))}
+              </AnimatePresence>
+            </Grid>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {adsPage && adsPage.page.totalPages > 1 && (
-        <div className="uk-margin-large-top">
+        <motion.div variants={itemVariants} className="uk-margin-large-top">
           <SmartPagination 
             currentPage={adsPage.page.number} 
             totalPages={adsPage.page.totalPages} 
             onPageChange={fetchAds}
             className="uk-flex-center"
           />
-        </div>
+        </motion.div>
       )}
     </motion.div>
   );

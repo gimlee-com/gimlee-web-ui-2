@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, stagger } from 'motion/react';
 import { purchaseService } from '../services/purchaseService';
 import type { PagePurchaseHistoryDto } from '../../types/api';
 import { Heading } from '../../components/uikit/Heading/Heading';
@@ -9,6 +9,34 @@ import { Grid } from '../../components/uikit/Grid/Grid';
 import { Alert } from '../../components/uikit/Alert/Alert';
 import { SmartPagination } from '../../components/SmartPagination';
 import { OrderItemCard } from '../../components/OrderItemCard';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      delayChildren: stagger(0.1)
+    }
+  }
+} as const;
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { type: 'spring', stiffness: 300, damping: 30 }
+  }
+} as const;
+
+const orderVariants = {
+  hidden: { opacity: 0, scale: 0.95 },
+  visible: { 
+    opacity: 1, 
+    scale: 1,
+    transition: { type: 'spring', stiffness: 300, damping: 30 }
+  }
+} as const;
 
 const PurchasesPage: React.FC = () => {
   const { t } = useTranslation();
@@ -34,57 +62,86 @@ const PurchasesPage: React.FC = () => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
     >
-      <div className="uk-flex uk-flex-between uk-flex-middle uk-margin-bottom">
+      <motion.div variants={itemVariants} className="uk-flex uk-flex-between uk-flex-middle uk-margin-bottom">
         <Heading as="h2">{t('purchases.title')}</Heading>
-      </div>
+      </motion.div>
 
-      {loading && !purchasesPage ? (
-        <div className="uk-flex uk-flex-center uk-margin-large-top">
-          <Spinner ratio={2} />
-        </div>
-      ) : error ? (
-        <Alert variant="danger">
-          {error}
-        </Alert>
-      ) : (
-        <div>
-          <Grid gap="medium" className="uk-child-width-1-1 uk-child-width-1-2@m">
-            <AnimatePresence mode="popLayout">
-              {purchasesPage?.content.map((purchase) => (
-                <motion.div
-                  key={purchase.id}
-                  layout
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                >
-                  <OrderItemCard order={purchase} type="purchase" />
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </Grid>
-          {purchasesPage?.content.length === 0 && (
-            <div className="uk-text-center uk-text-muted uk-padding-large">
-              {t('purchases.noPurchases')}
-            </div>
-          )}
-        </div>
-      )}
+      <AnimatePresence mode="wait">
+        {loading && !purchasesPage ? (
+          <motion.div 
+            key="spinner"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="uk-flex uk-flex-center uk-margin-large-top"
+          >
+            <Spinner ratio={2} />
+          </motion.div>
+        ) : error ? (
+          <motion.div
+            key="error"
+            variants={itemVariants}
+          >
+            <Alert variant="danger">
+              {error}
+            </Alert>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="content"
+            initial="hidden"
+            animate="visible"
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: {
+                  delayChildren: stagger(0.05)
+                }
+              }
+            }}
+          >
+            <Grid gap="medium" className="uk-child-width-1-1 uk-child-width-1-2@m">
+              <AnimatePresence mode="popLayout">
+                {purchasesPage?.content.map((purchase) => (
+                  <motion.div
+                    key={purchase.id}
+                    layout
+                    variants={orderVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit={{ opacity: 0, scale: 0.95 }}
+                  >
+                    <OrderItemCard order={purchase} type="purchase" />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </Grid>
+            {purchasesPage?.content.length === 0 && (
+              <motion.div
+                variants={itemVariants}
+                className="uk-text-center uk-text-muted uk-padding-large"
+              >
+                {t('purchases.noPurchases')}
+              </motion.div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {purchasesPage && purchasesPage.page.totalPages > 1 && (
-        <div className="uk-margin-large-top">
+        <motion.div variants={itemVariants} className="uk-margin-large-top">
           <SmartPagination 
             currentPage={purchasesPage.page.number} 
             totalPages={purchasesPage.page.totalPages} 
             onPageChange={fetchPurchases}
             className="uk-flex-center"
           />
-        </div>
+        </motion.div>
       )}
     </motion.div>
   );

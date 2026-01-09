@@ -11,3 +11,8 @@
 
 // 4. Import the full UIkit theme.
 @import 'uikit/src/scss/uikit-theme.scss';
+
+html {
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
