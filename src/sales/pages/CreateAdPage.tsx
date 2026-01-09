@@ -16,11 +16,14 @@ interface CreateAdForm {
 const CreateAdPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { register, handleSubmit, formState: { errors, isValid } } = useForm<CreateAdForm>({
-    mode: 'onBlur'
+  const { register, handleSubmit, formState: { errors, isValid, touchedFields } } = useForm<CreateAdForm>({
+    mode: 'onChange'
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [titleFocused, setTitleFocused] = useState(false);
+
+  const titleRegister = register('title', { required: true, minLength: 5 });
 
   const onSubmit = async (data: CreateAdForm) => {
     setLoading(true);
@@ -54,14 +57,19 @@ const CreateAdPage: React.FC = () => {
             <label className="uk-form-label">{t('ads.title')}</label>
             <div className="uk-form-controls">
               <Input
-                {...register('title', { required: true, minLength: 3 })}
+                {...titleRegister}
                 placeholder={t('ads.title')}
-                status={errors.title ? 'danger' : undefined}
+                status={errors.title && !titleFocused && touchedFields.title ? 'danger' : undefined}
+                onFocus={() => setTitleFocused(true)}
+                onBlur={(e) => {
+                  titleRegister.onBlur(e);
+                  setTitleFocused(false);
+                }}
                 autoFocus
               />
-              {errors.title && (
+              {errors.title && !titleFocused && touchedFields.title && (
                 <div className="uk-text-danger uk-text-small uk-margin-small-top">
-                   {t('auth.errors.minLength', { count: 3 })}
+                   {t('auth.errors.minLength', { count: 5 })}
                 </div>
               )}
             </div>

@@ -19,6 +19,9 @@ export interface CityDetailsDto {
   id: string;
   name: string;
   country: string;
+  district?: string;
+  adm1?: string;
+  adm2?: string;
 }
 
 export interface LocationWithCityDetailsDto {

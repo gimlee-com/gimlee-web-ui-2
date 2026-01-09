@@ -43,7 +43,9 @@ const EditAdPage: React.FC = () => {
           setMainPhotoPath(data.mainPhotoPath || null);
           if (data.location?.city) {
             setSelectedCity(data.location.city);
-            setCitySearch(`${data.location.city.name}, ${data.location.city.country}`);
+            const city = data.location.city;
+            const districtSuffix = city.district ? ` (${city.district})` : '';
+            setCitySearch(`${city.name}${districtSuffix}, ${city.country}`);
           }
           reset({
             title: data.title,
@@ -76,7 +78,8 @@ const EditAdPage: React.FC = () => {
 
   const selectCity = (city: CityDetailsDto) => {
     setSelectedCity(city);
-    setCitySearch(`${city.name}, ${city.country}`);
+    const districtSuffix = city.district ? ` (${city.district})` : '';
+    setCitySearch(`${city.name}${districtSuffix}, ${city.country}`);
     setCitySuggestions([]);
   };
 
@@ -176,7 +179,7 @@ const EditAdPage: React.FC = () => {
                     {citySuggestions.map(suggestion => (
                       <li key={suggestion.city.id}>
                         <a href="#" onClick={(e) => { e.preventDefault(); selectCity(suggestion.city); }}>
-                          {suggestion.city.name}, {suggestion.city.country}
+                          {suggestion.city.name}{suggestion.city.district ? ` (${suggestion.city.district})` : ''}, {suggestion.city.country}
                         </a>
                       </li>
                     ))}

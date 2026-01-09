@@ -315,7 +315,7 @@ const AdDetailsPage: React.FC = () => {
           {ad.location?.city && (
             <div className="uk-margin">
               <Heading as="h4">{t('ads.location')}</Heading>
-              <p>{ad.location.city.name}, {ad.location.city.country}</p>
+              <p>{ad.location.city.name}{ad.location.city.district ? ` (${ad.location.city.district})` : ''}, {ad.location.city.country}</p>
             </div>
           )}
           <hr />

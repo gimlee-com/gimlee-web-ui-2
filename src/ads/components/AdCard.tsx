@@ -43,7 +43,7 @@ export const AdCard: React.FC<AdCardProps> = ({ ad }) => {
         )}
         {ad.location?.city && (
           <p className="uk-text-meta">
-            {ad.location.city.name}, {ad.location.city.country}
+            {ad.location.city.name}{ad.location.city.district ? ` (${ad.location.city.district})` : ''}, {ad.location.city.country}
           </p>
         )}
       </CardBody>

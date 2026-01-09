@@ -75,7 +75,7 @@ export const SalesAdCard: React.FC<SalesAdCardProps> = ({ ad, onToggleStatus }) 
             {ad.location?.city && (
               <div className="uk-flex uk-flex-middle uk-margin-xsmall-bottom">
                 <Icon icon="location" ratio={0.8} className="uk-margin-small-right" />
-                {ad.location.city.name}, {ad.location.city.country}
+                {ad.location.city.name}{ad.location.city.district ? ` (${ad.location.city.district})` : ''}, {ad.location.city.country}
               </div>
             )}
             {ad.createdAt && (
