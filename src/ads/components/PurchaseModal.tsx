@@ -20,6 +20,7 @@ import { purchaseService } from '../services/purchaseService';
 import type { PurchaseResponseDto, PurchaseStatus } from '../../types/api';
 import { useUIKit } from '../../hooks/useUIkit';
 import { useMergeRefs } from '../../hooks/useMergeRefs';
+import styles from './PurchaseModal.module.scss';
 
 interface PurchaseModalProps {
   purchase: PurchaseResponseDto;
@@ -143,15 +144,23 @@ export const PurchaseModal = forwardRef<HTMLDivElement, PurchaseModalProps>(
         case 'AWAITING_PAYMENT':
           return (
             <div className="uk-text-center">
-              <Spinner 
-                ratio={1.5} 
-                className={`uk-margin-bottom ${secondsLeft !== null ? getTimerColorClass(secondsLeft) : 'uk-text-primary'}`} 
-              />
-              <p className={`uk-text-bold uk-margin-small-bottom ${secondsLeft !== null ? getTimerColorClass(secondsLeft) : 'uk-text-primary'}`}>
+              <div className="uk-inline uk-margin-small-bottom">
+                <Spinner 
+                  ratio={2} 
+                  className={secondsLeft !== null ? getTimerColorClass(secondsLeft) : 'uk-text-primary'} 
+                />
+                {secondsLeft !== null && (
+                  <span className={`uk-position-center uk-text-bold ${getTimerColorClass(secondsLeft)} ${styles.countdownInSpinner}`}>
+                    {formatTime(secondsLeft)}
+                  </span>
+                )}
+              </div>
+              
+              <p className={`uk-text-bold uk-margin-remove-top uk-margin-small-bottom ${secondsLeft !== null ? getTimerColorClass(secondsLeft) : 'uk-text-primary'}`}>
                 {t('purchases.statusAwaiting')}
               </p>
               
-              <div className="uk-margin-small-top uk-margin-medium-bottom">
+              <div className="uk-margin-small-top">
                 <p className="uk-text-small uk-margin-remove-bottom">
                   {t('purchases.paymentProgress', { 
                     paid: paidAmount, 
@@ -165,12 +174,6 @@ export const PurchaseModal = forwardRef<HTMLDivElement, PurchaseModalProps>(
                   className="uk-margin-remove-top"
                 />
               </div>
-
-              {secondsLeft !== null && (
-                <p className={`uk-text-small uk-margin-remove-top ${getTimerColorClass(secondsLeft)}`}>
-                  {t('purchases.timeLeft', { time: formatTime(secondsLeft) })}
-                </p>
-              )}
             </div>
           );
         case 'COMPLETE':
@@ -264,18 +267,20 @@ export const PurchaseModal = forwardRef<HTMLDivElement, PurchaseModalProps>(
 
             <hr />
 
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={status}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={springTransition}
-                className="uk-margin"
-              >
-                {renderStatus()}
-              </motion.div>
-            </AnimatePresence>
+            <div className={`uk-height-small uk-flex uk-flex-column uk-flex-center uk-flex-middle uk-margin-medium-top ${styles.statusContainer}`}>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={status}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={springTransition}
+                  className="uk-width-1-1"
+                >
+                  {renderStatus()}
+                </motion.div>
+              </AnimatePresence>
+            </div>
           </ModalBody>
           <ModalFooter>
             <div className="uk-grid-small uk-child-width-1-1 uk-child-width-auto@s uk-flex-right" uk-grid="">
