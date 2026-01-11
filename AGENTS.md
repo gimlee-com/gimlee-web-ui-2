@@ -22,6 +22,7 @@ This file serves as a comprehensive guide for AI agents and developers working o
 - **I18n**: react-i18next
 - **API Client**: `fetch` (wrapped in `apiClient`)
 - **PWA**: `vite-plugin-pwa` for offline support and "Add to Home Screen" capability.
+- **Native Wrapper**: **Ionic Capacitor** for Android/iOS native builds.
 
 ---
 
@@ -96,6 +97,15 @@ To ensure a consistent user experience, especially with localized messages, we f
 - **Auto-Update**: The app is configured with `registerType: 'autoUpdate'`. This ensures that when a new version is deployed, the service worker will automatically update and the app will refresh to the latest version on the next visit (or immediately if possible).
 - **Offline First**: PWA assets (HTML, JS, CSS, and core SVGs) are cached for offline use.
 - **Manifest**: The `manifest` is defined in `vite.config.ts`. It MUST include `display: 'standalone'` and `start_url: '/'` to be considered installable by Chrome. It should include both SVG and PNG icons (192x192 and 512x512) for full platform compatibility.
+
+#### **K. Native App (Capacitor)**
+- **Web-to-Native Workflow**: Capacitor wraps the web build (`dist/`) into a native WebView.
+    - **VCS Strategy**: Unlike `node_modules`, the `android` and `ios` directories **MUST NOT** be added to the root `.gitignore`. They contain the native project structure, configurations, and assets (icons, splashes) that are part of your source code. Capacitor provides its own `.gitignore` inside these folders to handle local build artifacts.
+    - **CI/CD Build**: Since the native folders are committed, CI/CD platforms like GitHub Actions can build APKs/IPAs directly by setting up the appropriate environments (JDK for Android, Xcode for iOS) and running `./gradlew` or `xcodebuild`.
+    - Use `npm run cap:sync` to sync web changes to native projects after a build.
+    - Use `npm run cap:open:android` to open the native project in Android Studio/IntelliJ.
+- **Vibe Preservation**: Since Capacitor uses the system WebView, all UIkit styles, CSS Modules, and Framer Motion animations are preserved without modification.
+- **Native APIs**: When access to native features (Biometrics, Camera, etc.) is needed, use official Capacitor plugins. Always check for platform availability (`Capacitor.isNativePlatform()`) before calling native-only code to maintain web compatibility.
 ---
 
 ### 4. Code Structure Standards
