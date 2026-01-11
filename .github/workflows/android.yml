@@ -26,6 +26,9 @@ jobs:
       - name: Build Web App
         run: npm run build
 
+      - name: Generate Native Assets
+        run: npx capacitor-assets generate --android
+
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
