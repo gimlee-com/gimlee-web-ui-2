@@ -16,6 +16,8 @@ import { Button } from '../../components/uikit/Button/Button';
 import { Icon } from '../../components/uikit/Icon/Icon';
 import { Spinner } from '../../components/uikit/Spinner/Spinner';
 import { Progress } from '../../components/uikit/Progress/Progress';
+import { useAppDispatch } from '../../store';
+import { updateActivePurchaseStatus, setModalOpen, clearActivePurchase } from '../../store/purchaseSlice';
 import { purchaseService } from '../services/purchaseService';
 import type { PurchaseResponseDto, PurchaseStatus } from '../../types/api';
 import { useUIKit } from '../../hooks/useUIkit';
@@ -24,13 +26,14 @@ import styles from './PurchaseModal.module.scss';
 
 interface PurchaseModalProps {
   purchase: PurchaseResponseDto;
-  onClose: () => void;
+  onClose?: () => void;
   onStatusChange?: (status: PurchaseStatus) => void;
 }
 
 export const PurchaseModal = forwardRef<HTMLDivElement, PurchaseModalProps>(
   ({ purchase, onClose, onStatusChange }, ref) => {
     const { t } = useTranslation();
+    const dispatch = useAppDispatch();
     const [status, setStatus] = useState<PurchaseStatus>(purchase.status);
     const [paidAmount, setPaidAmount] = useState<number>(purchase.payment.paidAmount);
     const [isCancelling, setIsCancelling] = useState(false);
@@ -55,11 +58,18 @@ export const PurchaseModal = forwardRef<HTMLDivElement, PurchaseModalProps>(
       if (!element) return;
 
       const handleHidden = () => {
-        onClose();
+        if (onClose) {
+          onClose();
+        } else {
+          dispatch(setModalOpen(false));
+          if (status !== 'AWAITING_PAYMENT') {
+            dispatch(clearActivePurchase());
+          }
+        }
       };
 
       UIkit.util.on(element, 'hidden', handleHidden);
-    }, [onClose]);
+    }, [onClose, dispatch, status]);
 
     useEffect(() => {
       if (status === 'AWAITING_PAYMENT') {
@@ -68,7 +78,11 @@ export const PurchaseModal = forwardRef<HTMLDivElement, PurchaseModalProps>(
             const response = await purchaseService.getPurchaseStatus(purchase.purchaseId);
             if (response.status !== status) {
               setStatus(response.status);
-              onStatusChange?.(response.status);
+              if (onStatusChange) {
+                onStatusChange(response.status);
+              } else {
+                dispatch(updateActivePurchaseStatus(response.status));
+              }
             }
             if (response.paidAmount !== undefined) {
               setPaidAmount(response.paidAmount);
@@ -80,7 +94,7 @@ export const PurchaseModal = forwardRef<HTMLDivElement, PurchaseModalProps>(
 
         return () => clearInterval(interval);
       }
-    }, [purchase.purchaseId, status, onStatusChange]);
+    }, [purchase.purchaseId, status, onStatusChange, dispatch]);
 
     useEffect(() => {
       if (status === 'AWAITING_PAYMENT' && purchase.payment.deadline) {
@@ -116,26 +130,51 @@ export const PurchaseModal = forwardRef<HTMLDivElement, PurchaseModalProps>(
         ? t('purchases.partialPaymentWarning', { paid: paidAmount, currency: purchase.currency })
         : t('purchases.confirmCancel');
 
-      if (window.confirm(confirmMessage)) {
+      UIkit.modal.confirm(confirmMessage, { 
+        stack: true,
+        i18n: {
+          ok: t('common.ok'),
+          cancel: t('common.cancel')
+        }
+      }).then(async () => {
         setIsCancelling(true);
         try {
           await purchaseService.cancelPurchase(purchase.purchaseId);
           setStatus('CANCELLED');
-          onStatusChange?.('CANCELLED');
+          if (onStatusChange) {
+            onStatusChange('CANCELLED');
+          } else {
+            dispatch(updateActivePurchaseStatus('CANCELLED'));
+          }
         } catch (error: any) {
           console.error('Failed to cancel purchase', error);
-          alert(error.message || t('auth.errors.generic'));
+          UIkit.modal.alert(error.message || t('auth.errors.generic'), { 
+            stack: true,
+            i18n: {
+              ok: t('common.ok'),
+              cancel: t('common.cancel')
+            }
+          });
         } finally {
           setIsCancelling(false);
         }
-      }
+      }, () => {
+        // user clicked cancel or closed the confirmation modal
+      });
     };
 
     const handleClose = () => {
       if (modalInstance) {
         modalInstance.hide();
       } else {
-        onClose();
+        if (onClose) {
+          onClose();
+        } else {
+          dispatch(setModalOpen(false));
+          if (status !== 'AWAITING_PAYMENT') {
+            dispatch(clearActivePurchase());
+          }
+        }
       }
     };
 

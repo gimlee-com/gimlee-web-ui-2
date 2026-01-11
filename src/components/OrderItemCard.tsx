@@ -8,9 +8,10 @@ import { Grid } from './uikit/Grid/Grid';
 import { Icon } from './uikit/Icon/Icon';
 import { Progress } from './uikit/Progress/Progress';
 import { Button } from './uikit/Button/Button';
-import { purchaseService } from '../ads/services/purchaseService';
-import { PurchaseModal } from '../ads/components/PurchaseModal';
-import type { PurchaseHistoryDto, SalesOrderDto, PurchaseStatus, PurchaseStatusResponseDto, PurchaseResponseDto } from '../types/api';
+import { useAppDispatch, useAppSelector } from '../store';
+import { setActivePurchase } from '../store/purchaseSlice';
+import { purchaseService } from '../purchases/services/purchaseService';
+import type { PurchaseHistoryDto, SalesOrderDto, PurchaseStatus, PurchaseStatusResponseDto } from '../types/api';
 
 interface OrderItemCardProps {
   order: PurchaseHistoryDto | SalesOrderDto;
@@ -19,23 +20,11 @@ interface OrderItemCardProps {
 
 export const OrderItemCard: React.FC<OrderItemCardProps> = ({ order, type }) => {
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
+  const activePurchase = useAppSelector(state => state.purchase.activePurchase);
   const isPurchase = type === 'purchase';
   const [isExpanded, setIsExpanded] = useState(false);
   const [statusDetails, setStatusDetails] = useState<PurchaseStatusResponseDto | null>(null);
-  const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [activePurchaseFromStorage, setActivePurchaseFromStorage] = useState<PurchaseResponseDto | null>(null);
-
-  React.useEffect(() => {
-    const stored = localStorage.getItem('activePurchase');
-    if (stored) {
-      try {
-        const p = JSON.parse(stored);
-        if (p.purchaseId === order.id) {
-          setActivePurchaseFromStorage(p);
-        }
-      } catch (e) { /* ignore */ }
-    }
-  }, [order.id]);
 
   const fetchStatus = async () => {
     if (!isPurchase || order.status !== 'AWAITING_PAYMENT') return;
@@ -199,14 +188,20 @@ export const OrderItemCard: React.FC<OrderItemCardProps> = ({ order, type }) => 
                         <Icon icon="info" ratio={0.8} className="uk-margin-small-right" />
                         {t('purchases.paymentInstructions')}
                       </p>
-                      {activePurchaseFromStorage && (
+                      {activePurchase?.purchaseId === order.id ? (
                         <Button 
                           size="small" 
                           variant="primary" 
-                          onClick={() => setShowPaymentModal(true)}
+                          onClick={() => dispatch(setActivePurchase(activePurchase))}
                         >
-                          {t('purchases.viewPaymentInfo' as any, 'View Payment Info')}
+                          {t('purchases.viewPaymentInfo')}
                         </Button>
+                      ) : (
+                        <div className="uk-alert-danger uk-padding-small uk-border-rounded">
+                          <p className="uk-text-small uk-margin-remove">
+                            {t('purchases.pendingPurchaseExists')}
+                          </p>
+                        </div>
                       )}
                    </div>
                 )}
@@ -215,12 +210,6 @@ export const OrderItemCard: React.FC<OrderItemCardProps> = ({ order, type }) => 
           )}
         </AnimatePresence>
       </CardBody>
-      {showPaymentModal && activePurchaseFromStorage && (
-        <PurchaseModal 
-          purchase={activePurchaseFromStorage} 
-          onClose={() => setShowPaymentModal(false)}
-        />
-      )}
     </Card>
   );
 };

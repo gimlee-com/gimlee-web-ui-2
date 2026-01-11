@@ -9,6 +9,7 @@ const resources = {
         "loading": "Loading...",
         "save": "Save",
         "cancel": "Cancel",
+        "ok": "OK",
         "edit": "Edit",
         "view": "View",
         "delete": "Delete",
@@ -127,6 +128,7 @@ const resources = {
         "timeLeft": "Time left: {{time}}",
         "paymentProgress": "Payment progress: {{paid}} / {{total}} {{currency}}",
         "storedPurchaseFound": "You have an active purchase. Click here to view it.",
+        "pendingPurchaseExists": "You already have a pending purchase. Please complete it before starting a new one.",
         "items": "Items",
         "paymentInstructions": "Payment is currently being processed.",
         "viewPaymentInfo": "View Payment Info"
@@ -154,6 +156,7 @@ const resources = {
         "loading": "Ładowanie...",
         "save": "Zapisz",
         "cancel": "Anuluj",
+        "ok": "OK",
         "edit": "Edytuj",
         "view": "Zobacz",
         "delete": "Usuń",
@@ -272,6 +275,7 @@ const resources = {
         "timeLeft": "Pozostały czas: {{time}}",
         "paymentProgress": "Postęp płatności: {{paid}} / {{total}} {{currency}}",
         "storedPurchaseFound": "Masz aktywny zakup. Kliknij tutaj, aby go zobaczyć.",
+        "pendingPurchaseExists": "Masz już oczekujący zakup. Dokończ go przed rozpoczęciem nowego.",
         "items": "Produkty",
         "paymentInstructions": "Płatność jest obecnie przetwarzana.",
         "viewPaymentInfo": "Pokaż dane do płatności"
@@ -301,7 +305,6 @@ i18n
   .init({
     resources,
     fallbackLng: "en-US",
-    load: 'currentOnly',
     interpolation: {
       escapeValue: false
     },

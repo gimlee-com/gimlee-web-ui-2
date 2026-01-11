@@ -4,9 +4,10 @@ import { useTranslation } from 'react-i18next';
 import UIkit from 'uikit';
 import { useAuth } from '../../context/AuthContext';
 import { adService } from '../services/adService';
-import { purchaseService } from '../services/purchaseService';
-import { PurchaseModal } from '../components/PurchaseModal';
-import type { AdDetailsDto, PurchaseResponseDto, PurchaseStatus } from '../../types/api';
+import { useAppDispatch, useAppSelector } from '../../store';
+import { setActivePurchase, setModalOpen } from '../../store/purchaseSlice';
+import { purchaseService } from '../../purchases/services/purchaseService';
+import type { AdDetailsDto } from '../../types/api';
 import { Heading } from '../../components/uikit/Heading/Heading';
 import { Spinner } from '../../components/uikit/Spinner/Spinner';
 import { Grid } from '../../components/uikit/Grid/Grid';
@@ -37,7 +38,8 @@ const AdDetailsPage: React.FC = () => {
   const [visitedIndices, setVisitedIndices] = useState<number[]>([0]);
   const [showLightboxThumbnav, setShowLightboxThumbnav] = useState(window.innerWidth >= 960);
   const [quantity, setQuantity] = useState(1);
-  const [activePurchase, setActivePurchase] = useState<PurchaseResponseDto | null>(null);
+  const activePurchase = useAppSelector(state => state.purchase.activePurchase);
+  const dispatch = useAppDispatch();
   const [isPurchasing, setIsPurchasing] = useState(false);
   const mainSliderRef = useRef<HTMLDivElement>(null);
   const thumbSliderRef = useRef<HTMLDivElement>(null);
@@ -112,16 +114,6 @@ const AdDetailsPage: React.FC = () => {
     return () => el.removeEventListener('itemshow', handleItemShow);
   }, [ad, loading]); // Depend on ad and loading to ensure listener is attached when slider is rendered
 
-  useEffect(() => {
-    const stored = localStorage.getItem('activePurchase');
-    if (stored) {
-      try {
-        setActivePurchase(JSON.parse(stored));
-      } catch {
-        localStorage.removeItem('activePurchase');
-      }
-    }
-  }, []);
 
   const handleBuyNow = async () => {
     if (!isAuthenticated) {
@@ -147,8 +139,7 @@ const AdDetailsPage: React.FC = () => {
       if (!response.currency) {
         response.currency = ad.price.currency;
       }
-      setActivePurchase(response);
-      localStorage.setItem('activePurchase', JSON.stringify(response));
+      dispatch(setActivePurchase(response));
     } catch (error: any) {
       console.error('Failed to create purchase', error);
       alert(error.message || t('auth.errors.generic'));
@@ -157,25 +148,6 @@ const AdDetailsPage: React.FC = () => {
     }
   };
 
-  const handlePurchaseModalClose = () => {
-    // If the purchase is no longer awaiting payment, we can clear it from localStorage
-    if (activePurchase && activePurchase.status !== 'AWAITING_PAYMENT') {
-      localStorage.removeItem('activePurchase');
-    }
-    setActivePurchase(null);
-  };
-
-  const handlePurchaseStatusChange = (status: PurchaseStatus) => {
-    if (activePurchase) {
-      const updatedPurchase = { ...activePurchase, status };
-      setActivePurchase(updatedPurchase);
-      if (status === 'AWAITING_PAYMENT') {
-        localStorage.setItem('activePurchase', JSON.stringify(updatedPurchase));
-      } else {
-        localStorage.removeItem('activePurchase');
-      }
-    }
-  };
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(min-width: 960px)');
@@ -338,15 +310,20 @@ const AdDetailsPage: React.FC = () => {
                 variant="primary" 
                 className="uk-width-1-1" 
                 onClick={handleBuyNow}
-                disabled={isPurchasing || ad.status === 'SOLD'}
+                disabled={isPurchasing || ad.status === 'SOLD' || !!activePurchase}
               >
                 {isPurchasing ? <Spinner ratio={0.8} /> : t('purchases.buyNow')}
               </Button>
               {activePurchase && (
                 <div className="uk-margin-small-top">
+                  <div className="uk-alert-warning uk-padding-small uk-border-rounded uk-margin-small-bottom">
+                    <p className="uk-text-small uk-margin-remove">
+                      {t('purchases.pendingPurchaseExists')}
+                    </p>
+                  </div>
                   <a 
                     href="#" 
-                    onClick={(e) => { e.preventDefault(); setActivePurchase({ ...activePurchase }); }}
+                    onClick={(e) => { e.preventDefault(); dispatch(setModalOpen(true)); }}
                     className="uk-text-small"
                   >
                     {t('purchases.storedPurchaseFound')}
@@ -357,13 +334,6 @@ const AdDetailsPage: React.FC = () => {
           </Card>
         </div>
       </Grid>
-      {activePurchase && (
-        <PurchaseModal 
-          purchase={activePurchase} 
-          onClose={handlePurchaseModalClose}
-          onStatusChange={handlePurchaseStatusChange}
-        />
-      )}
     </div>
   );
 };

@@ -20,6 +20,7 @@ This file serves as a comprehensive guide for AI agents and developers working o
 - **Animations**: Framer Motion (`motion/react`)
 - **Forms**: React Hook Form
 - **I18n**: react-i18next
+- **State Management**: Redux Toolkit & `react-redux`
 - **API Client**: `fetch` (wrapped in `apiClient`)
 - **PWA**: `vite-plugin-pwa` for offline support and "Add to Home Screen" capability.
 - **Native Wrapper**: **Ionic Capacitor** for Android/iOS native builds.
@@ -56,7 +57,8 @@ Our forms prioritize a "friendly" user experience over immediate error shouting:
 
 #### **D. Internationalization (I18n)**
 - No hardcoded text in components. All strings must be extracted to `src/i18n.ts`.
-- Support both English (`en`) and Polish (`pl`).
+- **IETF Tags**: Use full IETF BCP 47 language tags (e.g., `en-US`, `pl-PL`) for resources and backend communication. This is strictly required for compatibility with backend `Accept-Language` headers and user preferences.
+- Support both English (`en-US`) and Polish (`pl-PL`).
 
 #### **E. Storybook-Driven Development**
 - Every UIkit component wrapper must have a corresponding `.stories.tsx` file.
@@ -107,6 +109,16 @@ To ensure a consistent user experience, especially with localized messages, we f
 - **Status Bar**: Use `@capacitor/status-bar` to manage the status bar appearance. For light themes, ensure the background is set to `#ffffff` and style is set to `Style.Dark` (dark icons) for better visibility.
 - **Vibe Preservation**: Since Capacitor uses the system WebView, all UIkit styles, CSS Modules, and Framer Motion animations are preserved without modification.
 - **Native APIs**: When access to native features (Biometrics, Camera, etc.) is needed, use official Capacitor plugins. Always check for platform availability (`Capacitor.isNativePlatform()`) before calling native-only code to maintain web compatibility.
+- **Deep Linking**: Handle deep links within the application to provide a seamless transition from external sources or notifications to specific content within the app.
+
+#### **L. UIkit Dialogs & Stacking**
+- **Prefer UIkit over Native**: Always use `UIkit.modal.confirm` and `UIkit.modal.alert` instead of browser `confirm()` and `alert()`. UIkit dialogs offer better visual consistency and don't block the main thread.
+- **Stacking Support**: When opening a dialog on top of another modal (e.g., a confirmation inside a purchase flow), always use the `{ stack: true }` option. This ensures proper layering and event handling in SPA and mobile environments.
+
+#### **M. Global State Management (Redux)**
+- **Domain State**: Use Redux (via Redux Toolkit) for complex, long-running business processes that must persist across page navigation (e.g., active purchases, shopping baskets).
+- **Global UI Components**: State that controls high-level UI elements rendered at the root (like the `PurchaseModal` in `App.tsx`) must be managed via Redux.
+- **LocalStorage Sync**: Persist critical global state to `localStorage` to ensure continuity after page refreshes or app restarts. Re-hydrate this state during store initialization.
 ---
 
 ### 4. Code Structure Standards
@@ -119,6 +131,7 @@ Code that is reusable across the entire application remains in top-level directo
     - **`SmartPagination.tsx`**: A standardized component for paginated lists that handles large page counts with ellipses (`...`).
 - **`src/pages/`**: High-level layouts and error pages.
 - **`src/hooks/`**: Global reusable hooks (e.g., `useUIKit`, `useMergeRefs`).
+- **`src/store/`**: Global Redux store configuration and slices for domain-wide state.
 - **`src/context/`**: Global application state (e.g., `AuthContext`).
 - **`src/utils/`**, **`src/types/`**: Shared helper functions and TypeScript definitions.
 - **`src/styles/`**: Global SASS variables and theme overrides.
@@ -152,3 +165,6 @@ Every component (whether shared or module-specific) follows the same pattern:
 10. **Robustness in Clones**: Always use stable identifiers (like `data-index`) when working with UI libraries that clone DOM elements for infinite scrolling or looping.
 11. **JSDOM Compatibility**: Be aware of JSDOM limitations (e.g., lack of `DOMMatrix`, `IntersectionObserver`). Use appropriate polyfills in `src/vitest-setup.ts` to ensure UIkit's layout logic works correctly during testing.
 12. **Prioritize Backend Messages**: Always display the localized `message` returned by the API (via `StatusResponseDto`).
+13. **Global Continuity**: Long-running or critical business processes (like payments) must use global Redux state and be rendered at the root (`App.tsx`) to ensure they are not interrupted by user navigation.
+14. **Strict IETF Tags**: Always use full IETF BCP 47 language tags (`en-US`, `pl-PL`) in both code and tests to ensure backend compatibility.
+15. **Layering Excellence**: Use UIkit modal stacking (`{ stack: true }`) and localized button labels to maintain a professional, high-quality user interface in complex flows.
