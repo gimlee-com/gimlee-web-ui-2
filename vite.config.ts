@@ -2,6 +2,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { visualizer } from 'rollup-plugin-visualizer';
+import { VitePWA } from 'vite-plugin-pwa';
 
 // https://vite.dev/config/
 import path from 'node:path';
@@ -14,6 +15,44 @@ const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(file
 export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      includeAssets: ['gimlee.svg', 'favicon.ico', 'apple-touch-icon.png', 'gimlee-192x192.png', 'gimlee-512x512.png'],
+      manifest: {
+        name: 'Gimlee Marketplace',
+        short_name: 'Gimlee',
+        description: 'Decentralized P2P Cryptocurrency Marketplace',
+        theme_color: '#ffffff',
+        background_color: '#ffffff',
+        display: 'standalone',
+        start_url: '/',
+        id: '/',
+        icons: [
+          {
+            src: 'gimlee.svg',
+            sizes: 'any',
+            type: 'image/svg+xml',
+            purpose: 'any'
+          },
+          {
+            src: 'gimlee.svg',
+            sizes: 'any',
+            type: 'image/svg+xml',
+            purpose: 'maskable'
+          },
+          {
+            src: 'gimlee-192x192.png',
+            sizes: '192x192',
+            type: 'image/png'
+          },
+          {
+            src: 'gimlee-512x512.png',
+            sizes: '512x512',
+            type: 'image/png'
+          }
+        ]
+      }
+    }),
     visualizer({
       filename: './dist/stats.html',
       open: true,

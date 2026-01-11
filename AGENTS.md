@@ -21,6 +21,7 @@ This file serves as a comprehensive guide for AI agents and developers working o
 - **Forms**: React Hook Form
 - **I18n**: react-i18next
 - **API Client**: `fetch` (wrapped in `apiClient`)
+- **PWA**: `vite-plugin-pwa` for offline support and "Add to Home Screen" capability.
 
 ---
 
@@ -90,6 +91,11 @@ To ensure a consistent user experience, especially with localized messages, we f
 - **Unified Initialization**: The application must bootstrap using the `/api/session/init` endpoint. This call should include all necessary `decorators` (e.g., `accessToken`, `userProfile`, `featureFlags`) as query parameters to retrieve the essential application state in a single network round-trip.
 - **Graceful Identity Fallbacks**: When a user is authenticated but lacks an explicit avatar, use `GeometricAvatar`. This ensures a visually rich and unique representation for every user.
 - **Async Context Strategy**: Components relying on `AuthContext` must account for its initial `loading` state. Ensure that critical UI elements (like the Navbar or protected routes) wait for the session to initialize to prevent flickering or incorrect "Guest" state flashes.
+
+#### **J. Progressive Web App (PWA)**
+- **Auto-Update**: The app is configured with `registerType: 'autoUpdate'`. This ensures that when a new version is deployed, the service worker will automatically update and the app will refresh to the latest version on the next visit (or immediately if possible).
+- **Offline First**: PWA assets (HTML, JS, CSS, and core SVGs) are cached for offline use.
+- **Manifest**: The `manifest` is defined in `vite.config.ts`. It MUST include `display: 'standalone'` and `start_url: '/'` to be considered installable by Chrome. It should include both SVG and PNG icons (192x192 and 512x512) for full platform compatibility.
 ---
 
 ### 4. Code Structure Standards
