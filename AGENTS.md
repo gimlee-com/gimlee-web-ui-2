@@ -104,6 +104,7 @@ To ensure a consistent user experience, especially with localized messages, we f
     - **CI/CD Build**: Since the native folders are committed, CI/CD platforms like GitHub Actions can build APKs/IPAs directly by setting up the appropriate environments (JDK for Android, Xcode for iOS) and running `./gradlew` or `xcodebuild`. Note: Capacitor 8+ requires JDK 21.
     - Use `npm run cap:sync` to sync web changes to native projects after a build.
     - Use `npm run cap:open:android` to open the native project in Android Studio/IntelliJ.
+- **Status Bar**: Use `@capacitor/status-bar` to manage the status bar appearance. For light themes, ensure the background is set to `#ffffff` and style is set to `Style.Dark` (dark icons) for better visibility.
 - **Vibe Preservation**: Since Capacitor uses the system WebView, all UIkit styles, CSS Modules, and Framer Motion animations are preserved without modification.
 - **Native APIs**: When access to native features (Biometrics, Camera, etc.) is needed, use official Capacitor plugins. Always check for platform availability (`Capacitor.isNativePlatform()`) before calling native-only code to maintain web compatibility.
 ---

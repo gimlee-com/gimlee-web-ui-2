@@ -8,7 +8,12 @@ const config: CapacitorConfig = {
     androidScheme: 'https',
     iosScheme: 'https',
     hostname: 'gimlee.com'
-  }
+  },
+  plugins: {
+    StatusBar: {
+      backgroundColor: '#ffffff',
+    },
+  },
 };
 
 export default config;
