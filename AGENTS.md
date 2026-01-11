@@ -101,7 +101,7 @@ To ensure a consistent user experience, especially with localized messages, we f
 #### **K. Native App (Capacitor)**
 - **Web-to-Native Workflow**: Capacitor wraps the web build (`dist/`) into a native WebView.
     - **VCS Strategy**: Unlike `node_modules`, the `android` and `ios` directories **MUST NOT** be added to the root `.gitignore`. They contain the native project structure, configurations, and assets (icons, splashes) that are part of your source code. Capacitor provides its own `.gitignore` inside these folders to handle local build artifacts.
-    - **CI/CD Build**: Since the native folders are committed, CI/CD platforms like GitHub Actions can build APKs/IPAs directly by setting up the appropriate environments (JDK for Android, Xcode for iOS) and running `./gradlew` or `xcodebuild`.
+    - **CI/CD Build**: Since the native folders are committed, CI/CD platforms like GitHub Actions can build APKs/IPAs directly by setting up the appropriate environments (JDK for Android, Xcode for iOS) and running `./gradlew` or `xcodebuild`. Note: Capacitor 8+ requires JDK 21.
     - Use `npm run cap:sync` to sync web changes to native projects after a build.
     - Use `npm run cap:open:android` to open the native project in Android Studio/IntelliJ.
 - **Vibe Preservation**: Since Capacitor uses the system WebView, all UIkit styles, CSS Modules, and Framer Motion animations are preserved without modification.
