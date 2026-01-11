@@ -27,7 +27,8 @@ function App() {
   useEffect(() => {
     if (Capacitor.isNativePlatform()) {
       StatusBar.setBackgroundColor({ color: '#ffffff' }).catch(() => {});
-      StatusBar.setStyle({ style: Style.Dark }).catch(() => {});
+      StatusBar.setStyle({ style: Style.Light }).catch(() => {});
+      StatusBar.setOverlaysWebView({ overlay: false }).catch(() => {});
     }
   }, []);
 
