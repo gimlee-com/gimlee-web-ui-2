@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import UIkit from 'uikit';
 import { useAuth } from '../../context/AuthContext';
@@ -18,6 +18,8 @@ import { Lightbox, LightboxItem } from '../../components/uikit/Lightbox/Lightbox
 import { Slider, SliderContainer, SliderItem, SliderItems } from '../../components/uikit/Slider/Slider';
 import { Thumbnav } from '../../components/uikit/Thumbnav/Thumbnav';
 import { Slidenav } from '../../components/uikit/Slidenav/Slidenav';
+import { useNavbarMode } from '../../hooks/useNavbarMode';
+import NavbarPortal from '../../components/Navbar/NavbarPortal';
 import styles from './AdDetailsPage.module.scss';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
@@ -30,6 +32,7 @@ const AdDetailsPage: React.FC = () => {
   const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const { isAuthenticated } = useAuth();
   const [ad, setAd] = useState<AdDetailsDto | null>(null);
   const [loading, setLoading] = useState(true);
@@ -43,6 +46,8 @@ const AdDetailsPage: React.FC = () => {
   const [isPurchasing, setIsPurchasing] = useState(false);
   const mainSliderRef = useRef<HTMLDivElement>(null);
   const thumbSliderRef = useRef<HTMLDivElement>(null);
+
+  useNavbarMode('focused', '/ads');
 
   const activeIndexRef = useRef(activeIndex);
   const targetIndexRef = useRef<number | null>(null);
@@ -117,7 +122,12 @@ const AdDetailsPage: React.FC = () => {
 
   const handleBuyNow = async () => {
     if (!isAuthenticated) {
-      navigate('/login', { state: { from: `/ads/${id}` } });
+      navigate('/login', { 
+        state: { 
+          from: `/ads/${id}`, 
+          backContext: location.state?.from 
+        } 
+      });
       return;
     }
 
@@ -199,6 +209,11 @@ const AdDetailsPage: React.FC = () => {
 
   return (
     <div>
+      <NavbarPortal>
+        <Heading as="h4" className="uk-margin-remove uk-text-truncate">
+          {ad.title}
+        </Heading>
+      </NavbarPortal>
       <Grid gap="large">
         <div className="uk-width-2-3@m">
           {images.length > 0 ? (

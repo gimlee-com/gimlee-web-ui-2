@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'motion/react';
 import type { AdPreviewDto } from '../../types/api';
 import { Card, CardMedia, CardBody, CardTitle } from '../../components/uikit/Card/Card';
@@ -20,6 +20,7 @@ const cardVariants = {
 } as const;
 
 export const AdCard: React.FC<AdCardProps> = ({ ad }) => {
+  const location = useLocation();
   const photoUrl = ad.mainPhotoPath ? `${API_URL}/api/media?p=/thumbs-sm${ad.mainPhotoPath}` : '/placeholder-image.svg';
 
   return (
@@ -34,7 +35,13 @@ export const AdCard: React.FC<AdCardProps> = ({ ad }) => {
       </CardMedia>
       <CardBody>
         <CardTitle>
-          <Link to={`/ads/${ad.id}`} className="uk-link-reset">{ad.title}</Link>
+          <Link 
+            to={`/ads/${ad.id}`} 
+            state={{ from: location.pathname + location.search }}
+            className="uk-link-reset"
+          >
+            {ad.title}
+          </Link>
         </CardTitle>
         {ad.price && (
           <p className="uk-text-primary uk-text-bold">

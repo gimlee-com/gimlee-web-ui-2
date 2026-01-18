@@ -5,6 +5,8 @@ import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'motion/
 import UIkit from 'uikit';
 import { useAuth } from '../../context/AuthContext';
 import { useUIKit } from '../../hooks/useUIkit';
+import { useAppSelector } from '../../store';
+import { NAVBAR_PORTAL_ID } from './NavbarPortal';
 import {
   Navbar as UkNavbar,
   NavbarLeft,
@@ -13,6 +15,7 @@ import {
   NavbarItem,
   NavbarToggle,
 } from '../uikit/Navbar/Navbar';
+import { Icon } from '../uikit/Icon/Icon';
 import { Container } from '../uikit/Container/Container';
 import { Offcanvas, OffcanvasBar, OffcanvasClose } from '../uikit/Offcanvas/Offcanvas';
 import { Nav, NavItem } from '../uikit/Nav/Nav';
@@ -27,6 +30,7 @@ const Navbar: React.FC = () => {
   const { isAuthenticated, logout, userProfile, username, roles } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { mode, backLink } = useAppSelector(state => state.navbar);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { scrollY } = useScroll();
   const [isScrolled, setIsScrolled] = useState(scrollY.get() > 60);
@@ -78,84 +82,96 @@ const Navbar: React.FC = () => {
     <AnimatePresence mode="wait">
       {isAuthenticated ? (
         <React.Fragment key="auth">
-          <MotionNavbarItem
-            key="my-ads"
-            className="uk-visible@m"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-          >
-            <Link to="/sales/ads">{t('navbar.myAds')}</Link>
-          </MotionNavbarItem>
-          <MotionNavbarItem
-            key="purchases"
-            className="uk-visible@m"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2, delay: 0.05 }}
-          >
-            <Link to="/purchases">{t('navbar.purchases')}</Link>
-          </MotionNavbarItem>
-          <MotionNavbarItem
-            key="user-menu"
-            className="uk-visible@m"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2, delay: 0.1 }}
-          >
-            <Link to="#">
-              <div className="uk-flex uk-flex-middle">
-                <div className="uk-border-circle uk-overflow-hidden" style={{ width: 32, height: 32 }}>
-                  {userProfile?.avatarUrl ? (
-                    <img
-                      src={userProfile.avatarUrl}
-                      className="uk-preserve-width"
-                      width="32"
-                      height="32"
-                      alt={username || ''}
-                    />
-                  ) : (
-                    <GeometricAvatar username={username || ''} size={32} />
-                  )}
+          <AnimatePresence>
+            {mode === 'default' && (
+              <MotionNavbarItem
+                key="my-ads"
+                className="uk-visible@m"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Link to="/sales/ads">{t('navbar.myAds')}</Link>
+              </MotionNavbarItem>
+            )}
+            {mode === 'default' && (
+              <MotionNavbarItem
+                key="purchases"
+                className="uk-visible@m"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2, delay: 0.05 }}
+              >
+                <Link to="/purchases">{t('navbar.purchases')}</Link>
+              </MotionNavbarItem>
+            )}
+            <MotionNavbarItem
+              key="user-menu"
+              className="uk-visible@m"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2, delay: mode === 'default' ? 0.1 : 0 }}
+            >
+              <Link to="#">
+                <div className="uk-flex uk-flex-middle">
+                  <div className="uk-border-circle uk-overflow-hidden" style={{ width: 32, height: 32 }}>
+                    {userProfile?.avatarUrl ? (
+                      <img
+                        src={userProfile.avatarUrl}
+                        className="uk-preserve-width"
+                        width="32"
+                        height="32"
+                        alt={username || ''}
+                      />
+                    ) : (
+                      <GeometricAvatar username={username || ''} size={32} />
+                    )}
+                  </div>
+                  <span className="uk-margin-small-left">{username}</span>
+                  <span className="uk-margin-small-left" uk-icon="icon: triangle-down; ratio: 0.8"></span>
                 </div>
-                <span className="uk-margin-small-left">{username}</span>
-                <span className="uk-margin-small-left" uk-icon="icon: triangle-down; ratio: 0.8"></span>
+              </Link>
+              <div className="uk-navbar-dropdown" uk-dropdown="mode: click; pos: bottom-right">
+                <ul className="uk-nav uk-navbar-dropdown-nav">
+                  <li><Link to="/profile">{t('navbar.profile')}</Link></li>
+                  <li className="uk-nav-divider"></li>
+                  <li><Link to="#" onClick={handleLogout}>{t('navbar.logout')}</Link></li>
+                </ul>
               </div>
-            </Link>
-            <div className="uk-navbar-dropdown" uk-dropdown="mode: click; pos: bottom-right">
-              <ul className="uk-nav uk-navbar-dropdown-nav">
-                <li><Link to="/profile">{t('navbar.profile')}</Link></li>
-                <li className="uk-nav-divider"></li>
-                <li><Link to="#" onClick={handleLogout}>{t('navbar.logout')}</Link></li>
-              </ul>
-            </div>
-          </MotionNavbarItem>
+            </MotionNavbarItem>
+          </AnimatePresence>
         </React.Fragment>
       ) : (
         <React.Fragment key="guest">
-          <MotionNavbarItem
-            key="login"
-            className="uk-visible@m"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-          >
-            <Link to="/login">{t('navbar.login')}</Link>
-          </MotionNavbarItem>
-          <MotionNavbarItem
-            key="register"
-            className="uk-visible@m"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2, delay: 0.05 }}
-          >
-            <Link to="/register">{t('navbar.register')}</Link>
-          </MotionNavbarItem>
+          <AnimatePresence>
+            {mode === 'default' && (
+              <MotionNavbarItem
+                key="login"
+                className="uk-visible@m"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Link to="/login">{t('navbar.login')}</Link>
+              </MotionNavbarItem>
+            )}
+            {mode === 'default' && (
+              <MotionNavbarItem
+                key="register"
+                className="uk-visible@m"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2, delay: 0.05 }}
+              >
+                <Link to="/register">{t('navbar.register')}</Link>
+              </MotionNavbarItem>
+            )}
+          </AnimatePresence>
         </React.Fragment>
       )}
     </AnimatePresence>
@@ -288,23 +304,65 @@ const Navbar: React.FC = () => {
         <div className={styles.navbarWrapper}>
           <Container size="expand">
             <UkNavbar>
-              <NavbarLeft>
-                <Link to="/" className="uk-navbar-item uk-logo">
-                  <motion.img
-                    src="/gimlee.svg"
-                    alt="Gimlee"
-                    height="40"
-                    initial={false}
-                    animate={{ height: isScrolled ? 30 : 40 }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                    className="uk-margin-small-right"
-                  />
-                </Link>
-                <NavbarNav>
-                  <NavbarItem>
-                    <Link to="/ads">{t('navbar.browseAds')}</Link>
-                  </NavbarItem>
-                </NavbarNav>
+              <NavbarLeft 
+                className={mode === 'focused' ? 'uk-flex-1' : undefined} 
+                style={mode === 'focused' ? { minWidth: 0 } : undefined}
+              >
+                <AnimatePresence mode="wait">
+                  {mode === 'default' ? (
+                    <motion.div
+                      key="default-left"
+                      className="uk-flex uk-flex-middle"
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <Link to="/" className="uk-navbar-item uk-logo">
+                        <motion.img
+                          src="/gimlee.svg"
+                          alt="Gimlee"
+                          height="40"
+                          initial={false}
+                          animate={{ height: isScrolled ? 30 : 40 }}
+                          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                          className="uk-margin-small-right"
+                        />
+                      </Link>
+                      <NavbarNav>
+                        <NavbarItem>
+                          <Link to="/ads">{t('navbar.browseAds')}</Link>
+                        </NavbarItem>
+                      </NavbarNav>
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="focused-left"
+                      className="uk-flex uk-flex-middle uk-flex-1"
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      transition={{ duration: 0.2 }}
+                      style={{ minWidth: 0 }}
+                    >
+                      <NavbarToggle
+                        href={backLink || '#'}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          if (backLink && backLink !== '#') {
+                            navigate(backLink);
+                          } else {
+                            navigate(-1);
+                          }
+                        }}
+                        className="uk-padding-small"
+                      >
+                        <Icon icon="arrow-left" ratio={1.2} />
+                      </NavbarToggle>
+                      <div id={NAVBAR_PORTAL_ID} className="uk-navbar-item uk-flex-1 uk-flex-left" style={{ minWidth: 0, paddingLeft: 0 }} />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </NavbarLeft>
               <NavbarRight>
                 <NavbarNav>

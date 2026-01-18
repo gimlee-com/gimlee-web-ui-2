@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'motion/react';
 import type { AdPreviewDto } from '../../types/api';
@@ -27,6 +27,7 @@ const cardVariants = {
 
 export const SalesAdCard: React.FC<SalesAdCardProps> = ({ ad, onToggleStatus }) => {
   const { t } = useTranslation();
+  const location = useLocation();
   const photoUrl = ad.mainPhotoPath 
     ? `${API_URL}/api/media?p=${ad.mainPhotoPath}` 
     : '/placeholder-image.svg';
@@ -56,7 +57,11 @@ export const SalesAdCard: React.FC<SalesAdCardProps> = ({ ad, onToggleStatus }) 
         </CardMedia>
         <CardBody className="uk-flex-1">
           <CardTitle className="uk-margin-small-bottom">
-            <Link to={`/ads/${ad.id}`} className="uk-link-reset uk-text-bold">
+            <Link 
+              to={`/ads/${ad.id}`} 
+              state={{ from: location.pathname + location.search }}
+              className="uk-link-reset uk-text-bold"
+            >
               {ad.title}
             </Link>
           </CardTitle>

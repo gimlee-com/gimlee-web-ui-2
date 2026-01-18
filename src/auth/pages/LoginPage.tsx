@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate, Link, useSearchParams } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams, useLocation } from 'react-router-dom';
 import { useTranslation, Trans } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import { authService } from '../services/authService';
@@ -24,8 +24,9 @@ const LoginPage: React.FC = () => {
   const registered = searchParams.get('registered') === 'true';
   const registeredEmail = searchParams.get('email');
   const loginRequired = searchParams.get('reason') === 'unauthorized';
+  const location = useLocation();
 
-  const redirect = searchParams.get('redirect') || '/';
+  const redirect = searchParams.get('redirect') || location.state?.from || '/';
 
   const passwordRule = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,64}$/;
 
@@ -45,7 +46,10 @@ const LoginPage: React.FC = () => {
         if (hasRole(response.accessToken, 'UNVERIFIED')) {
           navigate('/verify');
         } else {
-          navigate(redirect);
+          navigate(redirect, { 
+            state: { from: location.state?.backContext },
+            replace: true
+          });
         }
       } else {
         setError(response.message || t('auth.errors.loginFailed'));
