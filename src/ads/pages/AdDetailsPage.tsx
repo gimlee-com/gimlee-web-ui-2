@@ -212,7 +212,7 @@ const AdDetailsPage: React.FC = () => {
     <div>
       <NavbarPortal>
         <div className="uk-flex uk-flex-column uk-width-1-1" style={{ minWidth: 0 }}>
-          <Heading as="h4" className="uk-margin-remove uk-text-truncate">
+          <Heading as="h5" className="uk-margin-remove uk-text-truncate">
             {ad.title}
           </Heading>
           {ad.categoryPath && ad.categoryPath.length > 0 && (

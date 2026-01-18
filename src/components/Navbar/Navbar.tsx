@@ -318,7 +318,7 @@ const Navbar: React.FC = () => {
                       exit={{ opacity: 0 }}
                       transition={{ duration: 0.2 }}
                     >
-                      <Link to="/" className="uk-navbar-item uk-logo">
+                      <Link to="/" className={`uk-navbar-item uk-logo ${styles.logo}`}>
                         <motion.img
                           src="/gimlee.svg"
                           alt="Gimlee"
