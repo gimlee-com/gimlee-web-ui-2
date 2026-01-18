@@ -1,3 +1,6 @@
+@import "../../styles/uikit-variables.scss";
+@import "uikit/src/scss/variables-theme.scss";
+
 .navbarContainer {
   position: fixed;
   top: 0;
@@ -12,6 +15,17 @@
 
 .navbarWrapper {
   width: 100%;
+}
+
+.hamburgerToggle {
+  padding: 0 $padding-small-padding !important;
+}
+
+.responsiveContainer {
+  @media (max-width: $breakpoint-small-max) {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
 }
 
 :global(.uk-navbar-nav > li > a) {

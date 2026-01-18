@@ -302,7 +302,7 @@ const Navbar: React.FC = () => {
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
       >
         <div className={styles.navbarWrapper}>
-          <Container size="expand">
+          <Container size="expand" className={styles.responsiveContainer}>
             <UkNavbar>
               <NavbarLeft 
                 className={mode === 'focused' ? 'uk-flex-1' : undefined} 
@@ -355,7 +355,7 @@ const Navbar: React.FC = () => {
                             navigate(-1);
                           }
                         }}
-                        className="uk-padding-small"
+                        className={styles.hamburgerToggle}
                       >
                         <Icon icon="arrow-left" ratio={1.2} />
                       </NavbarToggle>
@@ -368,7 +368,7 @@ const Navbar: React.FC = () => {
                 <NavbarNav>
                   {navLinks}
                   <NavbarItem className="uk-hidden@m">
-                    <NavbarToggle uk-toggle="target: #mobile-menu">
+                    <NavbarToggle uk-toggle="target: #mobile-menu" className={styles.hamburgerToggle}>
                       <AnimatePresence mode="wait" initial={false}>
                         {isMenuOpen ? (
                           <motion.span

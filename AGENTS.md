@@ -74,7 +74,11 @@ Our forms prioritize a "friendly" user experience over immediate error shouting:
 - **Global Overrides**:
     - Global UIkit variable overrides go in `src/styles/uikit-variables.scss`.
     - Global theme customizations go in `src/styles/main.scss`.
-- **Extend, Don't Redefine**: Use existing UIkit variables (e.g., `$global-muted-background`) and classes (e.g., `uk-object-cover`) whenever possible.
+- **UIKit Variable & Feature Reuse**:
+    - **Think Twice**: It is absolutely crucial to think twice before using any specific number, color, or value in a SCSS file. Always check if it is already provided by a UIKit variable (e.g., `$global-margin`, `$padding-small-padding`, `$global-primary-background`).
+    - **Responsive Consistency**: Use UIKit's SCSS media breakpoint variables (e.g., `$breakpoint-small-max`, `$breakpoint-medium`) instead of hardcoded pixel values in media queries to ensure consistent behavior across the app.
+    - **Mixin Hooks**: Leverage UIKit hooks (e.g., `@mixin hook-card()`) and miscellaneous hooks (e.g., `@mixin hook-card-misc()`) to add custom rules. This approach avoids repeating selectors and maintains the correct CSS cascade.
+    - **Import Order**: Follow the strict UIKit import order in `main.scss` (Custom variables → UIKit variables/mixins → Custom mixins/hooks → UIKit core) to ensure variables and mixins are correctly applied.
 
 #### **G. Data Presentation Layouts**
 - **Cards Over Tables**: Avoid using "soulless" tabular views for complex business entities (like Sales or Purchases). Instead, use rich, interactive card-based layouts.
@@ -180,3 +184,4 @@ Every component (whether shared or module-specific) follows the same pattern:
 16. **Robust Portal Targeting**: When teleporting content into elements that appear dynamically (e.g., during animations), use `MutationObserver` to ensure the portal target is detected as soon as it mounts.
 17. **Preserve Navigation Context**: When navigating to detail pages, pass the current location (including filters/pagination) in the router's `state`. Use this state to implement "smart" back buttons that return users to their exact previous context.
 18. **Focused UI for Depth**: Use "focused" UI modes (like the Focused Navbar) to remove clutter and emphasize core content when users are deep in a specific task or viewing details.
+19. **Think Twice Before Hardcoding**: Always check if a value (color, spacing, breakpoint) is already provided by a UIKit SASS variable before defining it manually to ensure design consistency and easy theme maintenance.
