@@ -49,13 +49,11 @@ const NavbarPortal: React.FC<NavbarPortalProps> = ({ children }) => {
   return createPortal(
     <AnimatePresence>
       <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -10 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
         transition={{ 
-          type: 'spring',
-          stiffness: 300,
-          damping: 30,
+          duration: 0.2,
           delay: 0.0 // Wait for navbar resize and mode transition
         }}
         style={{ minWidth: 0 }}

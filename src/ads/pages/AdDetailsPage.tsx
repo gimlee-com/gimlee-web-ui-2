@@ -18,6 +18,7 @@ import { Lightbox, LightboxItem } from '../../components/uikit/Lightbox/Lightbox
 import { Slider, SliderContainer, SliderItem, SliderItems } from '../../components/uikit/Slider/Slider';
 import { Thumbnav } from '../../components/uikit/Thumbnav/Thumbnav';
 import { Slidenav } from '../../components/uikit/Slidenav/Slidenav';
+import { Breadcrumb, BreadcrumbItem } from '../../components/uikit/Breadcrumb/Breadcrumb';
 import { useNavbarMode } from '../../hooks/useNavbarMode';
 import NavbarPortal from '../../components/Navbar/NavbarPortal';
 import styles from './AdDetailsPage.module.scss';
@@ -210,9 +211,31 @@ const AdDetailsPage: React.FC = () => {
   return (
     <div>
       <NavbarPortal>
-        <Heading as="h4" className="uk-margin-remove uk-text-truncate">
-          {ad.title}
-        </Heading>
+        <div className="uk-flex uk-flex-column uk-width-1-1" style={{ minWidth: 0 }}>
+          <Heading as="h4" className="uk-margin-remove uk-text-truncate">
+            {ad.title}
+          </Heading>
+          {ad.categoryPath && ad.categoryPath.length > 0 && (
+            <div className={styles.breadcrumbWrapper}>
+              <Breadcrumb className="uk-margin-remove">
+                {ad.categoryPath.map((cat) => (
+                  <BreadcrumbItem key={cat.id}>
+                    <a
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        navigate(`/ads?cat=${cat.id}`);
+                      }}
+                      className="uk-text-meta"
+                    >
+                      {cat.name}
+                    </a>
+                  </BreadcrumbItem>
+                ))}
+              </Breadcrumb>
+            </div>
+          )}
+        </div>
       </NavbarPortal>
       <Grid gap="large">
         <div className="uk-width-2-3@m">

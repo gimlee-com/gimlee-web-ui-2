@@ -119,6 +119,15 @@ To ensure a consistent user experience, especially with localized messages, we f
 - **Domain State**: Use Redux (via Redux Toolkit) for complex, long-running business processes that must persist across page navigation (e.g., active purchases, shopping baskets).
 - **Global UI Components**: State that controls high-level UI elements rendered at the root (like the `PurchaseModal` in `App.tsx`) must be managed via Redux.
 - **LocalStorage Sync**: Persist critical global state to `localStorage` to ensure continuity after page refreshes or app restarts. Re-hydrate this state during store initialization.
+
+#### **N. Focused Navbar & Navigation Context**
+- **Focused Mode**: Use the "focused" navbar mode for detail pages to declutter the UI. This mode replaces the logo/main menu with a back button and a slot for page-specific content (e.g., ad titles, breadcrumbs).
+- **`useNavbarMode` Hook**: Activate focused mode using this hook. It should be called at the top of the page component.
+- **`NavbarPortal`**: Use this component to "teleport" custom content into the navbar's focused slot.
+- **Context Preservation**:
+    - **Passing State**: When linking to a details page, always pass the current URL (including search params) in the `state.from` property: `<Link to="..." state={{ from: location.pathname + location.search }}>`.
+    - **Smart Back Button**: The `useNavbarMode` hook automatically detects this state and configures the navbar's back button to return the user to their exact previous context (preserving filters, sorting, and pagination).
+    - **Auth Redirects**: Ensure that authentication redirects (e.g., to the login page) preserve and pass along this `from` state so that the user can return to their original context after logging in.
 ---
 
 ### 4. Code Structure Standards
@@ -168,3 +177,6 @@ Every component (whether shared or module-specific) follows the same pattern:
 13. **Global Continuity**: Long-running or critical business processes (like payments) must use global Redux state and be rendered at the root (`App.tsx`) to ensure they are not interrupted by user navigation.
 14. **Strict IETF Tags**: Always use full IETF BCP 47 language tags (`en-US`, `pl-PL`) in both code and tests to ensure backend compatibility.
 15. **Layering Excellence**: Use UIkit modal stacking (`{ stack: true }`) and localized button labels to maintain a professional, high-quality user interface in complex flows.
+16. **Robust Portal Targeting**: When teleporting content into elements that appear dynamically (e.g., during animations), use `MutationObserver` to ensure the portal target is detected as soon as it mounts.
+17. **Preserve Navigation Context**: When navigating to detail pages, pass the current location (including filters/pagination) in the router's `state`. Use this state to implement "smart" back buttons that return users to their exact previous context.
+18. **Focused UI for Depth**: Use "focused" UI modes (like the Focused Navbar) to remove clutter and emphasize core content when users are deep in a specific task or viewing details.

@@ -41,12 +41,19 @@ export interface AdPreviewDto {
   availableStock?: number;
 }
 
+export interface CategoryPathElementDto {
+  id: number;
+  name: string;
+}
+
 export interface AdDetailsDto {
   id: string;
   title: string;
   description?: string;
   location?: LocationWithCityDetailsDto;
   price?: CurrencyAmountDto;
+  categoryId?: number;
+  categoryPath?: CategoryPathElementDto[];
   mediaPaths?: string[];
   mainPhotoPath?: string;
   status?: 'ACTIVE' | 'INACTIVE' | 'SOLD' | 'DELETED';

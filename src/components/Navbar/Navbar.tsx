@@ -87,9 +87,9 @@ const Navbar: React.FC = () => {
               <MotionNavbarItem
                 key="my-ads"
                 className="uk-visible@m"
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
               >
                 <Link to="/sales/ads">{t('navbar.myAds')}</Link>
@@ -99,9 +99,9 @@ const Navbar: React.FC = () => {
               <MotionNavbarItem
                 key="purchases"
                 className="uk-visible@m"
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
                 transition={{ duration: 0.2, delay: 0.05 }}
               >
                 <Link to="/purchases">{t('navbar.purchases')}</Link>
@@ -110,9 +110,9 @@ const Navbar: React.FC = () => {
             <MotionNavbarItem
               key="user-menu"
               className="uk-visible@m"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               transition={{ duration: 0.2, delay: mode === 'default' ? 0.1 : 0 }}
             >
               <Link to="#">
@@ -151,9 +151,9 @@ const Navbar: React.FC = () => {
               <MotionNavbarItem
                 key="login"
                 className="uk-visible@m"
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
               >
                 <Link to="/login">{t('navbar.login')}</Link>
@@ -163,9 +163,9 @@ const Navbar: React.FC = () => {
               <MotionNavbarItem
                 key="register"
                 className="uk-visible@m"
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
                 transition={{ duration: 0.2, delay: 0.05 }}
               >
                 <Link to="/register">{t('navbar.register')}</Link>
@@ -184,9 +184,9 @@ const Navbar: React.FC = () => {
           <React.Fragment key="auth-off">
             <MotionNavItem
               key="user-info-off"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               transition={{ duration: 0.2, delay: 0.05 }}
               className="uk-nav-header"
             >
@@ -208,9 +208,9 @@ const Navbar: React.FC = () => {
             </MotionNavItem>
             <MotionNavItem
               key="browse-off-auth"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               transition={{ duration: 0.2, delay: 0.1 }}
             >
               <Link to="/ads" uk-toggle="target: #mobile-menu">{t('navbar.browseAds')}</Link>
@@ -218,36 +218,36 @@ const Navbar: React.FC = () => {
             <li className="uk-nav-divider"></li>
             <MotionNavItem
               key="my-ads-off"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               transition={{ duration: 0.2, delay: 0.15 }}
             >
               <Link to="/sales/ads" uk-toggle="target: #mobile-menu">{t('navbar.myAds')}</Link>
             </MotionNavItem>
             <MotionNavItem
               key="purchases-off"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               transition={{ duration: 0.2, delay: 0.2 }}
             >
               <Link to="/purchases" uk-toggle="target: #mobile-menu">{t('navbar.purchases')}</Link>
             </MotionNavItem>
             <MotionNavItem
               key="profile-off"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               transition={{ duration: 0.2, delay: 0.25 }}
             >
               <Link to="/profile" uk-toggle="target: #mobile-menu">{t('navbar.profile')}</Link>
             </MotionNavItem>
             <MotionNavItem
               key="logout-off"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               transition={{ duration: 0.2, delay: 0.3 }}
             >
               <Link to="#" onClick={handleLogout} uk-toggle="target: #mobile-menu">{t('navbar.logout')}</Link>
@@ -257,27 +257,27 @@ const Navbar: React.FC = () => {
           <React.Fragment key="guest-off">
             <MotionNavItem
               key="browse-off-guest"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               transition={{ duration: 0.2, delay: 0.05 }}
             >
               <Link to="/ads" uk-toggle="target: #mobile-menu">{t('navbar.browseAds')}</Link>
             </MotionNavItem>
             <MotionNavItem
               key="login-off"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               transition={{ duration: 0.2, delay: 0.1 }}
             >
               <Link to="/login" uk-toggle="target: #mobile-menu">{t('navbar.login')}</Link>
             </MotionNavItem>
             <MotionNavItem
               key="register-off"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               transition={{ duration: 0.2, delay: 0.15 }}
             >
               <Link to="/register" uk-toggle="target: #mobile-menu">{t('navbar.register')}</Link>
@@ -313,9 +313,9 @@ const Navbar: React.FC = () => {
                     <motion.div
                       key="default-left"
                       className="uk-flex uk-flex-middle"
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -20 }}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
                       transition={{ duration: 0.2 }}
                     >
                       <Link to="/" className="uk-navbar-item uk-logo">
@@ -339,9 +339,9 @@ const Navbar: React.FC = () => {
                     <motion.div
                       key="focused-left"
                       className="uk-flex uk-flex-middle uk-flex-1"
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -20 }}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
                       transition={{ duration: 0.2 }}
                       style={{ minWidth: 0 }}
                     >
@@ -374,9 +374,9 @@ const Navbar: React.FC = () => {
                           <motion.span
                             key="close"
                             uk-icon="icon: close"
-                            initial={{ opacity: 0, scale: 0.5, rotate: -90 }}
-                            animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                            exit={{ opacity: 0, scale: 0.5, rotate: 90 }}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
                             transition={{ duration: 0.2 }}
                             style={{ display: 'inline-flex' }}
                           />
@@ -384,9 +384,9 @@ const Navbar: React.FC = () => {
                           <motion.span
                             key="menu"
                             uk-navbar-toggle-icon=""
-                            initial={{ opacity: 0, scale: 0.5, rotate: 90 }}
-                            animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                            exit={{ opacity: 0, scale: 0.5, rotate: -90 }}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
                             transition={{ duration: 0.2 }}
                             style={{ display: 'inline-flex' }}
                           />

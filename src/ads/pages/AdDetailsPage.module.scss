@@ -7,3 +7,32 @@
   width: 100px;
   height: 75px;
 }
+
+.breadcrumbWrapper {
+  min-width: 0;
+  white-space: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+
+  /* Hide scrollbar */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+  &::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+  }
+  
+  & > ul {
+    display: inline-flex !important;
+    flex-wrap: nowrap !important;
+    vertical-align: bottom;
+  }
+
+  @media (max-width: 959px) {
+    direction: rtl;
+    text-align: right;
+    
+    & > ul {
+      direction: ltr;
+    }
+  }
+}

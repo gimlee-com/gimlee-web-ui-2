@@ -2,6 +2,8 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import AdDetailsPage from './AdDetailsPage';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { store } from '../../store';
 import { AuthProvider } from '../../context/AuthContext';
 import { adService } from '../services/adService';
 import { I18nextProvider } from 'react-i18next';
@@ -27,15 +29,18 @@ const mockAd: AdDetailsDto = {
 
 const renderAdDetailsPage = (id = '1') => {
   return render(
-    <I18nextProvider i18n={i18n}>
-      <AuthProvider>
-        <MemoryRouter initialEntries={[`/ads/${id}`]}>
-          <Routes>
-            <Route path="/ads/:id" element={<AdDetailsPage />} />
-          </Routes>
-        </MemoryRouter>
-      </AuthProvider>
-    </I18nextProvider>
+    <Provider store={store}>
+      <I18nextProvider i18n={i18n}>
+        <AuthProvider>
+          <div id="navbar-focused-content"></div>
+          <MemoryRouter initialEntries={[`/ads/${id}`]}>
+            <Routes>
+              <Route path="/ads/:id" element={<AdDetailsPage />} />
+            </Routes>
+          </MemoryRouter>
+        </AuthProvider>
+      </I18nextProvider>
+    </Provider>
   );
 };
 
@@ -170,5 +175,23 @@ describe('AdDetailsPage', () => {
     expect(itemsWithIndex.length).toBeGreaterThanOrEqual(2);
     expect(itemsWithIndex[0]).toHaveAttribute('data-index', '0');
     expect(itemsWithIndex[1]).toHaveAttribute('data-index', '1');
+  });
+
+  it('should render category breadcrumbs in NavbarPortal', async () => {
+    const adWithCategory: AdDetailsDto = {
+      ...mockAd,
+      categoryPath: [
+        { id: 1, name: 'Electronics' },
+        { id: 2, name: 'Computers' }
+      ]
+    };
+    vi.mocked(adService.getAdById).mockResolvedValue(adWithCategory);
+
+    renderAdDetailsPage();
+
+    await waitFor(() => {
+      expect(screen.getByText('Electronics')).toBeInTheDocument();
+      expect(screen.getByText('Computers')).toBeInTheDocument();
+    });
   });
 });
