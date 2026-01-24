@@ -10,6 +10,7 @@ This file serves as a comprehensive guide for AI agents and developers working o
 - **Core Innovation**: Trustless, non-custodial payment verification. Sellers provide a **viewing key** (read-only), allowing the platform to verify payments on the blockchain without ever taking custody of funds.
 - **Current Focus**: Integration with **PirateChain (ARRR)**, with plans for Monero (XMR) and Firo (FIRO).
 - **Vision**: A community-driven, secure, and transparent economy that eliminates financial intermediaries.
+- **Ambition**: Gimlee is not a small-scale project; it is built to compete with global tech giants by providing a superior, privacy-centric, and decentralized alternative.
 
 ---
 
@@ -189,3 +190,4 @@ Every component (whether shared or module-specific) follows the same pattern:
 19. **Think Twice Before Hardcoding**: Always check if a value (color, spacing, breakpoint) is already provided by a UIKit SASS variable before defining it manually to ensure design consistency and easy theme maintenance.
 20. **Optimistic Continuity**: When updating user preferences (like language or currency), update the application state manually upon a successful API response to avoid unnecessary full-session re-initialization calls.
 21. **Partial Updates via PATCH**: Prefer the `PATCH` verb for partial updates to resources (like user preferences or profile settings) to minimize payload size and avoid overwriting fields not intended for modification.
+22. **Think Big**: Every feature, component, and line of code must be designed to meet the quality and scale expected of a platform competing with industry leaders like Amazon or eBay. We are not building a hobby project; we are building a global marketplace.
