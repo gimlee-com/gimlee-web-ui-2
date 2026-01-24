@@ -57,7 +57,7 @@ describe('AdDetailsPage', () => {
     await waitFor(() => {
       expect(screen.getByText('Test Ad')).toBeInTheDocument();
       expect(screen.getByText('Test Description')).toBeInTheDocument();
-      expect(screen.getByText('100 ARRR')).toBeInTheDocument();
+      expect(screen.getByText(/ARRR 100\.00/)).toBeInTheDocument();
       expect(screen.getByText('Test City, Test Country')).toBeInTheDocument();
     });
   });

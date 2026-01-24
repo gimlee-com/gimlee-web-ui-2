@@ -76,6 +76,14 @@ class ApiClient {
     });
   }
 
+  patch<T>(path: string, body?: any, options: RequestInit = {}) {
+    return this.request<T>(path, {
+      ...options,
+      method: 'PATCH',
+      body: body instanceof FormData ? body : JSON.stringify(body),
+    });
+  }
+
   delete<T>(path: string, options: RequestInit = {}) {
     return this.request<T>(path, { ...options, method: 'DELETE' });
   }

@@ -8,6 +8,7 @@ import { Label } from '../../components/uikit/Label/Label';
 import { Button } from '../../components/uikit/Button/Button';
 import { Icon } from '../../components/uikit/Icon/Icon';
 import { Grid } from '../../components/uikit/Grid/Grid';
+import { formatPrice } from '../../utils/currencyUtils';
 
 interface SalesAdCardProps {
   ad: AdPreviewDto;
@@ -21,7 +22,7 @@ const cardVariants = {
   visible: { 
     opacity: 1, 
     scale: 1,
-    transition: { type: 'spring', stiffness: 300, damping: 30 }
+    transition: { type: 'spring', stiffness: 400, damping: 40 }
   }
 } as const;
 
@@ -67,9 +68,18 @@ export const SalesAdCard: React.FC<SalesAdCardProps> = ({ ad, onToggleStatus }) 
           </CardTitle>
           
           <div className="uk-margin-small-bottom">
-            {ad.price ? (
+            {ad.preferredPrice ? (
               <span className="uk-text-primary uk-text-lead uk-text-bold">
-                {ad.price.amount} {ad.price.currency}
+                {formatPrice(ad.preferredPrice.amount, ad.preferredPrice.currency)}
+                {ad.price && (
+                  <div className="uk-text-meta" style={{ fontWeight: 'normal', fontSize: '0.8rem' }}>
+                    ({formatPrice(ad.price.amount, ad.price.currency)})
+                  </div>
+                )}
+              </span>
+            ) : ad.price ? (
+              <span className="uk-text-primary uk-text-lead uk-text-bold">
+                {formatPrice(ad.price.amount, ad.price.currency)}
               </span>
             ) : (
               <span className="uk-text-muted">{t('ads.price')}: -</span>

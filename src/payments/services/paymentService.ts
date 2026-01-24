@@ -1,7 +1,10 @@
 import { apiClient } from '../../services/apiClient';
-import type { PirateChainTransaction, YCashTransaction } from '../../types/api';
+import type { PirateChainTransaction, YCashTransaction, CurrencyDto } from '../../types/api';
 
 export const paymentService = {
+  getCurrencies: () =>
+    apiClient.get<CurrencyDto[]>('/payments/currency/list'),
+
   addPirateChainViewKey: (viewKey: string) =>
     apiClient.post<void>('/payments/piratechain/addresses/view-key', { viewKey }),
 

@@ -1,4 +1,13 @@
-export type Currency = 'ARRR' | 'YEC';
+export type CurrencyType = 'FIAT' | 'CRYPTO';
+
+export interface CurrencyDto {
+  code: string;
+  name: string;
+  type: CurrencyType;
+  decimalPlaces: number;
+}
+
+export type Currency = string;
 
 export interface CurrencyAmountDto {
   amount: number;
@@ -33,6 +42,7 @@ export interface AdPreviewDto {
   id: string;
   title: string;
   price?: CurrencyAmountDto;
+  preferredPrice?: CurrencyAmountDto;
   mainPhotoPath?: string;
   location?: LocationWithCityDetailsDto;
   status?: 'ACTIVE' | 'INACTIVE' | 'SOLD' | 'DELETED';
@@ -52,6 +62,7 @@ export interface AdDetailsDto {
   description?: string;
   location?: LocationWithCityDetailsDto;
   price?: CurrencyAmountDto;
+  preferredPrice?: CurrencyAmountDto;
   categoryId?: number;
   categoryPath?: CategoryPathElementDto[];
   mediaPaths?: string[];
@@ -153,10 +164,12 @@ export interface IdentityVerificationResponse {
 
 export interface UserPreferencesDto {
   language: string;
+  preferredCurrency: string;
 }
 
 export interface UpdateUserPreferencesRequestDto {
-  language: string;
+  language?: string;
+  preferredCurrency?: string;
 }
 
 export interface FetchAdsRequestDto {
@@ -265,4 +278,5 @@ export interface UserProfileDto {
 export interface SessionInitResponseDto {
   accessToken: string;
   userProfile: UserProfileDto | null;
+  preferredCurrency?: string;
 }

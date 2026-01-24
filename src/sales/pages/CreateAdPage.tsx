@@ -42,7 +42,7 @@ const CreateAdPage: React.FC = () => {
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 40 }}
       className="uk-flex uk-flex-center"
     >
       <div className="uk-width-large">

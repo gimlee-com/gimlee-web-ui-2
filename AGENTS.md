@@ -39,7 +39,8 @@ Instead of using raw HTML and UIkit classes, we use specialized React wrappers l
 - **Handling Cloned Elements**: Components like `Slider` with `infinite: true` clone DOM elements. To robustly identify items in event listeners (like `itemshow`), use `data-index` attributes on the items. Clones will carry these attributes, allowing you to accurately map them back to your data.
 
 #### **B. Animation & Motion Design**
-- **Spring Physics**: We use Framer Motion to create a "tactile" feel. Transitions (especially for validation messages) should use `type: 'spring'` with high stiffness and damping for a snappy, physical response.
+- **Spring Physics**: We use Framer Motion to create a "tactile" feel. Transitions should use `type: 'spring'` with standardized parameters (**`stiffness: 400, damping: 40`**) to achieve a snappy, critically damped physical response.
+- **Staggered Entrances**: When navigating to a new page or revealing a list of items (e.g., in Profile or Ads), use staggered animations (`staggerChildren` in container variants) to orchestrate a smooth, non-jarring entrance for children components.
 - **Layout Transitions**: Use the `layout` prop on `motion` components. This ensures that when elements appear or disappear (like error messages or expanded card details), the surrounding UI smoothly adjusts rather than jumping instantly.
 - **AnimatePresence**: Always wrap conditional elements (like `FormMessage` or expanded details) in `AnimatePresence` to enable smooth exit animations.
 - **Detail Expansion**: For expandable cards, combine `layout` on the wrapper and `AnimatePresence` for the content to create a "tactile" expansion effect.
@@ -57,6 +58,7 @@ Our forms prioritize a "friendly" user experience over immediate error shouting:
 
 #### **D. Internationalization (I18n)**
 - No hardcoded text in components. All strings must be extracted to `src/i18n.ts`.
+- **Regional Settings**: Group internationalization-related preferences (e.g., Language, Preferred Currency) into a single, cohesive **"Regional Settings"** card. This provides a cleaner user experience than scattering these settings across multiple sections.
 - **IETF Tags**: Use full IETF BCP 47 language tags (e.g., `en-US`, `pl-PL`) for resources and backend communication. This is strictly required for compatibility with backend `Accept-Language` headers and user preferences.
 - Support both English (`en-US`) and Polish (`pl-PL`).
 
@@ -75,7 +77,7 @@ Our forms prioritize a "friendly" user experience over immediate error shouting:
     - Global UIkit variable overrides go in `src/styles/uikit-variables.scss`.
     - Global theme customizations go in `src/styles/main.scss`.
 - **UIKit Variable & Feature Reuse**:
-    - **Think Twice**: It is absolutely crucial to think twice before using any specific number, color, or value in a SCSS file. Always check if it is already provided by a UIKit variable (e.g., `$global-margin`, `$padding-small-padding`, `$global-primary-background`).
+    - **Think Twice**: It is absolutely crucial to think twice before using any specific number, color, or value in a SCSS file. Always check if it is already provided by a UIKit variable.
     - **Responsive Consistency**: Use UIKit's SCSS media breakpoint variables (e.g., `$breakpoint-small-max`, `$breakpoint-medium`) instead of hardcoded pixel values in media queries to ensure consistent behavior across the app.
     - **Mixin Hooks**: Leverage UIKit hooks (e.g., `@mixin hook-card()`) and miscellaneous hooks (e.g., `@mixin hook-card-misc()`) to add custom rules. This approach avoids repeating selectors and maintains the correct CSS cascade.
     - **Import Order**: Follow the strict UIKit import order in `main.scss` (Custom variables → UIKit variables/mixins → Custom mixins/hooks → UIKit core) to ensure variables and mixins are correctly applied.
@@ -185,3 +187,5 @@ Every component (whether shared or module-specific) follows the same pattern:
 17. **Preserve Navigation Context**: When navigating to detail pages, pass the current location (including filters/pagination) in the router's `state`. Use this state to implement "smart" back buttons that return users to their exact previous context.
 18. **Focused UI for Depth**: Use "focused" UI modes (like the Focused Navbar) to remove clutter and emphasize core content when users are deep in a specific task or viewing details.
 19. **Think Twice Before Hardcoding**: Always check if a value (color, spacing, breakpoint) is already provided by a UIKit SASS variable before defining it manually to ensure design consistency and easy theme maintenance.
+20. **Optimistic Continuity**: When updating user preferences (like language or currency), update the application state manually upon a successful API response to avoid unnecessary full-session re-initialization calls.
+21. **Partial Updates via PATCH**: Prefer the `PATCH` verb for partial updates to resources (like user preferences or profile settings) to minimize payload size and avoid overwriting fields not intended for modification.

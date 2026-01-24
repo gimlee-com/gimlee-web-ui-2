@@ -6,5 +6,5 @@ export const userService = {
     apiClient.get<UserPreferencesDto>('/user/preferences'),
   
   updateUserPreferences: (data: UpdateUserPreferencesRequestDto) => 
-    apiClient.put<UserPreferencesDto>('/user/preferences', data),
+    apiClient.patch<UserPreferencesDto>('/user/preferences', data),
 };

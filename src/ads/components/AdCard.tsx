@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'motion/react';
 import type { AdPreviewDto } from '../../types/api';
 import { Card, CardMedia, CardBody, CardTitle } from '../../components/uikit/Card/Card';
+import { formatPrice } from '../../utils/currencyUtils';
 
 interface AdCardProps {
   ad: AdPreviewDto;
@@ -15,7 +16,7 @@ const cardVariants = {
   visible: { 
     opacity: 1, 
     scale: 1,
-    transition: { type: 'spring', stiffness: 300, damping: 30 }
+    transition: { type: 'spring', stiffness: 400, damping: 40 }
   }
 } as const;
 
@@ -43,9 +44,18 @@ export const AdCard: React.FC<AdCardProps> = ({ ad }) => {
             {ad.title}
           </Link>
         </CardTitle>
-        {ad.price && (
+        {ad.preferredPrice ? (
           <p className="uk-text-primary uk-text-bold">
-            {ad.price.amount} {ad.price.currency}
+            {formatPrice(ad.preferredPrice.amount, ad.preferredPrice.currency)}
+            {ad.price && (
+              <span className="uk-text-meta uk-margin-small-left" style={{ fontWeight: 'normal' }}>
+                ({formatPrice(ad.price.amount, ad.price.currency)})
+              </span>
+            )}
+          </p>
+        ) : ad.price && (
+          <p className="uk-text-primary uk-text-bold">
+            {formatPrice(ad.price.amount, ad.price.currency)}
           </p>
         )}
         {ad.location?.city && (

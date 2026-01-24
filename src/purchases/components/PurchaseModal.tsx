@@ -18,6 +18,7 @@ import { Spinner } from '../../components/uikit/Spinner/Spinner';
 import { Progress } from '../../components/uikit/Progress/Progress';
 import { useAppDispatch } from '../../store';
 import { updateActivePurchaseStatus, setModalOpen, clearActivePurchase } from '../../store/purchaseSlice';
+import { formatPrice } from '../../utils/currencyUtils';
 import { purchaseService } from '../services/purchaseService';
 import type { PurchaseResponseDto, PurchaseStatus } from '../../types/api';
 import { useUIKit } from '../../hooks/useUIkit';
@@ -127,7 +128,9 @@ export const PurchaseModal = forwardRef<HTMLDivElement, PurchaseModalProps>(
 
     const handleCancel = async () => {
       const confirmMessage = paidAmount > 0 
-        ? t('purchases.partialPaymentWarning', { paid: paidAmount, currency: purchase.currency })
+        ? t('purchases.partialPaymentWarning', { 
+            paid: formatPrice(paidAmount, purchase.currency)
+          })
         : t('purchases.confirmCancel');
 
       UIkit.modal.confirm(confirmMessage, { 
@@ -202,9 +205,8 @@ export const PurchaseModal = forwardRef<HTMLDivElement, PurchaseModalProps>(
               <div className="uk-margin-small-top">
                 <p className="uk-text-small uk-margin-remove-bottom">
                   {t('purchases.paymentProgress', { 
-                    paid: paidAmount, 
-                    total: purchase.payment.amount, 
-                    currency: purchase.currency 
+                    paid: formatPrice(paidAmount, purchase.currency), 
+                    total: formatPrice(purchase.payment.amount, purchase.currency)
                   })}
                 </p>
                 <Progress 
@@ -248,7 +250,7 @@ export const PurchaseModal = forwardRef<HTMLDivElement, PurchaseModalProps>(
       }
     };
 
-    const springTransition: Transition = { type: 'spring', stiffness: 300, damping: 30 };
+    const springTransition: Transition = { type: 'spring', stiffness: 400, damping: 40 };
 
     return (
       <Modal ref={mergedRef} container={false} escClose={false} bgClose={false}>
@@ -268,7 +270,7 @@ export const PurchaseModal = forwardRef<HTMLDivElement, PurchaseModalProps>(
               </div>
               <div className="uk-width-expand">
                 <p className="uk-margin-remove uk-text-large uk-text-bold">
-                  {purchase.payment.amount} {purchase.currency}
+                  {formatPrice(purchase.payment.amount, purchase.currency)}
                 </p>
               </div>
             </div>

@@ -21,6 +21,7 @@ import { Slidenav } from '../../components/uikit/Slidenav/Slidenav';
 import { Breadcrumb, BreadcrumbItem } from '../../components/uikit/Breadcrumb/Breadcrumb';
 import { useNavbarMode } from '../../hooks/useNavbarMode';
 import NavbarPortal from '../../components/Navbar/NavbarPortal';
+import { formatPrice } from '../../utils/currencyUtils';
 import styles from './AdDetailsPage.module.scss';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
@@ -312,9 +313,18 @@ const AdDetailsPage: React.FC = () => {
         </div>
         <div className="uk-width-1-3@m">
           <Heading as="h2">{ad.title}</Heading>
-          {ad.price && (
+          {ad.preferredPrice ? (
             <p className="uk-text-large uk-text-primary uk-text-bold">
-              {ad.price.amount} {ad.price.currency}
+              {formatPrice(ad.preferredPrice.amount, ad.preferredPrice.currency)}
+              {ad.price && (
+                <span className="uk-text-meta uk-margin-small-left" style={{ fontWeight: 'normal' }}>
+                  ({formatPrice(ad.price.amount, ad.price.currency)})
+                </span>
+              )}
+            </p>
+          ) : ad.price && (
+            <p className="uk-text-large uk-text-primary uk-text-bold">
+              {formatPrice(ad.price.amount, ad.price.currency)}
             </p>
           )}
           <hr />

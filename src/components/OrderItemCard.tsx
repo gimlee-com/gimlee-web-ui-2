@@ -9,6 +9,7 @@ import { Icon } from './uikit/Icon/Icon';
 import { Progress } from './uikit/Progress/Progress';
 import { Button } from './uikit/Button/Button';
 import { useAppDispatch, useAppSelector } from '../store';
+import { formatPrice } from '../utils/currencyUtils';
 import { setActivePurchase } from '../store/purchaseSlice';
 import { purchaseService } from '../purchases/services/purchaseService';
 import type { PurchaseHistoryDto, SalesOrderDto, PurchaseStatus, PurchaseStatusResponseDto } from '../types/api';
@@ -101,7 +102,7 @@ export const OrderItemCard: React.FC<OrderItemCardProps> = ({ order, type }) => 
               </Grid>
             </div>
             <div className="uk-text-bold uk-text-primary uk-margin-small-left uk-text-nowrap">
-              {order.totalAmount} {order.currency}
+              {formatPrice(order.totalAmount, order.currency)}
             </div>
           </div>
           
@@ -135,7 +136,7 @@ export const OrderItemCard: React.FC<OrderItemCardProps> = ({ order, type }) => 
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 40 }}
               className="uk-overflow-hidden"
             >
               <hr className="uk-margin-small" />
@@ -148,12 +149,12 @@ export const OrderItemCard: React.FC<OrderItemCardProps> = ({ order, type }) => 
                         <div className="uk-width-expand">
                           <div className="uk-text-bold">{item.title}</div>
                           <div className="uk-text-meta">
-                            {item.quantity} x {item.unitPrice} {order.currency}
+                            {item.quantity} x {formatPrice(item.unitPrice, order.currency)}
                           </div>
                         </div>
                         <div className="uk-width-auto uk-text-right">
                           <div className="uk-text-emphasis">
-                            {(item.quantity * item.unitPrice).toFixed(2)} {order.currency}
+                            {formatPrice(item.quantity * item.unitPrice, order.currency)}
                           </div>
                         </div>
                       </Grid>
@@ -169,9 +170,8 @@ export const OrderItemCard: React.FC<OrderItemCardProps> = ({ order, type }) => 
                   <div className="uk-margin-small-top">
                     <p className="uk-text-small uk-margin-remove-bottom">
                       {t('purchases.paymentProgress', { 
-                        paid: statusDetails.paidAmount || 0, 
-                        total: statusDetails.totalAmount || order.totalAmount, 
-                        currency: order.currency 
+                        paid: formatPrice(statusDetails.paidAmount || 0, order.currency), 
+                        total: formatPrice(statusDetails.totalAmount || order.totalAmount, order.currency)
                       })}
                     </p>
                     <Progress 

@@ -299,7 +299,7 @@ const Navbar: React.FC = () => {
           backgroundColor: isScrolled ? 'rgba(255, 255, 255, 1)' : 'rgba(255, 255, 255, 0)',
           boxShadow: isScrolled ? '0 2px 10px rgba(0,0,0,0.1)' : '0 0 0 rgba(0,0,0,0)',
         }}
-        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+        transition={{ type: 'spring', stiffness: 400, damping: 40 }}
       >
         <div className={styles.navbarWrapper}>
           <Container size="expand" className={styles.responsiveContainer}>
@@ -325,7 +325,7 @@ const Navbar: React.FC = () => {
                           height="40"
                           initial={false}
                           animate={{ height: isScrolled ? 30 : 40 }}
-                          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                          transition={{ type: 'spring', stiffness: 400, damping: 40 }}
                           className="uk-margin-small-right"
                         />
                       </Link>

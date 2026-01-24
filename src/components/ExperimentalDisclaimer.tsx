@@ -11,7 +11,7 @@ export const ExperimentalDisclaimer: React.FC = () => {
     <motion.div
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 40 }}
       className="uk-margin-medium-bottom"
     >
       <Alert variant="primary" className="uk-border-rounded uk-box-shadow-small">

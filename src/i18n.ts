@@ -14,7 +14,9 @@ const resources = {
         "view": "View",
         "delete": "Delete",
         "actions": "Actions",
-        "status": "Status"
+        "status": "Status",
+        "confirmations": "Confirmations",
+        "memo": "Memo"
       },
       "navbar": {
         "browseAds": "Browse Ads",
@@ -123,10 +125,10 @@ const resources = {
         "statusCancelled": "Purchase cancelled.",
         "cancelPurchase": "Cancel Purchase",
         "confirmCancel": "Are you sure you want to cancel this purchase?",
-        "partialPaymentWarning": "Warning: You have already paid {{paid}} {{currency}}. Cancelling this purchase will result in permanent loss of these funds. Are you sure you want to proceed?",
+        "partialPaymentWarning": "Warning: You have already paid {{paid}}. Cancelling this purchase will result in permanent loss of these funds. Are you sure you want to proceed?",
         "close": "Close",
         "timeLeft": "Time left: {{time}}",
-        "paymentProgress": "Payment progress: {{paid}} / {{total}} {{currency}}",
+        "paymentProgress": "Payment progress: {{paid}} / {{total}}",
         "storedPurchaseFound": "You have an active purchase. Click here to view it.",
         "pendingPurchaseExists": "You already have a pending purchase. Please complete it before starting a new one.",
         "items": "Items",
@@ -135,6 +137,7 @@ const resources = {
       },
       "profile": {
         "title": "Profile & Settings",
+        "regionalSettings": "Regional Settings",
         "language": "Language",
         "paymentMonitoring": "Pirate Chain Payment Monitoring",
         "paymentMonitoringYec": "YCash Payment Monitoring",
@@ -146,7 +149,11 @@ const resources = {
         "recentTransactionsYec": "Recent YCash Transactions",
         "noTransactions": "No transactions found.",
         "keyUpdated": "Viewing key updated successfully.",
-        "failedToSaveLanguage": "Failed to save language preference."
+        "preferencesUpdated": "Preferences updated successfully.",
+        "failedToSaveLanguage": "Failed to save language preference.",
+        "preferredCurrency": "Preferred Currency",
+        "searchCurrency": "Search for a currency...",
+        "failedToSaveCurrency": "Failed to save preferred currency."
       }
     }
   },
@@ -161,7 +168,9 @@ const resources = {
         "view": "Zobacz",
         "delete": "Usuń",
         "actions": "Akcje",
-        "status": "Status"
+        "status": "Status",
+        "confirmations": "Potwierdzenia",
+        "memo": "Memo"
       },
       "navbar": {
         "browseAds": "Przeglądaj ogłoszenia",
@@ -270,10 +279,10 @@ const resources = {
         "statusCancelled": "Zakup anulowany.",
         "cancelPurchase": "Anuluj zakup",
         "confirmCancel": "Czy na pewno chcesz anulować ten zakup?",
-        "partialPaymentWarning": "Uwaga: Zapłacono już {{paid}} {{currency}}. Anulowanie tego zakupu spowoduje trwałą utratę tych środków. Czy na pewno chcesz kontynuować?",
+        "partialPaymentWarning": "Uwaga: Zapłacono już {{paid}}. Anulowanie tego zakupu spowoduje trwałą utratę tych środków. Czy na pewno chcesz kontynuować?",
         "close": "Zamknij",
         "timeLeft": "Pozostały czas: {{time}}",
-        "paymentProgress": "Postęp płatności: {{paid}} / {{total}} {{currency}}",
+        "paymentProgress": "Postęp płatności: {{paid}} / {{total}}",
         "storedPurchaseFound": "Masz aktywny zakup. Kliknij tutaj, aby go zobaczyć.",
         "pendingPurchaseExists": "Masz już oczekujący zakup. Dokończ go przed rozpoczęciem nowego.",
         "items": "Produkty",
@@ -282,6 +291,7 @@ const resources = {
       },
       "profile": {
         "title": "Profil i ustawienia",
+        "regionalSettings": "Ustawienia regionalne",
         "language": "Język",
         "paymentMonitoring": "Monitorowanie płatności Pirate Chain",
         "paymentMonitoringYec": "Monitorowanie płatności YCash",
@@ -293,7 +303,11 @@ const resources = {
         "recentTransactionsYec": "Ostatnie transakcje YCash",
         "noTransactions": "Nie znaleziono transakcji.",
         "keyUpdated": "Klucz podglądu został zaktualizowany.",
-        "failedToSaveLanguage": "Nie udało się zapisać preferencji języka."
+        "preferencesUpdated": "Preferencje zostały zaktualizowane.",
+        "failedToSaveLanguage": "Nie udało się zapisać preferencji języka.",
+        "preferredCurrency": "Preferowana waluta",
+        "searchCurrency": "Szukaj waluty...",
+        "failedToSaveCurrency": "Nie udało się zapisać preferowanej waluty."
       }
     }
   }

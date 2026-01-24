@@ -8,6 +8,8 @@ import { decodeJwt } from '../auth/utils/jwt';
 interface AuthContextType {
   isAuthenticated: boolean;
   userProfile: UserProfileDto | null;
+  preferredCurrency: string | null;
+  setPreferredCurrency: (currency: string | null) => void;
   username: string | null;
   roles: string[];
   login: (token: string) => Promise<void>;
@@ -20,6 +22,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [userProfile, setUserProfile] = useState<UserProfileDto | null>(null);
+  const [preferredCurrency, setPreferredCurrency] = useState<string | null>(null);
   const [username, setUsername] = useState<string | null>(null);
   const [roles, setRoles] = useState<string[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
@@ -27,7 +30,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const refreshSession = useCallback(async () => {
     try {
-      const session = await apiClient.get<SessionInitResponseDto>('/session/init?decorators=accessToken,userProfile');
+      const session = await apiClient.get<SessionInitResponseDto>('/session/init?decorators=accessToken,userProfile,preferredCurrency');
       if (session.accessToken) {
         apiClient.setToken(session.accessToken);
         const decoded = decodeJwt(session.accessToken);
@@ -41,6 +44,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setIsAuthenticated(false);
       }
       setUserProfile(session.userProfile);
+      setPreferredCurrency(session.preferredCurrency || null);
     } catch (error) {
       console.error('Failed to initialize session', error);
     } finally {
@@ -73,6 +77,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     apiClient.setToken(null);
     setIsAuthenticated(false);
     setUserProfile(null);
+    setPreferredCurrency(null);
     setUsername(null);
     setRoles([]);
   };
@@ -81,6 +86,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     <AuthContext.Provider value={{
       isAuthenticated,
       userProfile,
+      preferredCurrency,
+      setPreferredCurrency,
       username,
       roles,
       login,
