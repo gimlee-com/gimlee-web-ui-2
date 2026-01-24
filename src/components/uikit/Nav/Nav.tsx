@@ -70,12 +70,13 @@ export const Nav = forwardRef<HTMLUListElement, NavProps>(
 
 export const NavItem = forwardRef<
   HTMLLIElement,
-  React.PropsWithChildren<{ active?: boolean; parent?: boolean }> &
+  React.PropsWithChildren<{ active?: boolean; parent?: boolean; disabled?: boolean }> &
     React.LiHTMLAttributes<HTMLLIElement>
->(({ children, active, parent, className: customClassName, ...props }, ref) => {
+>(({ children, active, parent, disabled, className: customClassName, ...props }, ref) => {
   const classNames = []
   if (active) classNames.push('uk-active')
   if (parent) classNames.push('uk-parent')
+  if (disabled) classNames.push('uk-disabled')
   if (customClassName) classNames.push(customClassName)
 
   return (

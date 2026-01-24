@@ -94,7 +94,13 @@ const resources = {
         "failedToDeactivate": "Failed to deactivate ad",
         "notFound": "Ad not found.",
         "mainPhoto": "Main Photo",
-        "setAsMain": "Set as main"
+        "setAsMain": "Set as main",
+        "status": {
+          "sold": "Sold",
+          "new": "New",
+          "outOfStock": "Out of Stock"
+        },
+        "onlyLeft": "Only {{count}} left!"
       },
       "sales": {
         "title": "Sales",
@@ -248,7 +254,13 @@ const resources = {
         "failedToDeactivate": "Nie udało się dezaktywować ogłoszenia",
         "notFound": "Ogłoszenie nie znalezione.",
         "mainPhoto": "Główne zdjęcie",
-        "setAsMain": "Ustaw jako główne"
+        "setAsMain": "Ustaw jako główne",
+        "status": {
+          "sold": "Sprzedane",
+          "new": "Nowe",
+          "outOfStock": "Brak w magazynie"
+        },
+        "onlyLeft": "Ostatnie {{count}} sztuk!"
       },
       "sales": {
         "title": "Sprzedaż",

@@ -17,7 +17,7 @@ import { Card, CardBody } from '../../components/uikit/Card/Card';
 import { Grid } from '../../components/uikit/Grid/Grid';
 import { TransactionCard } from '../components/TransactionCard';
 
-const springConfig = { type: 'spring', stiffness: 400, damping: 40 };
+const springConfig = { type: 'spring', stiffness: 400, damping: 40 } as const;
 
 const containerVariants = {
   hidden: { opacity: 0 },

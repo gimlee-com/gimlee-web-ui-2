@@ -3,12 +3,13 @@ import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'motion/react';
 import type { AdPreviewDto } from '../../types/api';
-import { Card, CardMedia, CardBody, CardTitle } from '../../components/uikit/Card/Card';
+import { Card, CardBody } from '../../components/uikit/Card/Card';
 import { Label } from '../../components/uikit/Label/Label';
 import { Button } from '../../components/uikit/Button/Button';
 import { Icon } from '../../components/uikit/Icon/Icon';
 import { Grid } from '../../components/uikit/Grid/Grid';
 import { formatPrice } from '../../utils/currencyUtils';
+import styles from './SalesAdCard.module.scss';
 
 interface SalesAdCardProps {
   ad: AdPreviewDto;
@@ -18,7 +19,7 @@ interface SalesAdCardProps {
 const API_URL = import.meta.env.VITE_API_URL || '';
 
 const cardVariants = {
-  hidden: { opacity: 0, scale: 0.9 },
+  hidden: { opacity: 0, scale: 0.95 },
   visible: { 
     opacity: 1, 
     scale: 1,
@@ -30,7 +31,7 @@ export const SalesAdCard: React.FC<SalesAdCardProps> = ({ ad, onToggleStatus }) 
   const { t } = useTranslation();
   const location = useLocation();
   const photoUrl = ad.mainPhotoPath 
-    ? `${API_URL}/api/media?p=${ad.mainPhotoPath}` 
+    ? `${API_URL}/api/media?p=/thumbs-sm${ad.mainPhotoPath}` 
     : '/placeholder-image.svg';
 
   const statusVariant = ad.status === 'ACTIVE' ? 'success' : 'warning';
@@ -41,78 +42,72 @@ export const SalesAdCard: React.FC<SalesAdCardProps> = ({ ad, onToggleStatus }) 
       variants={cardVariants}
       initial="hidden"
       animate="visible"
-      exit={{ opacity: 0, scale: 0.9 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      className="uk-height-1-1"
     >
-      <Card variant="default" className="uk-height-1-1 uk-flex uk-flex-column">
-        <CardMedia position="top">
-          <div className="uk-inline uk-width-1-1">
-            <img 
-              src={photoUrl} 
-              alt={ad.title} 
-              style={{ height: '180px', objectFit: 'cover', width: '100%' }} 
-            />
-            <div className="uk-overlay uk-position-top-right uk-padding-remove uk-margin-small">
-              <Label variant={statusVariant}>{ad.status}</Label>
-            </div>
+      <Card className={styles.salesCard}>
+        <div className={styles.mediaWrapper}>
+          <img src={photoUrl} alt={ad.title} className={styles.image} />
+          <div className={styles.statusOverlay}>
+            <Label variant={statusVariant}>{ad.status}</Label>
           </div>
-        </CardMedia>
-        <CardBody className="uk-flex-1">
-          <CardTitle className="uk-margin-small-bottom">
-            <Link 
-              to={`/ads/${ad.id}`} 
-              state={{ from: location.pathname + location.search }}
-              className="uk-link-reset uk-text-bold"
-            >
-              {ad.title}
-            </Link>
-          </CardTitle>
+        </div>
+
+        <CardBody className={styles.content}>
+          <Link 
+            to={`/ads/${ad.id}`} 
+            state={{ from: location.pathname + location.search }}
+            className={styles.titleLink}
+          >
+            {ad.title}
+          </Link>
           
-          <div className="uk-margin-small-bottom">
+          <div className={styles.price}>
             {ad.preferredPrice ? (
-              <span className="uk-text-primary uk-text-lead uk-text-bold">
+              <>
                 {formatPrice(ad.preferredPrice.amount, ad.preferredPrice.currency)}
                 {ad.price && (
-                  <div className="uk-text-meta" style={{ fontWeight: 'normal', fontSize: '0.8rem' }}>
+                  <div className={styles.secondaryPrice}>
                     ({formatPrice(ad.price.amount, ad.price.currency)})
                   </div>
                 )}
-              </span>
+              </>
             ) : ad.price ? (
-              <span className="uk-text-primary uk-text-lead uk-text-bold">
-                {formatPrice(ad.price.amount, ad.price.currency)}
-              </span>
+              formatPrice(ad.price.amount, ad.price.currency)
             ) : (
-              <span className="uk-text-muted">{t('ads.price')}: -</span>
+              <span className="uk-text-muted">-</span>
             )}
           </div>
 
-          <div className="uk-text-meta uk-margin-small-bottom">
+          <div className={styles.meta}>
             {ad.location?.city && (
-              <div className="uk-flex uk-flex-middle uk-margin-xsmall-bottom">
-                <Icon icon="location" ratio={0.8} className="uk-margin-small-right" />
-                {ad.location.city.name}{ad.location.city.district ? ` (${ad.location.city.district})` : ''}, {ad.location.city.country}
+              <div className={styles.metaItem}>
+                <span className={styles.icon}><Icon icon="location" ratio={0.75} /></span>
+                {ad.location.city.name}{ad.location.city.district ? `, ${ad.location.city.district}` : ''}
               </div>
             )}
             {ad.createdAt && (
-              <div className="uk-flex uk-flex-middle uk-margin-xsmall-bottom">
-                <Icon icon="calendar" ratio={0.8} className="uk-margin-small-right" />
+              <div className={styles.metaItem}>
+                <span className={styles.icon}><Icon icon="calendar" ratio={0.75} /></span>
                 {new Date(ad.createdAt).toLocaleDateString()}
               </div>
             )}
             {ad.stock !== undefined && (
-              <div className="uk-flex uk-flex-middle">
-                <Icon icon="cart" ratio={0.8} className="uk-margin-small-right" />
+              <div className={styles.metaItem}>
+                <span className={styles.icon}><Icon icon="cart" ratio={0.75} /></span>
                 {t('ads.stock')}: {ad.availableStock ?? ad.stock} / {ad.stock}
               </div>
             )}
           </div>
         </CardBody>
-        <div className="uk-card-footer uk-padding-small">
+
+        <div className={styles.actions}>
           <Grid gap="small" className="uk-child-width-1-2">
             <div>
               <Link 
                 to={`/sales/ads/edit/${ad.id}`} 
                 className="uk-button uk-button-default uk-button-small uk-width-1-1"
+                style={{ borderRadius: '6px' }}
               >
                 {t('common.edit')}
               </Link>
@@ -123,6 +118,7 @@ export const SalesAdCard: React.FC<SalesAdCardProps> = ({ ad, onToggleStatus }) 
                 variant={ad.status === 'ACTIVE' ? 'default' : 'primary'}
                 onClick={() => onToggleStatus(ad)}
                 className="uk-width-1-1"
+                style={{ borderRadius: '6px' }}
               >
                 {ad.status === 'ACTIVE' ? t('ads.deactivate') : t('ads.activate')}
               </Button>

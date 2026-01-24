@@ -1,9 +1,13 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'motion/react';
+import { useTranslation } from 'react-i18next';
 import type { AdPreviewDto } from '../../types/api';
-import { Card, CardMedia, CardBody, CardTitle } from '../../components/uikit/Card/Card';
+import { Card, CardBody } from '../../components/uikit/Card/Card';
+import { Label } from '../../components/uikit/Label/Label';
+import { Icon } from '../../components/uikit/Icon/Icon';
 import { formatPrice } from '../../utils/currencyUtils';
+import styles from './AdCard.module.scss';
 
 interface AdCardProps {
   ad: AdPreviewDto;
@@ -21,50 +25,85 @@ const cardVariants = {
 } as const;
 
 export const AdCard: React.FC<AdCardProps> = ({ ad }) => {
+  const { t } = useTranslation();
   const location = useLocation();
   const photoUrl = ad.mainPhotoPath ? `${API_URL}/api/media?p=/thumbs-sm${ad.mainPhotoPath}` : '/placeholder-image.svg';
+
+  const isNew = ad.createdAt && (new Date().getTime() - new Date(ad.createdAt).getTime()) < 3 * 24 * 60 * 60 * 1000;
+  const isSold = ad.status === 'SOLD';
+  const isOutOfStock = ad.availableStock === 0;
 
   return (
     <motion.div
       variants={cardVariants}
       initial="hidden"
       animate="visible"
+      className="uk-height-1-1"
     >
-      <Card variant="default" className="uk-height-1-1">
-      <CardMedia position="top">
-        <img src={photoUrl} alt={ad.title} style={{ height: '200px', objectFit: 'cover', width: '100%' }} />
-      </CardMedia>
-      <CardBody>
-        <CardTitle>
+      <Card className={styles.adCard}>
+        <div className={styles.mediaWrapper}>
+          <div className={styles.badges}>
+            {isSold && <Label variant="danger">{t('ads.status.sold')}</Label>}
+            {!isSold && isOutOfStock && <Label variant="warning">{t('ads.status.outOfStock')}</Label>}
+            {isNew && !isSold && <Label variant="success">{t('ads.status.new')}</Label>}
+          </div>
+          <img src={photoUrl} alt={ad.title} className={styles.image} loading="lazy" />
+        </div>
+
+        <CardBody className={styles.content}>
           <Link 
             to={`/ads/${ad.id}`} 
             state={{ from: location.pathname + location.search }}
-            className="uk-link-reset"
+            className={styles.title}
           >
             {ad.title}
           </Link>
-        </CardTitle>
-        {ad.preferredPrice ? (
-          <p className="uk-text-primary uk-text-bold">
-            {formatPrice(ad.preferredPrice.amount, ad.preferredPrice.currency)}
-            {ad.price && (
-              <span className="uk-text-meta uk-margin-small-left" style={{ fontWeight: 'normal' }}>
-                ({formatPrice(ad.price.amount, ad.price.currency)})
+
+          <div className={styles.priceWrapper}>
+            {ad.preferredPrice ? (
+              <>
+                <span className={styles.primaryPrice}>
+                  {formatPrice(ad.preferredPrice.amount, ad.preferredPrice.currency)}
+                </span>
+                {ad.price && (
+                  <span className={styles.secondaryPrice}>
+                    ({formatPrice(ad.price.amount, ad.price.currency)})
+                  </span>
+                )}
+              </>
+            ) : ad.price && (
+              <span className={styles.primaryPrice}>
+                {formatPrice(ad.price.amount, ad.price.currency)}
               </span>
             )}
-          </p>
-        ) : ad.price && (
-          <p className="uk-text-primary uk-text-bold">
-            {formatPrice(ad.price.amount, ad.price.currency)}
-          </p>
-        )}
-        {ad.location?.city && (
-          <p className="uk-text-meta">
-            {ad.location.city.name}{ad.location.city.district ? ` (${ad.location.city.district})` : ''}, {ad.location.city.country}
-          </p>
-        )}
-      </CardBody>
-    </Card>
-  </motion.div>
+          </div>
+
+          {ad.location?.city && (
+            <div className={styles.locationWrapper}>
+              <span className={styles.icon}>
+                <Icon icon="location" ratio={0.8} />
+              </span>
+              <span>
+                {ad.location.city.name}{ad.location.city.district ? `, ${ad.location.city.district}` : ''}
+              </span>
+            </div>
+          )}
+
+          <div className={styles.footer}>
+            {ad.availableStock !== undefined && ad.availableStock > 0 && ad.availableStock <= 5 ? (
+              <span className={`${styles.stock} ${styles.low}`}>
+                {t('ads.onlyLeft', { count: ad.availableStock })}
+              </span>
+            ) : (
+               <span className={styles.date}>
+                 {ad.createdAt && new Date(ad.createdAt).toLocaleDateString()}
+               </span>
+            )}
+            
+            <Icon icon="chevron-right" ratio={0.8} className="uk-text-muted" />
+          </div>
+        </CardBody>
+      </Card>
+    </motion.div>
   );
 };

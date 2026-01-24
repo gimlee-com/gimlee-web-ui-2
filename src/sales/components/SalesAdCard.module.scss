@@ -1,0 +1,115 @@
+@import "../../styles/uikit-variables.scss";
+
+.salesCard {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border: 1px solid #e5e5e5;
+  background: #fff;
+  
+  &:hover {
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.05);
+  }
+}
+
+.mediaWrapper {
+  position: relative;
+  overflow: hidden;
+  height: 160px;
+  background-color: #f9f9f9;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.statusOverlay {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+}
+
+.content {
+  padding: 16px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.titleLink {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #222;
+  text-decoration: none !important;
+  margin-bottom: 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.4;
+  
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+  }
+
+  &:hover {
+    color: $global-primary-background;
+  }
+}
+
+.price {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: $global-primary-background;
+  margin-bottom: 12px;
+}
+
+.secondaryPrice {
+  font-size: 0.8rem;
+  color: #888;
+  font-weight: 400;
+  margin-top: 2px;
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.8125rem;
+  color: #666;
+  margin-bottom: 16px;
+  
+  .metaItem {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    
+    .icon {
+      color: #999;
+      display: flex;
+      align-items: center;
+    }
+  }
+}
+
+.actions {
+  position: relative;
+  z-index: 2;
+  margin-top: auto;
+  padding: 12px 16px;
+  background: #fafafa;
+  border-top: 1px solid #f0f0f0;
+}
