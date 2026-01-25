@@ -11,6 +11,7 @@ vi.mock('../services/salesService', () => ({
   salesService: {
     getAdById: vi.fn(),
     updateAd: vi.fn(),
+    getAllowedCurrencies: vi.fn(),
   },
 }));
 
@@ -55,6 +56,10 @@ describe('EditAdPage City Suggester', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     (salesService.getAdById as any).mockResolvedValue(mockAd);
+    (salesService.getAllowedCurrencies as any).mockResolvedValue([
+      { code: 'ARRR', name: 'Pirate Chain' },
+      { code: 'YEC', name: 'YCash' }
+    ]);
   });
 
   it('should display city with district on initial load', async () => {

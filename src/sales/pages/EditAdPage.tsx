@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { salesService } from '../services/salesService';
 import { cityService } from '../../ads/services/cityService';
 import { apiClient } from '../../services/apiClient';
-import type { AdDetailsDto, UpdateAdRequestDto, CitySuggestion, CityDetailsDto, MediaUploadResponseDto } from '../../types/api';
+import type { AdDetailsDto, UpdateAdRequestDto, CitySuggestion, CityDetailsDto, MediaUploadResponseDto, CurrencyInfoDto } from '../../types/api';
 import { Heading } from '../../components/uikit/Heading/Heading';
 import { Spinner } from '../../components/uikit/Spinner/Spinner';
 import { Button } from '../../components/uikit/Button/Button';
@@ -33,11 +33,19 @@ const EditAdPage: React.FC = () => {
   const [citySearch, setCitySearch] = useState('');
   const [citySuggestions, setCitySuggestions] = useState<CitySuggestion[]>([]);
   const [selectedCity, setSelectedCity] = useState<CityDetailsDto | null>(null);
+  const [allowedCurrencies, setAllowedCurrencies] = useState<CurrencyInfoDto[]>([]);
 
   useEffect(() => {
-    if (id) {
-      salesService.getAdById(id)
-        .then(data => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const [currencies] = await Promise.all([
+          salesService.getAllowedCurrencies(),
+        ]);
+        setAllowedCurrencies(currencies);
+
+        if (id) {
+          const data = await salesService.getAdById(id);
           setAd(data);
           setMediaPaths(data.mediaPaths || []);
           setMainPhotoPath(data.mainPhotoPath || null);
@@ -56,11 +64,16 @@ const EditAdPage: React.FC = () => {
             mediaPaths: data.mediaPaths,
             stock: data.stock
           });
-        })
-        .catch(err => setError(err.message || t('auth.errors.generic')))
-        .finally(() => setLoading(false));
-    }
-  }, [id, reset]);
+        }
+      } catch (err: any) {
+        setError(err.message || t('auth.errors.generic'));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [id, reset, t]);
 
   const handleCitySearch = async (val: string) => {
     setCitySearch(val);
@@ -143,6 +156,20 @@ const EditAdPage: React.FC = () => {
       
       {error && <Alert variant="danger" onClose={() => setError(null)}>{error}</Alert>}
   
+      {allowedCurrencies.length === 0 && (
+        <Alert variant="warning" className="uk-margin-medium-bottom">
+          <Heading as="h4" className="uk-margin-small-bottom">{t('ads.notEligibleTitle')}</Heading>
+          <p className="uk-margin-small-bottom">{t('ads.notEligibleMessage')}</p>
+          <Button 
+            variant="primary" 
+            size="small" 
+            onClick={() => navigate('/profile')}
+          >
+            {t('ads.goToProfile')}
+          </Button>
+        </Alert>
+      )}
+
       <Form onSubmit={handleSubmit(onSubmit)} layout="stacked">
         <div className="uk-margin">
           <label className="uk-form-label">{t('ads.title')}</label>
@@ -198,8 +225,9 @@ const EditAdPage: React.FC = () => {
           <div className="uk-width-1-2@m">
             <label className="uk-form-label">{t('ads.currency')}</label>
             <Select {...register('currency')}>
-              <option value="ARRR">ARRR (Pirate Chain)</option>
-              <option value="YEC">YEC (YCash)</option>
+              {allowedCurrencies.map(c => (
+                <option key={c.code} value={c.code}>{c.code} ({c.name})</option>
+              ))}
             </Select>
           </div>
         </Grid>
@@ -283,7 +311,7 @@ const EditAdPage: React.FC = () => {
           >
             {t('common.cancel')}
           </Button>
-          <Button type="submit" variant="primary" disabled={saving}>
+          <Button type="submit" variant="primary" disabled={saving || allowedCurrencies.length === 0}>
             {saving ? <><Spinner ratio={0.5} className="uk-margin-small-right" /> {t('ads.saving')}</> : t('common.save')}
           </Button>
         </div>

@@ -10,11 +10,13 @@ import { Heading } from '../../components/uikit/Heading/Heading';
 import { Button } from '../../components/uikit/Button/Button';
 import { Alert } from '../../components/uikit/Alert/Alert';
 import { Spinner } from '../../components/uikit/Spinner/Spinner';
-import { Input, FormLabel } from '../../components/uikit/Form/Form';
+import { Input, FormLabel, FormControls, FormMessage } from '../../components/Form/Form';
 import { Dropdown } from '../../components/uikit/Dropdown/Dropdown';
 import { Nav, NavItem } from '../../components/uikit/Nav/Nav';
 import { Card, CardBody } from '../../components/uikit/Card/Card';
 import { Grid } from '../../components/uikit/Grid/Grid';
+import { Tab, TabItem } from '../../components/uikit/Tab/Tab';
+import { SwitcherContainer } from '../../components/uikit/Switcher/Switcher';
 import { TransactionCard } from '../components/TransactionCard';
 
 const springConfig = { type: 'spring', stiffness: 400, damping: 40 } as const;
@@ -55,7 +57,13 @@ const ProfilePage: React.FC = () => {
   const [savingYec, setSavingYec] = useState(false);
   const [savingCurrency, setSavingCurrency] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [arrrError, setArrrError] = useState<string | null>(null);
+  const [yecError, setYecError] = useState<string | null>(null);
+  const [arrrFocused, setArrrFocused] = useState(false);
+  const [yecFocused, setYecFocused] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
+  const [showArrrTransactions, setShowArrrTransactions] = useState(false);
+  const [showYecTransactions, setShowYecTransactions] = useState(false);
 
   const filteredCurrencies = currencies.filter(c => 
     c.code.toLowerCase().includes(currencySearch.toLowerCase()) || 
@@ -81,6 +89,8 @@ const ProfilePage: React.FC = () => {
 
   const handleLanguageChange = async (lang: string) => {
     setError(null);
+    setArrrError(null);
+    setYecError(null);
     setSuccess(null);
     i18n.changeLanguage(lang);
     if (isAuthenticated) {
@@ -102,6 +112,8 @@ const ProfilePage: React.FC = () => {
 
     setSavingCurrency(true);
     setError(null);
+    setArrrError(null);
+    setYecError(null);
     setSuccess(null);
     try {
       await userService.updateUserPreferences({ preferredCurrency: currencyCode });
@@ -119,6 +131,7 @@ const ProfilePage: React.FC = () => {
     e.preventDefault();
     setSavingArrr(true);
     setError(null);
+    setArrrError(null);
     setSuccess(null);
     try {
       await paymentService.addPirateChainViewKey(arrrViewKey);
@@ -128,7 +141,8 @@ const ProfilePage: React.FC = () => {
       const txs = await paymentService.getPirateChainTransactions();
       setArrrTransactions(txs);
     } catch (err: any) {
-      setError(err.message || t('auth.errors.generic'));
+      setArrrError(err.message || t('auth.errors.generic'));
+      setArrrFocused(false);
     } finally {
       setSavingArrr(false);
     }
@@ -138,6 +152,7 @@ const ProfilePage: React.FC = () => {
     e.preventDefault();
     setSavingYec(true);
     setError(null);
+    setYecError(null);
     setSuccess(null);
     try {
       await paymentService.addYCashViewKey(yecViewKey);
@@ -147,7 +162,8 @@ const ProfilePage: React.FC = () => {
       const txs = await paymentService.getYCashTransactions();
       setYecTransactions(txs);
     } catch (err: any) {
-      setError(err.message || t('auth.errors.generic'));
+      setYecError(err.message || t('auth.errors.generic'));
+      setYecFocused(false);
     } finally {
       setSavingYec(false);
     }
@@ -257,119 +273,195 @@ const ProfilePage: React.FC = () => {
         </Card>
       </motion.div>
 
-      <Grid gap="medium" className="uk-child-width-1-2@m">
-        <motion.div variants={cardVariants} layout transition={springConfig}>
-          <Card className="uk-height-1-1">
-            <CardBody>
-              <Heading as="h4">{t('profile.paymentMonitoring')}</Heading>
-              <p className="uk-text-meta">{t('profile.paymentDesc')}</p>
+      <motion.div variants={cardVariants} layout transition={springConfig}>
+        <Card>
+          <CardBody>
+            <Heading as="h4">{t('profile.sellingAndPayments')}</Heading>
+            
+            <Tab connect="#selling-payments-switcher" animation="uk-animation-fade">
+              <TabItem><a href="#">{t('profile.paymentMonitoring')}</a></TabItem>
+              <TabItem><a href="#">{t('profile.paymentMonitoringYec')}</a></TabItem>
+            </Tab>
 
-              <form onSubmit={handleSaveArrrViewKey}>
-                <Grid gap="small">
-                  <div className="uk-width-expand">
-                    <Input
-                      className="uk-width-1-1"
-                      type="text"
-                      placeholder={t('profile.viewKeyPlaceholder')}
-                      value={arrrViewKey}
-                      onChange={(e) => setArrrViewKey(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div className="uk-width-auto">
-                    <Button type="submit" variant="primary" disabled={savingArrr || !arrrViewKey}>
-                      {savingArrr ? <Spinner ratio={0.6} /> : t('profile.saveKey')}
-                    </Button>
-                  </div>
-                </Grid>
-              </form>
+            <SwitcherContainer id="selling-payments-switcher" className="uk-margin-medium-top">
+              <div>
+                <p className="uk-text-meta">{t('profile.paymentDesc')}</p>
 
-              <div className="uk-margin-large-top">
-                <Heading as="h4">{t('profile.recentTransactions')}</Heading>
-                <div>
-                  {loadingArrr ? (
-                    <Spinner />
-                  ) : (
+                <form onSubmit={handleSaveArrrViewKey}>
+                  <FormControls>
+                    <Grid gap="small">
+                      <div className="uk-width-1-1 uk-width-expand@s">
+                        <Input
+                          className="uk-width-1-1"
+                          type="text"
+                          placeholder={t('profile.viewKeyPlaceholder')}
+                          value={arrrViewKey}
+                          onChange={(e) => {
+                            setArrrViewKey(e.target.value);
+                            if (arrrError) setArrrError(null);
+                          }}
+                          onFocus={() => setArrrFocused(true)}
+                          onBlur={() => setArrrFocused(false)}
+                          status={arrrError && !arrrFocused ? 'danger' : undefined}
+                          required
+                        />
+                      </div>
+                      <div className="uk-width-1-1 uk-width-auto@s">
+                        <Button type="submit" variant="primary" className="uk-width-1-1" disabled={savingArrr || !arrrViewKey}>
+                          {savingArrr ? <Spinner ratio={0.6} /> : t('profile.saveKey')}
+                        </Button>
+                      </div>
+                    </Grid>
                     <AnimatePresence>
-                      {arrrTransactions.map((tx, index) => (
-                        <motion.div
-                          key={tx.txid}
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ ...springConfig, delay: index * 0.05 }}
-                        >
-                          <TransactionCard transaction={tx} currency="ARRR" />
-                        </motion.div>
-                      ))}
-                      {arrrTransactions.length === 0 && (
-                        <div className="uk-text-center uk-text-muted uk-padding-small">
-                          {t('profile.noTransactions')}
-                        </div>
+                      {arrrError && !arrrFocused && (
+                        <FormMessage type="error">{arrrError}</FormMessage>
                       )}
                     </AnimatePresence>
-                  )}
-                </div>
-              </div>
-            </CardBody>
-          </Card>
-        </motion.div>
+                  </FormControls>
+                </form>
 
-        <motion.div variants={cardVariants} layout transition={springConfig}>
-          <Card className="uk-height-1-1">
-            <CardBody>
-              <Heading as="h4">{t('profile.paymentMonitoringYec')}</Heading>
-              <p className="uk-text-meta">{t('profile.paymentDescYec')}</p>
-
-              <form onSubmit={handleSaveYecViewKey}>
-                <Grid gap="small">
-                  <div className="uk-width-expand">
-                    <Input
-                      className="uk-width-1-1"
-                      type="text"
-                      placeholder={t('profile.viewKeyPlaceholder')}
-                      value={yecViewKey}
-                      onChange={(e) => setYecViewKey(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div className="uk-width-auto">
-                    <Button type="submit" variant="primary" disabled={savingYec || !yecViewKey}>
-                      {savingYec ? <Spinner ratio={0.6} /> : t('profile.saveKey')}
+                <div className="uk-margin-large-top">
+                  <div className="uk-flex uk-flex-between@s uk-flex-middle uk-flex-column uk-flex-row@s uk-margin-small-bottom">
+                    <Heading as="h4" className="uk-margin-remove uk-margin-small-bottom uk-margin-remove@s">{t('profile.recentTransactions')}</Heading>
+                    <Button 
+                      size="small" 
+                      variant="link" 
+                      className="uk-width-1-1 uk-width-auto@s"
+                      onClick={() => setShowArrrTransactions(!showArrrTransactions)}
+                    >
+                      {showArrrTransactions ? t('profile.hideTransactions') : t('profile.showTransactions')}
+                      <span className="uk-margin-small-left" uk-icon={showArrrTransactions ? 'chevron-up' : 'chevron-down'}></span>
                     </Button>
                   </div>
-                </Grid>
-              </form>
-
-              <div className="uk-margin-large-top">
-                <Heading as="h4">{t('profile.recentTransactionsYec')}</Heading>
-                <div>
-                  {loadingYec ? (
-                    <Spinner />
-                  ) : (
-                    <AnimatePresence>
-                      {yecTransactions.map((tx, index) => (
-                        <motion.div
-                          key={tx.txid}
-                          initial={{ opacity: 0, x: 20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ ...springConfig, delay: index * 0.05 }}
-                        >
-                          <TransactionCard transaction={tx} currency="YEC" />
-                        </motion.div>
-                      ))}
-                      {yecTransactions.length === 0 && (
-                        <div className="uk-text-center uk-text-muted uk-padding-small">
-                          {t('profile.noTransactions')}
-                        </div>
-                      )}
-                    </AnimatePresence>
-                  )}
+                  
+                  <AnimatePresence>
+                    {showArrrTransactions && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={springConfig}
+                        style={{ overflow: 'hidden' }}
+                      >
+                        {loadingArrr ? (
+                          <div className="uk-flex uk-flex-center uk-padding-small">
+                            <Spinner />
+                          </div>
+                        ) : (
+                          <div>
+                            {arrrTransactions.map((tx, index) => (
+                              <motion.div
+                                key={tx.txid}
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ ...springConfig, delay: index * 0.05 }}
+                              >
+                                <TransactionCard transaction={tx} currency="ARRR" />
+                              </motion.div>
+                            ))}
+                            {arrrTransactions.length === 0 && (
+                              <div className="uk-text-center uk-text-muted uk-padding-small">
+                                {t('profile.noTransactions')}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               </div>
-            </CardBody>
-          </Card>
-        </motion.div>
-      </Grid>
+              <div>
+                <p className="uk-text-meta">{t('profile.paymentDescYec')}</p>
+
+                <form onSubmit={handleSaveYecViewKey}>
+                  <FormControls>
+                    <Grid gap="small">
+                      <div className="uk-width-1-1 uk-width-expand@s">
+                        <Input
+                          className="uk-width-1-1"
+                          type="text"
+                          placeholder={t('profile.viewKeyPlaceholder')}
+                          value={yecViewKey}
+                          onChange={(e) => {
+                            setYecViewKey(e.target.value);
+                            if (yecError) setYecError(null);
+                          }}
+                          onFocus={() => setYecFocused(true)}
+                          onBlur={() => setYecFocused(false)}
+                          status={yecError && !yecFocused ? 'danger' : undefined}
+                          required
+                        />
+                      </div>
+                      <div className="uk-width-1-1 uk-width-auto@s">
+                        <Button type="submit" variant="primary" className="uk-width-1-1" disabled={savingYec || !yecViewKey}>
+                          {savingYec ? <Spinner ratio={0.6} /> : t('profile.saveKey')}
+                        </Button>
+                      </div>
+                    </Grid>
+                    <AnimatePresence>
+                      {yecError && !yecFocused && (
+                        <FormMessage type="error">{yecError}</FormMessage>
+                      )}
+                    </AnimatePresence>
+                  </FormControls>
+                </form>
+
+                <div className="uk-margin-large-top">
+                  <div className="uk-flex uk-flex-between@s uk-flex-middle uk-flex-column uk-flex-row@s uk-margin-small-bottom">
+                    <Heading as="h4" className="uk-margin-remove uk-margin-small-bottom uk-margin-remove@s">{t('profile.recentTransactionsYec')}</Heading>
+                    <Button 
+                      size="small" 
+                      variant="link" 
+                      className="uk-width-1-1 uk-width-auto@s"
+                      onClick={() => setShowYecTransactions(!showYecTransactions)}
+                    >
+                      {showYecTransactions ? t('profile.hideTransactions') : t('profile.showTransactions')}
+                      <span className="uk-margin-small-left" uk-icon={showYecTransactions ? 'chevron-up' : 'chevron-down'}></span>
+                    </Button>
+                  </div>
+                  
+                  <AnimatePresence>
+                    {showYecTransactions && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={springConfig}
+                        style={{ overflow: 'hidden' }}
+                      >
+                        {loadingYec ? (
+                          <div className="uk-flex uk-flex-center uk-padding-small">
+                            <Spinner />
+                          </div>
+                        ) : (
+                          <div>
+                            {yecTransactions.map((tx, index) => (
+                              <motion.div
+                                key={tx.txid}
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ ...springConfig, delay: index * 0.05 }}
+                              >
+                                <TransactionCard transaction={tx} currency="YEC" />
+                              </motion.div>
+                            ))}
+                            {yecTransactions.length === 0 && (
+                              <div className="uk-text-center uk-text-muted uk-padding-small">
+                                {t('profile.noTransactions')}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </div>
+            </SwitcherContainer>
+          </CardBody>
+        </Card>
+      </motion.div>
     </motion.div>
   );
 };

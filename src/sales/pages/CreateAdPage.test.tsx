@@ -1,6 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import CreateAdPage from './CreateAdPage';
+import { salesService } from '../services/salesService';
 import { AuthProvider } from '../../context/AuthContext';
 import { MemoryRouter } from 'react-router-dom';
 import { I18nextProvider } from 'react-i18next';
@@ -9,6 +10,7 @@ import i18n from '../../i18n';
 vi.mock('../services/salesService', () => ({
   salesService: {
     createAd: vi.fn(),
+    getAllowedCurrencies: vi.fn(),
   },
 }));
 
@@ -27,6 +29,9 @@ const renderCreateAdPage = () => {
 describe('CreateAdPage Validation', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    (salesService.getAllowedCurrencies as any).mockResolvedValue([
+      { code: 'ARRR', name: 'Pirate Chain' }
+    ]);
   });
 
   it('should activate Save button only when title length is at least 5 characters', async () => {

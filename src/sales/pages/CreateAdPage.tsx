@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
@@ -8,6 +8,8 @@ import { Heading } from '../../components/uikit/Heading/Heading';
 import { Button } from '../../components/uikit/Button/Button';
 import { Form, Input } from '../../components/uikit/Form/Form';
 import { Alert } from '../../components/uikit/Alert/Alert';
+import { Spinner } from '../../components/uikit/Spinner/Spinner';
+import type { CurrencyInfoDto } from '../../types/api';
 
 interface CreateAdForm {
   title: string;
@@ -20,8 +22,17 @@ const CreateAdPage: React.FC = () => {
     mode: 'onChange'
   });
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [titleFocused, setTitleFocused] = useState(false);
+  const [allowedCurrencies, setAllowedCurrencies] = useState<CurrencyInfoDto[]>([]);
+
+  useEffect(() => {
+    salesService.getAllowedCurrencies()
+      .then(setAllowedCurrencies)
+      .catch(err => setError(err.message || t('auth.errors.generic')))
+      .finally(() => setInitialLoading(false));
+  }, [t]);
 
   const titleRegister = register('title', { required: true, minLength: 5 });
 
@@ -38,6 +49,8 @@ const CreateAdPage: React.FC = () => {
     }
   };
 
+  if (initialLoading) return <div className="uk-flex uk-flex-center uk-margin-large-top"><Spinner ratio={2} /></div>;
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
@@ -51,6 +64,20 @@ const CreateAdPage: React.FC = () => {
         </Heading>
 
         {error && <Alert variant="danger">{error}</Alert>}
+
+        {allowedCurrencies.length === 0 && (
+          <Alert variant="warning" className="uk-margin-medium-bottom">
+            <Heading as="h4" className="uk-margin-small-bottom">{t('ads.notEligibleTitle')}</Heading>
+            <p className="uk-margin-small-bottom">{t('ads.notEligibleMessage')}</p>
+            <Button 
+              variant="primary" 
+              size="small" 
+              onClick={() => navigate('/profile')}
+            >
+              {t('ads.goToProfile')}
+            </Button>
+          </Alert>
+        )}
 
         <Form onSubmit={handleSubmit(onSubmit)}>
           <div className="uk-margin">
@@ -80,7 +107,7 @@ const CreateAdPage: React.FC = () => {
               type="submit"
               variant="primary"
               className="uk-width-1-1"
-              disabled={loading || !isValid}
+              disabled={loading || !isValid || allowedCurrencies.length === 0}
             >
               {loading ? t('common.loading') : t('common.save')}
             </Button>

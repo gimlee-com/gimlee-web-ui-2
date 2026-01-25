@@ -5,7 +5,8 @@ import type {
   CreateAdRequestDto, 
   UpdateAdRequestDto,
   PageSalesOrderDto,
-  SalesOrderDto
+  SalesOrderDto,
+  CurrencyInfoDto
 } from '../../types/api';
 
 export interface SalesAdsRequestDto {
@@ -32,6 +33,9 @@ export const salesService = {
 
   getAdById: (id: string) =>
     apiClient.get<AdDetailsDto>(`/sales/ads/${id}`),
+
+  getAllowedCurrencies: () =>
+    apiClient.get<CurrencyInfoDto[]>('/sales/ads/allowed-currencies'),
 
   updateAd: (id: string, data: UpdateAdRequestDto) =>
     apiClient.put<AdDetailsDto>(`/sales/ads/${id}`, data),

@@ -106,6 +106,11 @@ export interface VerifyUserRequestDto {
   code: string;
 }
 
+export interface CurrencyInfoDto {
+  code: string;
+  name: string;
+}
+
 export interface AvailabilityStatusResponseDto {
   available: boolean;
 }
