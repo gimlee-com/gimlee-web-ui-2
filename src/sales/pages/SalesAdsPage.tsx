@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import UIkit from 'uikit';
 import { motion, AnimatePresence, stagger } from 'motion/react';
 import { salesService } from '../services/salesService';
 import type { SalesAdsRequestDto } from '../services/salesService';
@@ -70,7 +71,7 @@ const SalesAdsPage: React.FC = () => {
       }
       fetchAds(adsPage?.page.number || 0);
     } catch (err: any) {
-      alert(err.message || t('auth.errors.generic'));
+      UIkit.modal.alert(err.message || t('auth.errors.generic'));
     }
   };
 

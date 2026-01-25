@@ -154,7 +154,7 @@ const AdDetailsPage: React.FC = () => {
       dispatch(setActivePurchase(response));
     } catch (error: any) {
       console.error('Failed to create purchase', error);
-      alert(error.message || t('auth.errors.generic'));
+      UIkit.modal.alert(error.message || t('auth.errors.generic'));
     } finally {
       setIsPurchasing(false);
     }
