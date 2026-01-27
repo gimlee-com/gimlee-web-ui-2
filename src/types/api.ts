@@ -285,3 +285,28 @@ export interface SessionInitResponseDto {
   userProfile: UserProfileDto | null;
   preferredCurrency?: string;
 }
+
+export interface ExchangeRateDto {
+  baseCurrency: Currency;
+  quoteCurrency: Currency;
+  rate: number;
+  updatedAt: string;
+  source: string;
+  isVolatile: boolean;
+}
+
+export interface ConversionStepDto {
+  baseCurrency: Currency;
+  quoteCurrency: Currency;
+  rate: number;
+  sourceExchangeRate: ExchangeRateDto;
+}
+
+export interface ConversionResultDto {
+  targetAmount: number;
+  from: Currency;
+  to: Currency;
+  steps: ConversionStepDto[];
+  updatedAt: string;
+  isVolatile: boolean;
+}

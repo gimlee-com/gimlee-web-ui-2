@@ -20,7 +20,9 @@ import { useAppDispatch } from '../../store';
 import { updateActivePurchaseStatus, setModalOpen, clearActivePurchase } from '../../store/purchaseSlice';
 import { formatPrice } from '../../utils/currencyUtils';
 import { purchaseService } from '../services/purchaseService';
-import type { PurchaseResponseDto, PurchaseStatus } from '../../types/api';
+import { currencyService } from '../../payments/services/currencyService';
+import { useAuth } from '../../context/AuthContext';
+import type { PurchaseResponseDto, PurchaseStatus, ConversionResultDto } from '../../types/api';
 import { useUIKit } from '../../hooks/useUIkit';
 import { useMergeRefs } from '../../hooks/useMergeRefs';
 import styles from './PurchaseModal.module.scss';
@@ -35,10 +37,12 @@ export const PurchaseModal = forwardRef<HTMLDivElement, PurchaseModalProps>(
   ({ purchase, onClose, onStatusChange }, ref) => {
     const { t } = useTranslation();
     const dispatch = useAppDispatch();
+    const { preferredCurrency } = useAuth();
     const [status, setStatus] = useState<PurchaseStatus>(purchase.status);
     const [paidAmount, setPaidAmount] = useState<number>(purchase.payment.paidAmount);
     const [isCancelling, setIsCancelling] = useState(false);
     const [secondsLeft, setSecondsLeft] = useState<number | null>(null);
+    const [conversion, setConversion] = useState<ConversionResultDto | null>(null);
     
     const { ref: modalRef, instance: modalInstance } = useUIKit<UIkit.UIkitModalElement, HTMLDivElement>('modal', {
       escClose: false,
@@ -113,6 +117,25 @@ export const PurchaseModal = forwardRef<HTMLDivElement, PurchaseModalProps>(
         setSecondsLeft(null);
       }
     }, [status, purchase.payment.deadline]);
+
+    useEffect(() => {
+      const fetchConversion = () => {
+        if (preferredCurrency && preferredCurrency !== purchase.currency) {
+          currencyService.convertCurrency(purchase.payment.amount, purchase.currency, preferredCurrency)
+            .then(setConversion)
+            .catch(err => console.error('Failed to convert currency', err));
+        } else {
+          setConversion(null);
+        }
+      };
+
+      fetchConversion();
+
+      if (status === 'AWAITING_PAYMENT' && preferredCurrency && preferredCurrency !== purchase.currency) {
+        const interval = setInterval(fetchConversion, 60000);
+        return () => clearInterval(interval);
+      }
+    }, [preferredCurrency, purchase.currency, purchase.payment.amount, status]);
 
     const formatTime = (seconds: number) => {
       const mins = Math.floor(seconds / 60);
@@ -272,6 +295,19 @@ export const PurchaseModal = forwardRef<HTMLDivElement, PurchaseModalProps>(
                 <p className="uk-margin-remove uk-text-large uk-text-bold">
                   {formatPrice(purchase.payment.amount, purchase.currency)}
                 </p>
+                {conversion && (
+                  <p className="uk-margin-remove uk-text-muted uk-text-small">
+                    ≈ {formatPrice(conversion.targetAmount, conversion.to)}
+                    {conversion.isVolatile && (
+                      <span 
+                        className="uk-margin-small-left uk-text-warning" 
+                        uk-tooltip={t('purchases.volatilityWarning', { currency: conversion.to })}
+                      >
+                        <Icon icon="warning" ratio={0.8} />
+                      </span>
+                    )}
+                  </p>
+                )}
               </div>
             </div>
 
