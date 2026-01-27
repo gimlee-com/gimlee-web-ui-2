@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { salesService } from '../services/salesService';
 import { cityService } from '../../ads/services/cityService';
 import { apiClient } from '../../services/apiClient';
-import type { AdDetailsDto, UpdateAdRequestDto, CitySuggestion, CityDetailsDto, MediaUploadResponseDto, CurrencyInfoDto } from '../../types/api';
+import type { AdDetailsDto, UpdateAdRequestDto, CitySuggestion, CityDetailsDto, MediaUploadResponseDto, CurrencyInfoDto, CategoryPathElementDto } from '../../types/api';
 import { Heading } from '../../components/uikit/Heading/Heading';
 import { Spinner } from '../../components/uikit/Spinner/Spinner';
 import { Button } from '../../components/uikit/Button/Button';
@@ -14,6 +14,8 @@ import { Alert } from '../../components/uikit/Alert/Alert';
 import { Label } from '../../components/uikit/Label/Label';
 import { Form, Input, TextArea, Select } from '../../components/uikit/Form/Form';
 import { Grid } from '../../components/uikit/Grid/Grid';
+import { CategorySelector } from '../../ads/components/CategorySelector/CategorySelector';
+import { CategoryBreadcrumbs } from '../../ads/components/CategoryBreadcrumbs/CategoryBreadcrumbs';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
 
@@ -33,6 +35,8 @@ const EditAdPage: React.FC = () => {
   const [citySearch, setCitySearch] = useState('');
   const [citySuggestions, setCitySuggestions] = useState<CitySuggestion[]>([]);
   const [selectedCity, setSelectedCity] = useState<CityDetailsDto | null>(null);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
+  const [selectedCategoryPath, setSelectedCategoryPath] = useState<CategoryPathElementDto[]>([]);
   const [allowedCurrencies, setAllowedCurrencies] = useState<CurrencyInfoDto[]>([]);
 
   useEffect(() => {
@@ -54,6 +58,12 @@ const EditAdPage: React.FC = () => {
             const city = data.location.city;
             const districtSuffix = city.district ? ` (${city.district})` : '';
             setCitySearch(`${city.name}${districtSuffix}, ${city.country}`);
+          }
+          if (data.categoryId) {
+            setSelectedCategoryId(data.categoryId);
+          }
+          if (data.categoryPath) {
+            setSelectedCategoryPath(data.categoryPath);
           }
           reset({
             title: data.title,
@@ -96,6 +106,11 @@ const EditAdPage: React.FC = () => {
     setCitySuggestions([]);
   };
 
+  const handleCategorySelect = (id: number, path: CategoryPathElementDto[]) => {
+    setSelectedCategoryId(id);
+    setSelectedCategoryPath(path);
+  };
+
   const onSubmit = async (data: UpdateAdRequestDto) => {
     if (!id) return;
     setSaving(true);
@@ -105,7 +120,8 @@ const EditAdPage: React.FC = () => {
           ...data,
           mediaPaths,
           mainPhotoPath: mainPhotoPath || undefined,
-          location: selectedCity ? { cityId: selectedCity.id } : undefined
+          location: selectedCity ? { cityId: selectedCity.id } : undefined,
+          categoryId: selectedCategoryId || undefined
       };
       await salesService.updateAd(id, updateData);
       navigate('/sales/ads');
@@ -215,6 +231,29 @@ const EditAdPage: React.FC = () => {
               )}
             </AnimatePresence>
           </div>
+        </div>
+
+        <div className="uk-margin">
+          <label className="uk-form-label">{t('ads.category')}</label>
+          <div className="uk-flex uk-flex-column uk-flex-row@m uk-flex-middle@m">
+            <div className="uk-flex-1 uk-margin-small-bottom uk-margin-remove-bottom@m" style={{ minWidth: 0 }}>
+              {selectedCategoryPath.length > 0 ? (
+                <CategoryBreadcrumbs path={selectedCategoryPath} className="uk-margin-remove" />
+              ) : (
+                <span className="uk-text-muted">{t('ads.selectCategory')}</span>
+              )}
+            </div>
+            <Button 
+              type="button" 
+              variant="default" 
+              size="small" 
+              className="uk-width-1-1 uk-width-auto@m uk-margin-small-left@m"
+              uk-toggle="target: #category-selector"
+            >
+              {selectedCategoryPath.length > 0 ? t('ads.changeCategory') : t('ads.selectCategory')}
+            </Button>
+          </div>
+          <CategorySelector onSelect={handleCategorySelect} />
         </div>
 
         <Grid gap="small">

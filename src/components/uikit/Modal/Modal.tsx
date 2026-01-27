@@ -20,7 +20,7 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
       escClose,
       bgClose,
       stack,
-      container,
+      container = false,
       clsPage,
       clsPanel,
       selClose,
@@ -28,7 +28,7 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
     },
     ref
   ) => {
-    const classNames = []
+    const classNames = ['uk-modal']
     if (customClassName) classNames.push(customClassName)
 
     const ukModalOptions = useMemo(() => {

@@ -56,6 +56,20 @@ export interface CategoryPathElementDto {
   name: string;
 }
 
+export interface CategoryTreeDto {
+  id: number;
+  name: string;
+  slug: string;
+  hasChildren: boolean;
+  children?: CategoryTreeDto[];
+}
+
+export interface CategorySuggestionDto {
+  id: number;
+  path: CategoryPathElementDto[];
+  displayPath: string;
+}
+
 export interface AdDetailsDto {
   id: string;
   title: string;
@@ -89,6 +103,7 @@ export interface UpdateAdRequestDto {
   mediaPaths?: string[];
   mainPhotoPath?: string;
   stock?: number;
+  categoryId?: number;
 }
 
 export interface RegisterRequestDto {

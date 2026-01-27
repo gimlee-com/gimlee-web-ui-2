@@ -1,15 +1,15 @@
-@import "../../styles/uikit-variables.scss";
+@import "../../styles/uikit-imports.scss";
 
 .adCard {
   position: relative;
-  border-radius: 12px;
+  border-radius: $global-border-radius;
   overflow: hidden;
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
   height: 100%;
-  border: 1px solid #e5e5e5;
-  background: #fff;
+  border: 1px solid $global-border;
+  background: $global-background;
 
   &:hover {
     transform: translateY(-8px);
