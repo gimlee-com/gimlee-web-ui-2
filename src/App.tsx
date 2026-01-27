@@ -1,10 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { useEffect } from 'react';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { Capacitor } from '@capacitor/core';
 import { useAppSelector } from './store';
 import { PurchaseModal } from './purchases/components/PurchaseModal';
-import { AuthProvider } from './context/AuthContext';
 import './i18n';
 import Navbar from './components/Navbar/Navbar';
 import HomePage from './pages/HomePage';
@@ -33,36 +32,32 @@ function App() {
   }, []);
 
   return (
-    <AuthProvider>
-      <Router>
-        <div className="App">
-          <Navbar />
-          <main className="uk-section uk-section-default">
-            <div className="uk-container">
-              <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/register" element={<RegisterPage />} />
-                <Route path="/verify" element={<VerifyPage />} />
-                <Route path="/ads" element={<AdListingPage />} />
-                <Route path="/ads/:id" element={<AdDetailsPage />} />
-                <Route path="/sales/ads" element={<SalesAdsPage />} />
-                <Route path="/sales/ads/create" element={<CreateAdPage />} />
-                <Route path="/sales/ads/edit/:id" element={<EditAdPage />} />
-                <Route path="/sales/orders" element={<SalesOrdersPage />} />
-                <Route path="/purchases" element={<PurchasesPage />} />
-                <Route path="/profile" element={<ProfilePage />} />
-              </Routes>
-            </div>
-          </main>
-          {activePurchase && isModalOpen && (
-            <PurchaseModal 
-              purchase={activePurchase} 
-            />
-          )}
+    <div className="App">
+      <Navbar />
+      <main className="uk-section uk-section-default">
+        <div className="uk-container">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/verify" element={<VerifyPage />} />
+            <Route path="/ads" element={<AdListingPage />} />
+            <Route path="/ads/:id" element={<AdDetailsPage />} />
+            <Route path="/sales/ads" element={<SalesAdsPage />} />
+            <Route path="/sales/ads/create" element={<CreateAdPage />} />
+            <Route path="/sales/ads/edit/:id" element={<EditAdPage />} />
+            <Route path="/sales/orders" element={<SalesOrdersPage />} />
+            <Route path="/purchases" element={<PurchasesPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+          </Routes>
         </div>
-      </Router>
-    </AuthProvider>
+      </main>
+      {activePurchase && isModalOpen && (
+        <PurchaseModal 
+          purchase={activePurchase} 
+        />
+      )}
+    </div>
   );
 }
 

@@ -171,12 +171,23 @@ const AdDetailsPage: React.FC = () => {
 
   useEffect(() => {
     if (id) {
+      const controller = new AbortController();
       setLoading(true);
       setError(null);
-      adService.getAdById(id)
+      adService.getAdById(id, { signal: controller.signal })
         .then(setAd)
-        .catch(err => setError(err.message || t('auth.errors.generic')))
-        .finally(() => setLoading(false));
+        .catch(err => {
+          if (err.name !== 'AbortError') {
+            setError(err.message || t('auth.errors.generic'));
+          }
+        })
+        .finally(() => {
+          if (!controller.signal.aborted) {
+            setLoading(false);
+          }
+        });
+
+      return () => controller.abort();
     }
   }, [id, t]);
 

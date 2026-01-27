@@ -7,19 +7,19 @@ import type {
 } from '../../types/api';
 
 export const adService = {
-  getFeaturedAds: () => 
-    apiClient.get<PageAdPreviewDto>('/ads/featured/'),
+  getFeaturedAds: (options?: RequestInit) => 
+    apiClient.get<PageAdPreviewDto>('/ads/featured/', options),
 
-  searchAds: (params: any) => {
+  searchAds: (params: any, options?: RequestInit) => {
     const query = new URLSearchParams(params).toString();
-    return apiClient.get<PageAdPreviewDto>(`/ads/?${query}`);
+    return apiClient.get<PageAdPreviewDto>(`/ads/?${query}`, options);
   },
 
-  getAdById: (id: string) =>
-    apiClient.get<AdDetailsDto>(`/ads/${id}`),
+  getAdById: (id: string, options?: RequestInit) =>
+    apiClient.get<AdDetailsDto>(`/ads/${id}`, options),
 
-  getMyAds: () =>
-    apiClient.get<PageAdPreviewDto>('/ads/my'),
+  getMyAds: (options?: RequestInit) =>
+    apiClient.get<PageAdPreviewDto>('/ads/my', options),
 
   createAd: (data: CreateAdRequestDto) =>
     apiClient.post<AdDetailsDto>('/ads', data),

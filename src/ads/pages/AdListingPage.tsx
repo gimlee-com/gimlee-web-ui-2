@@ -39,13 +39,24 @@ const AdListingPage: React.FC = () => {
   const [searchText, setSearchText] = useState(searchParams.get('t') || '');
 
   useEffect(() => {
+    const controller = new AbortController();
     setLoading(true);
     setError(null);
     const params = Object.fromEntries(searchParams.entries());
-    adService.searchAds(params)
+    adService.searchAds(params, { signal: controller.signal })
       .then(setData)
-      .catch(err => setError(err.message || t('auth.errors.generic')))
-      .finally(() => setLoading(false));
+      .catch(err => {
+        if (err.name !== 'AbortError') {
+          setError(err.message || t('auth.errors.generic'));
+        }
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
+      });
+
+    return () => controller.abort();
   }, [searchParams, t]);
 
   const handleSearch = (e: React.FormEvent) => {

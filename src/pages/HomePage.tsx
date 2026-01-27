@@ -16,10 +16,22 @@ const HomePage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    adService.getFeaturedAds()
+    const controller = new AbortController();
+    
+    adService.getFeaturedAds({ signal: controller.signal })
       .then(response => setFeaturedAds(response.content))
-      .catch(err => setError(err.message || t('auth.errors.generic')))
-      .finally(() => setLoading(false));
+      .catch(err => {
+        if (err.name !== 'AbortError') {
+          setError(err.message || t('auth.errors.generic'));
+        }
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
+      });
+
+    return () => controller.abort();
   }, [t]);
 
   return (
