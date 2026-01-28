@@ -74,6 +74,7 @@ Our forms prioritize a "friendly" user experience over immediate error shouting:
     - Name the file `[ComponentName].module.scss` and co-locate it with the component (e.g., `src/ads/pages/AdDetailsPage.module.scss`).
     - Import directly into the component: `import styles from "./[ComponentName].module.scss"`.
     - This ensures class names are scoped (shortened/hashed in production) and maintenance is localized.
+    - **Centralized Variable Access**: To use UIKit variables and mixins in a SCSS module, import the centralized `src/styles/_uikit-imports.scss` partial. This ensures all variables are available without violating import order or duplicating code.
 - **Global Overrides**:
     - Global UIkit variable overrides go in `src/styles/uikit-variables.scss`.
     - Global theme customizations go in `src/styles/main.scss`.
@@ -87,6 +88,7 @@ Our forms prioritize a "friendly" user experience over immediate error shouting:
 - **Cards Over Tables**: Avoid using "soulless" tabular views for complex business entities (like Sales or Purchases). Instead, use rich, interactive card-based layouts.
 - **Progressive Disclosure**: Use expandable cards to keep the UI clean. Show high-level info (ID, Status, Date, Total) on the card surface and detailed item lists or payment instructions within an expandable section.
 - **Progressive Image Loading**: For media-heavy views (like galleries), use a progressive approach. Load lightweight thumbnails (`thumb-xs`) initially and upgrade to higher-resolution versions (`thumb-md`) only when an item becomes active or is swiped into view.
+- **Hierarchical Traversal**: For navigating deep category trees, use a hybrid approach: **Miller Columns** on desktop (for high-density info) and a **Drill-Down "Stack"** on mobile (for focus and ease of use). Combine this with a breadcrumb path for context preservation.
 
 #### **H. Backend Error Handling**
 To ensure a consistent user experience, especially with localized messages, we follow a standardized approach for handling API failures:
@@ -121,6 +123,7 @@ To ensure a consistent user experience, especially with localized messages, we f
 #### **L. UIkit Dialogs & Stacking**
 - **Prefer UIkit over Native**: Always use `UIkit.modal.confirm` and `UIkit.modal.alert` instead of browser `confirm()` and `alert()`. UIkit dialogs offer better visual consistency and don't block the main thread.
 - **Stacking Support**: When opening a dialog on top of another modal (e.g., a confirmation inside a purchase flow), always use the `{ stack: true }` option. This ensures proper layering and event handling in SPA and mobile environments.
+- **React Event Delegation**: By default, UIKit moves modal elements to the end of the `<body>`. For React 17+, this breaks event delegation. Always set `container: false` in the modal options (both in the component prop and when using `useUIKit`) to keep the modal within the React root (`#root`).
 
 #### **M. Global State Management (Redux)**
 - **Domain State**: Use Redux (via Redux Toolkit) for complex, long-running business processes that must persist across page navigation (e.g., active purchases, shopping baskets).
@@ -191,3 +194,6 @@ Every component (whether shared or module-specific) follows the same pattern:
 20. **Optimistic Continuity**: When updating user preferences (like language or currency), update the application state manually upon a successful API response to avoid unnecessary full-session re-initialization calls.
 21. **Partial Updates via PATCH**: Prefer the `PATCH` verb for partial updates to resources (like user preferences or profile settings) to minimize payload size and avoid overwriting fields not intended for modification.
 22. **Think Big**: Every feature, component, and line of code must be designed to meet the quality and scale expected of a platform competing with industry leaders like Amazon or eBay. We are not building a hobby project; we are building a global marketplace.
+23. **Immersive Task Focus**: For complex, multi-step tasks (like category selection), use full-screen, immersive modals on mobile to maximize usable space and provide a "native" app feel.
+24. **React-Compatible Modals**: Always set `container: false` for UIKit modals to keep them within the React root. This is strictly required to ensure React event delegation (for clicks, inputs, etc.) works correctly within the modal.
+25. **Hybrid Traversal Speed**: Combine high-density Miller Columns (desktop) with focused Drill-Down stacks (mobile) to provide the fastest possible navigation through deep hierarchies.
