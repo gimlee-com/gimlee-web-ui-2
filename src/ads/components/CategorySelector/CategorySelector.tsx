@@ -141,8 +141,8 @@ export const CategorySelector = forwardRef<HTMLDivElement, CategorySelectorProps
   const springTransition = { type: 'spring', stiffness: 400, damping: 40 } as const;
 
   return (
-    <Modal id={id} ref={mergedRef} stack>
-      <ModalDialog className="uk-width-auto@xl">
+    <Modal id={id} ref={mergedRef} stack className={styles.categoryModal}>
+      <ModalDialog className={`${styles.categoryDialog} uk-width-auto@xl`}>
         <ModalCloseDefault />
         <ModalHeader>
           <ModalTitle>{t('ads.selectCategory')}</ModalTitle>
@@ -183,7 +183,7 @@ export const CategorySelector = forwardRef<HTMLDivElement, CategorySelectorProps
             </AnimatePresence>
           </div>
         </ModalHeader>
-        <ModalBody>
+        <ModalBody className={styles.categoryBody}>
           {loading && columns.length === 0 ? (
             <div className="uk-text-center uk-padding-large">
               <Spinner ratio={1.5} />

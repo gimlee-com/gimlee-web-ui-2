@@ -7,7 +7,7 @@
   background: $global-border;
   border: 1px solid $global-border;
   border-radius: $global-border-radius;
-  height: 400px;
+  flex: 1;
 }
 
 .column {
@@ -39,7 +39,7 @@
 .mobileDrillDown {
   position: relative;
   overflow: hidden;
-  height: 400px;
+  flex: 1;
   border: 1px solid $global-border;
   border-radius: $global-border-radius;
 }
@@ -101,4 +101,31 @@
 
 .categoryName {
   font-weight: bold;
+}
+
+.categoryModal {
+  @media (max-width: $breakpoint-small-max) {
+    padding: 0 !important;
+  }
+}
+
+.categoryDialog {
+  height: 100vh;
+  max-height: 100vh;
+  margin: 0 auto !important;
+  display: flex;
+  flex-direction: column;
+  border-radius: 0;
+
+  @media (max-width: $breakpoint-small-max) {
+    width: 100% !important;
+  }
+}
+
+.categoryBody {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0 !important;
+  overflow: hidden;
 }
