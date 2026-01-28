@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, forwardRef, useCallback } from 'react';
+import { useState, useEffect, useRef, forwardRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'motion/react';
 import UIkit from 'uikit';
@@ -138,7 +138,7 @@ export const CategorySelector = forwardRef<HTMLDivElement, CategorySelectorProps
     }
   };
 
-  const springTransition = { type: 'spring', stiffness: 400, damping: 40 };
+  const springTransition = { type: 'spring', stiffness: 400, damping: 40 } as const;
 
   return (
     <Modal id={id} ref={mergedRef} stack>
