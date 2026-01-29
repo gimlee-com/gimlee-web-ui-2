@@ -41,8 +41,12 @@ export const MediaEditor: React.FC<MediaEditorProps> = ({ id = 'media-editor', i
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const [history, setHistory] = useState<Transformation[]>([]);
-  const [historyIndex, setHistoryIndex] = useState(-1);
+  const [historyState, setHistoryState] = useState<{
+    items: Transformation[];
+    index: number;
+  }>({ items: [], index: -1 });
+
+  const { items: history, index: historyIndex } = historyState;
 
   const { ref: modalRef, instance: modalInstance } = useUIKit<UIkit.UIkitModalElement, HTMLDivElement>('modal', {
     stack: true,
@@ -65,10 +69,10 @@ export const MediaEditor: React.FC<MediaEditorProps> = ({ id = 'media-editor', i
   }, []);
 
   const pushToHistory = useCallback((state: Transformation) => {
-    setHistory(prev => {
-      const newHistory = prev.slice(0, historyIndex + 1);
+    setHistoryState(prev => {
+      const newItems = prev.items.slice(0, prev.index + 1);
       // Avoid pushing identical states
-      const last = newHistory[newHistory.length - 1];
+      const last = newItems[newItems.length - 1];
       if (last && 
           last.crop.x === state.crop.x && 
           last.crop.y === state.crop.y && 
@@ -77,10 +81,13 @@ export const MediaEditor: React.FC<MediaEditorProps> = ({ id = 'media-editor', i
           last.aspect === state.aspect) {
         return prev;
       }
-      return [...newHistory, state];
+      const updatedItems = [...newItems, state];
+      return {
+        items: updatedItems,
+        index: updatedItems.length - 1
+      };
     });
-    setHistoryIndex(prev => prev + 1);
-  }, [historyIndex]);
+  }, []);
 
   // Initial history entry
   useEffect(() => {
@@ -90,9 +97,10 @@ export const MediaEditor: React.FC<MediaEditorProps> = ({ id = 'media-editor', i
   }, [history.length, pushToHistory]);
 
   const handleUndo = () => {
-    if (historyIndex > 0 && history[historyIndex - 1]) {
-      const prevState = history[historyIndex - 1];
-      setHistoryIndex(historyIndex - 1);
+    if (historyIndex > 0) {
+      const newIndex = historyIndex - 1;
+      const prevState = history[newIndex];
+      setHistoryState(prev => ({ ...prev, index: newIndex }));
       setCrop(prevState.crop);
       setZoom(prevState.zoom);
       setRotation(prevState.rotation);
@@ -102,9 +110,10 @@ export const MediaEditor: React.FC<MediaEditorProps> = ({ id = 'media-editor', i
   };
 
   const handleRedo = () => {
-    if (historyIndex < history.length - 1 && history[historyIndex + 1]) {
-      const nextState = history[historyIndex + 1];
-      setHistoryIndex(historyIndex + 1);
+    if (historyIndex < history.length - 1) {
+      const nextIndex = historyIndex + 1;
+      const nextState = history[nextIndex];
+      setHistoryState(prev => ({ ...prev, index: nextIndex }));
       setCrop(nextState.crop);
       setZoom(nextState.zoom);
       setRotation(nextState.rotation);
@@ -176,6 +185,7 @@ export const MediaEditor: React.FC<MediaEditorProps> = ({ id = 'media-editor', i
                     onClick={handleUndo} 
                     disabled={historyIndex <= 0}
                     uk-icon="icon: history"
+                    title={t('common.undo')}
                     uk-tooltip={t('common.undo')}
                   />
                   <Button 
@@ -183,6 +193,7 @@ export const MediaEditor: React.FC<MediaEditorProps> = ({ id = 'media-editor', i
                     onClick={handleRedo} 
                     disabled={historyIndex >= history.length - 1}
                     uk-icon="icon: future"
+                    title={t('common.redo')}
                     uk-tooltip={t('common.redo')}
                   />
                   <div className="uk-flex-1" />
@@ -190,6 +201,7 @@ export const MediaEditor: React.FC<MediaEditorProps> = ({ id = 'media-editor', i
                     size="small" 
                     onClick={handleRotate}
                     uk-icon="icon: refresh"
+                    title={t('common.rotate')}
                     uk-tooltip={t('common.rotate')}
                   />
                 </div>
