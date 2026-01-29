@@ -1,0 +1,67 @@
+@import "../../../styles/uikit-imports";
+
+.editorContainer {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  background: #333;
+  overflow: hidden;
+
+  @media (min-width: $breakpoint-small) {
+    height: 400px;
+  }
+
+  @media (min-width: $breakpoint-medium) {
+    height: 500px;
+    border-radius: $global-border-radius 0 0 $global-border-radius;
+  }
+}
+
+.controls {
+  padding: $global-margin;
+  background: $global-background;
+  height: 100%;
+}
+
+.aspectRatios {
+  display: flex;
+  gap: 10px;
+  margin-bottom: $global-margin;
+  overflow-x: auto;
+  padding-bottom: 5px;
+}
+
+.historyControls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: $global-margin;
+}
+
+.cropWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.modal {
+  @media (max-width: $breakpoint-small-max) {
+    padding: 0 !important;
+
+    :global(.uk-modal-dialog) {
+      width: 100% !important;
+      margin: 0 !important;
+      max-width: none !important;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      border-radius: 0;
+    }
+    
+    :global(.uk-modal-body) {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+  }
+}

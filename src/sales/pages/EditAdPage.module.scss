@@ -1,0 +1,13 @@
+@import "../../styles/uikit-imports";
+
+.uploadArea {
+  transition: all 0.2s ease-in-out;
+  border: 1px dashed $global-border;
+
+  &:global(.uk-dragover) {
+    border-style: solid;
+    border-color: $global-primary-background !important;
+    background-color: rgba($global-primary-background, 0.05);
+    box-shadow: 0 0 10px rgba($global-primary-background, 0.2);
+  }
+}

@@ -35,8 +35,8 @@ export const Offcanvas = forwardRef<HTMLDivElement, OffcanvasProps>(
         mode,
         flip,
         overlay,
-        'esc-close': escClose,
-        'bg-close': bgClose,
+        escClose,
+        bgClose,
         container,
       }
     )

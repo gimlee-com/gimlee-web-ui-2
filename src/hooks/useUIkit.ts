@@ -23,19 +23,21 @@ export const useUIKit = <
   const [instance, setInstance] = useState<C | null>(null)
 
   // Memoize the options object by stringifying it.
-  // This prevents the useEffect from running on every render
-  // if the options object is declared inline in the component.
-  const optionsString = JSON.stringify(options ?? {})
+  // We include function bodies in the stringification to ensure that if a callback
+  // changes, the component is re-initialized.
+  const optionsString = JSON.stringify(options ?? {}, (_key, value) => {
+    if (typeof value === 'function') {
+      return value.toString()
+    }
+    return value
+  })
 
   useEffect(() => {
     const element = elementRef.current
 
     if (element) {
-      // We parse the options string back into an object for UIkit.
-      const parsedOptions = JSON.parse(optionsString)
-
       // @ts-expect-error - We are dynamically accessing the UIkit component constructor.
-      const uikitComponent = UIkit[componentName](element, parsedOptions)
+      const uikitComponent = UIkit[componentName](element, options)
       setInstance(uikitComponent)
 
       // The crucial cleanup step: destroy the UIkit instance when the React component unmounts.
@@ -47,6 +49,7 @@ export const useUIKit = <
     }
     // We disable the exhaustive-deps rule because we are intentionally using a stringified
     // version of the options object to prevent infinite re-renders.
+    // We use the actual options object in the constructor call to ensure functions are preserved.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [componentName, optionsString]) // We now depend on the stable, stringified options
 

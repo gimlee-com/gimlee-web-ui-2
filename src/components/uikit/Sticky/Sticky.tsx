@@ -53,15 +53,15 @@ export const Sticky = forwardRef<HTMLElement, StickyProps>(
         start,
         end,
         offset,
-        'offset-end': offsetEnd,
-        'overflow-flip': overflowFlip,
+        offsetEnd,
+        overflowFlip,
         animation,
-        'cls-active': clsActive,
-        'cls-inactive': clsInactive,
-        'show-on-up': showOnUp,
+        clsActive,
+        clsInactive,
+        showOnUp,
         media,
-        'target-offset': targetOffset,
-        'sel-target': selTarget,
+        targetOffset,
+        selTarget,
       }
     )
 

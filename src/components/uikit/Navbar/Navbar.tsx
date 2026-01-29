@@ -66,19 +66,19 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
       {
         align,
         dropbar,
-        'dropbar-anchor': dropbarAnchor,
-        'dropbar-transparent-mode': dropbarTransparentMode,
+        dropbarAnchor,
+        dropbarTransparentMode,
         mode,
-        'delay-show': delayShow,
-        'delay-hide': delayHide,
+        delayShow,
+        delayHide,
         boundary,
         target,
-        'target-x': targetX,
-        'target-y': targetY,
+        targetX,
+        targetY,
         offset,
         animation,
         duration,
-        'close-on-scroll': closeOnScroll,
+        closeOnScroll,
       }
     )
 

@@ -41,3 +41,20 @@ export const DropArea: Story = {
     </div>
   ),
 }
+
+export const ManualUpload: Story = {
+  render: () => (
+    <Upload 
+      url="" 
+      beforeAll={(comp: any, files: FileList) => {
+        alert(`Selected ${files.length} files. Prevented default upload.`);
+        return false;
+      }}
+    >
+      <Placeholder className="uk-text-center">
+        <Icon icon="cloud-upload" />
+        <span className="uk-text-middle uk-margin-small-left">Drag and drop files here (manual handling)</span>
+      </Placeholder>
+    </Upload>
+  ),
+}

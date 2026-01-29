@@ -16,7 +16,10 @@ const resources = {
         "actions": "Actions",
         "status": "Status",
         "confirmations": "Confirmations",
-        "memo": "Memo"
+        "memo": "Memo",
+        "undo": "Undo",
+        "redo": "Redo",
+        "rotate": "Rotate"
       },
       "navbar": {
         "browseAds": "Browse Ads",
@@ -90,8 +93,10 @@ const resources = {
         "currency": "Currency",
         "media": "Media",
         "stock": "Stock",
-        "uploadText": "Upload files by ",
-        "selectFiles": "selecting them",
+        "uploadText": "Drag and drop files here or ",
+        "selectFiles": "select them",
+        "uploadFile": "Upload File",
+        "takePhoto": "Take Photo",
         "saving": "Saving...",
         "failedToCreate": "Failed to create ad",
         "failedToActivate": "Failed to activate ad",
@@ -107,7 +112,17 @@ const resources = {
         "onlyLeft": "Only {{count}} left!",
         "notEligibleTitle": "Action Required",
         "notEligibleMessage": "To activate your ad, you must first register a viewing key for at least one supported cryptocurrency. This allows the platform to verify payments securely without holding your funds.",
-        "goToProfile": "Go to Profile Settings"
+        "goToProfile": "Go to Profile Settings",
+        "generalInfo": "General Information",
+        "classificationLocation": "Classification & Location",
+        "pricingStock": "Pricing & Stock",
+        "titleGuidance": "Enter a clear, descriptive title to help buyers find your item.",
+        "descriptionGuidance": "Describe your item in detail, including condition, features, and any other relevant info.",
+        "priceGuidance": "Set a fair price for your item.",
+        "stockGuidance": "How many items do you have available?",
+        "editPhoto": "Edit Photo",
+        "aspectRatio": "Aspect Ratio",
+        "zoom": "Zoom"
       },
       "sales": {
         "title": "Sales",
@@ -187,7 +202,10 @@ const resources = {
         "actions": "Akcje",
         "status": "Status",
         "confirmations": "Potwierdzenia",
-        "memo": "Memo"
+        "memo": "Memo",
+        "undo": "Cofnij",
+        "redo": "Ponów",
+        "rotate": "Obróć"
       },
       "navbar": {
         "browseAds": "Przeglądaj ogłoszenia",
@@ -261,8 +279,10 @@ const resources = {
         "currency": "Waluta",
         "media": "Media",
         "stock": "Stan magazynowy",
-        "uploadText": "Wgraj pliki ",
-        "selectFiles": "wybierając je",
+        "uploadText": "Przeciągnij i upuść pliki tutaj lub ",
+        "selectFiles": "wybierz je",
+        "uploadFile": "Wgraj plik",
+        "takePhoto": "Zrób zdjęcie",
         "saving": "Zapisywanie...",
         "failedToCreate": "Nie udało się utworzyć ogłoszenia",
         "failedToActivate": "Nie udało się aktywować ogłoszenia",
@@ -278,7 +298,17 @@ const resources = {
         "onlyLeft": "Ostatnie {{count}} sztuk!",
         "notEligibleTitle": "Wymagane działanie",
         "notEligibleMessage": "Aby aktywować ogłoszenie, musisz najpierw zarejestrować klucz podglądu dla przynajmniej jednej obsługiwanej kryptowaluty. Pozwala to platformie na bezpieczną weryfikację płatności bez przejmowania Twoich środków.",
-        "goToProfile": "Przejdź do ustawień profilu"
+        "goToProfile": "Przejdź do ustawień profilu",
+        "generalInfo": "Informacje ogólne",
+        "classificationLocation": "Klasyfikacja i lokalizacja",
+        "pricingStock": "Cena i stan magazynowy",
+        "titleGuidance": "Wprowadź jasny, opisowy tytuł, który pomoże kupującym znaleźć Twój przedmiot.",
+        "descriptionGuidance": "Opisz szczegółowo swój przedmiot, w tym stan, funkcje i wszelkie inne istotne informacje.",
+        "priceGuidance": "Ustal sprawiedliwą cenę za swój przedmiot.",
+        "stockGuidance": "Ile sztuk masz dostępnych?",
+        "editPhoto": "Edytuj zdjęcie",
+        "aspectRatio": "Proporcje",
+        "zoom": "Powiększenie"
       },
       "sales": {
         "title": "Sprzedaż",

@@ -14,10 +14,36 @@ import { Alert } from '../../components/uikit/Alert/Alert';
 import { Label } from '../../components/uikit/Label/Label';
 import { Form, Input, TextArea, Select } from '../../components/uikit/Form/Form';
 import { Grid } from '../../components/uikit/Grid/Grid';
+import { Card, CardBody } from '../../components/uikit/Card/Card';
+import { Upload } from '../../components/uikit/Upload/Upload';
+import { Lightbox, LightboxItem } from '../../components/uikit/Lightbox/Lightbox';
 import { CategorySelector } from '../../ads/components/CategorySelector/CategorySelector';
 import { CategoryBreadcrumbs } from '../../ads/components/CategoryBreadcrumbs/CategoryBreadcrumbs';
+import { useNavbarMode } from '../../hooks/useNavbarMode';
+import NavbarPortal from '../../components/Navbar/NavbarPortal';
+import { MediaEditor } from '../components/MediaEditor/MediaEditor';
+import styles from './EditAdPage.module.scss';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+} as const;
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: { type: 'spring', stiffness: 400, damping: 40 }
+  }
+} as const;
 
 const EditAdPage: React.FC = () => {
   const { t } = useTranslation();
@@ -38,6 +64,13 @@ const EditAdPage: React.FC = () => {
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
   const [selectedCategoryPath, setSelectedCategoryPath] = useState<CategoryPathElementDto[]>([]);
   const [allowedCurrencies, setAllowedCurrencies] = useState<CurrencyInfoDto[]>([]);
+  const [titleFocused, setTitleFocused] = useState(false);
+  const [descriptionFocused, setDescriptionFocused] = useState(false);
+  const [priceFocused, setPriceFocused] = useState(false);
+  const [stockFocused, setStockFocused] = useState(false);
+  const [editingImagePath, setEditingImagePath] = useState<string | null>(null);
+
+  useNavbarMode('focused', '/sales/ads');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -159,15 +192,54 @@ const EditAdPage: React.FC = () => {
     }
   };
 
+  const handleSaveEditedImage = async (blob: Blob) => {
+    const formData = new FormData();
+    formData.append('files[]', new File([blob], 'edited-image.jpg', { type: 'image/jpeg' }));
+    
+    setSaving(true);
+    try {
+      const response = await apiClient.post<MediaUploadResponseDto | MediaUploadResponseDto[]>('/media/upload', formData);
+      let newPath = '';
+      if (Array.isArray(response)) {
+        newPath = response[0].path;
+      } else {
+        newPath = response.path;
+      }
+
+      setMediaPaths(prev => {
+        const index = prev.indexOf(editingImagePath!);
+        const updated = [...prev];
+        if (index !== -1) {
+          updated[index] = newPath;
+        }
+        return updated;
+      });
+
+      if (mainPhotoPath === editingImagePath) {
+        setMainPhotoPath(newPath);
+      }
+      
+      setEditingImagePath(null);
+    } catch (err: any) {
+      setError(err.message || t('auth.errors.generic'));
+    } finally {
+      setSaving(false);
+    }
+  };
+
   if (loading) return <div className="uk-flex uk-flex-center uk-margin-large-top"><Spinner ratio={2} /></div>;
   if (!ad) return <Alert variant="danger">{error || t('ads.notFound')}</Alert>;
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ type: 'spring', stiffness: 400, damping: 40 }}
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
     >
+      <NavbarPortal>
+        <span className="uk-text-bold uk-text-truncate">{ad?.title || t('ads.editTitle')}</span>
+      </NavbarPortal>
+
       <Heading as="h2" className="uk-margin-medium-bottom">{t('ads.editTitle')}: {ad.title}</Heading>
       
       {error && <Alert variant="danger" onClose={() => setError(null)}>{error}</Alert>}
@@ -187,162 +259,287 @@ const EditAdPage: React.FC = () => {
       )}
 
       <Form onSubmit={handleSubmit(onSubmit)} layout="stacked">
-        <div className="uk-margin">
-          <label className="uk-form-label">{t('ads.title')}</label>
-          <Input 
-            {...register('title', { required: true })} 
-            status={errors.title ? 'danger' : undefined}
-          />
-        </div>
-
-        <div className="uk-margin">
-          <label className="uk-form-label">{t('ads.description')}</label>
-          <TextArea {...register('description')} rows={5} />
-        </div>
-
-        <div className="uk-margin">
-          <label className="uk-form-label">{t('ads.city')}</label>
-          <div className="uk-inline uk-width-1-1">
-            <Input
-              type="text"
-              placeholder={t('ads.cityPlaceholder')}
-              value={citySearch}
-              onChange={(e) => handleCitySearch(e.target.value)}
-            />
-            <AnimatePresence>
-              {citySuggestions.length > 0 && (
-                <motion.div 
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="uk-dropdown uk-show uk-width-1-1" 
-                  style={{ position: 'absolute', zIndex: 1000 }}
-                >
-                  <ul className="uk-nav uk-dropdown-nav">
-                    {citySuggestions.map(suggestion => (
-                      <li key={suggestion.city.id}>
-                        <a href="#" onClick={(e) => { e.preventDefault(); selectCity(suggestion.city); }}>
-                          {suggestion.city.name}{suggestion.city.district ? ` (${suggestion.city.district})` : ''}, {suggestion.city.country}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
-
-        <div className="uk-margin">
-          <label className="uk-form-label">{t('ads.category')}</label>
-          <div className="uk-flex uk-flex-column uk-flex-row@m uk-flex-middle@m">
-            <div className="uk-flex-1 uk-margin-small-bottom uk-margin-remove-bottom@m" style={{ minWidth: 0 }}>
-              {selectedCategoryPath.length > 0 ? (
-                <CategoryBreadcrumbs path={selectedCategoryPath} className="uk-margin-remove" />
-              ) : (
-                <span className="uk-text-muted">{t('ads.selectCategory')}</span>
-              )}
-            </div>
-            <Button 
-              type="button" 
-              variant="default" 
-              size="small" 
-              className="uk-width-1-1 uk-width-auto@m uk-margin-small-left@m"
-              uk-toggle="target: #category-selector"
-            >
-              {selectedCategoryPath.length > 0 ? t('ads.changeCategory') : t('ads.selectCategory')}
-            </Button>
-          </div>
-          <CategorySelector onSelect={handleCategorySelect} />
-        </div>
-
-        <Grid gap="small">
-          <div className="uk-width-1-2@m">
-            <label className="uk-form-label">{t('ads.price')}</label>
-            <Input {...register('price')} type="number" step="0.00000001" />
-          </div>
-          <div className="uk-width-1-2@m">
-            <label className="uk-form-label">{t('ads.currency')}</label>
-            <Select {...register('currency')}>
-              {allowedCurrencies.map(c => (
-                <option key={c.code} value={c.code}>{c.code} ({c.name})</option>
-              ))}
-            </Select>
-          </div>
-        </Grid>
-
-        <div className="uk-margin">
-          <label className="uk-form-label">{t('ads.stock')}</label>
-          <Input {...register('stock')} type="number" min="0" />
-        </div>
-
-        <div className="uk-margin">
-          <label className="uk-form-label">{t('ads.media')}</label>
-          <div className="uk-placeholder uk-text-center uk-padding-large uk-border-rounded">
-            <span uk-icon="icon: cloud-upload; ratio: 2"></span>
-            <div className="uk-margin-small-top">
-              <span className="uk-text-middle">{t('ads.uploadText')}</span>
-              <div uk-form-custom="">
-                <input type="file" multiple onChange={(e) => e.target.files && handleUpload(e.target.files)} />
-                <span className="uk-link uk-text-bold">{t('ads.selectFiles')}</span>
+        <motion.div variants={itemVariants} className="uk-margin-medium-bottom">
+          <Card>
+            <CardBody>
+              <Heading as="h4" divider>{t('ads.generalInfo')}</Heading>
+              <div className="uk-margin">
+                <label className="uk-form-label">{t('ads.title')}</label>
+                <Input 
+                  {...register('title', { required: true })} 
+                  status={errors.title && !titleFocused ? 'danger' : undefined}
+                  onFocus={() => setTitleFocused(true)}
+                  onBlur={(e) => {
+                    register('title').onBlur(e);
+                    setTitleFocused(false);
+                  }}
+                />
+                {titleFocused && (
+                  <div className="uk-text-primary uk-text-small uk-margin-small-top">
+                    {t('ads.titleGuidance')}
+                  </div>
+                )}
               </div>
-            </div>
-          </div>
-          
-          <Grid gap="small" className="uk-child-width-1-2 uk-child-width-1-4@m uk-margin-top">
-            <AnimatePresence>
-              {mediaPaths.map((path) => (
-                <motion.div 
-                  key={path} 
-                  layout
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  className="uk-inline"
-                >
-                  <div className="uk-card uk-card-default uk-card-body uk-padding-remove uk-overflow-hidden uk-border-rounded">
-                    <img 
-                      src={`${API_URL}/api/media?p=${path}`} 
-                      alt="media" 
-                      style={{ height: '150px', width: '100%', objectFit: 'cover', cursor: 'pointer' }} 
-                      onClick={() => setMainPhotoPath(path)}
-                    />
-                    <div className="uk-position-top-left uk-padding-small">
-                        <button 
-                          type="button" 
-                          className={`uk-icon-button ${mainPhotoPath === path ? 'uk-button-primary' : 'uk-background-default'}`} 
-                          onClick={() => setMainPhotoPath(path)}
-                          title={t('ads.setAsMain')}
-                          uk-icon={`icon: ${mainPhotoPath === path ? 'star' : 'plus'}; ratio: 0.8`}
-                        ></button>
-                    </div>
-                    <div className="uk-position-top-right uk-padding-small">
-                        <button 
-                          type="button" 
-                          className="uk-close uk-background-default uk-border-circle uk-padding-small" 
-                          onClick={() => {
-                            const updated = mediaPaths.filter(p => p !== path);
-                            setMediaPaths(updated);
-                            if (mainPhotoPath === path) {
-                              setMainPhotoPath(updated.length > 0 ? updated[0] : null);
-                            }
-                          }}
-                          uk-icon="icon: close; ratio: 0.8"
-                        ></button>
-                    </div>
-                    {mainPhotoPath === path && (
-                      <div className="uk-position-bottom-center uk-margin-small-bottom">
-                        <Label variant="success">{t('ads.mainPhoto')}</Label>
-                      </div>
+
+              <div className="uk-margin">
+                <label className="uk-form-label">{t('ads.description')}</label>
+                <TextArea 
+                  {...register('description')} 
+                  rows={5} 
+                  onFocus={() => setDescriptionFocused(true)}
+                  onBlur={(e) => {
+                    register('description').onBlur(e);
+                    setDescriptionFocused(false);
+                  }}
+                />
+                {descriptionFocused && (
+                  <div className="uk-text-primary uk-text-small uk-margin-small-top">
+                    {t('ads.descriptionGuidance')}
+                  </div>
+                )}
+              </div>
+            </CardBody>
+          </Card>
+        </motion.div>
+
+        <motion.div variants={itemVariants} className="uk-margin-medium-bottom">
+          <Card>
+            <CardBody>
+              <Heading as="h4" divider>{t('ads.classificationLocation')}</Heading>
+              <div className="uk-margin">
+                <label className="uk-form-label">{t('ads.city')}</label>
+                <div className="uk-inline uk-width-1-1">
+                  <Input
+                    type="text"
+                    placeholder={t('ads.cityPlaceholder')}
+                    value={citySearch}
+                    onChange={(e) => handleCitySearch(e.target.value)}
+                  />
+                  <AnimatePresence>
+                    {citySuggestions.length > 0 && (
+                      <motion.div 
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="uk-dropdown uk-show uk-width-1-1" 
+                        style={{ position: 'absolute', zIndex: 1000 }}
+                      >
+                        <ul className="uk-nav uk-dropdown-nav">
+                          {citySuggestions.map(suggestion => (
+                            <li key={suggestion.city.id}>
+                              <a href="#" onClick={(e) => { e.preventDefault(); selectCity(suggestion.city); }}>
+                                {suggestion.city.name}{suggestion.city.district ? ` (${suggestion.city.district})` : ''}, {suggestion.city.country}
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </div>
+
+              <div className="uk-margin">
+                <label className="uk-form-label">{t('ads.category')}</label>
+                <div className="uk-flex uk-flex-column uk-flex-row@m uk-flex-middle@m">
+                  <div className="uk-flex-1 uk-margin-small-bottom uk-margin-remove-bottom@m" style={{ minWidth: 0 }}>
+                    {selectedCategoryPath.length > 0 ? (
+                      <CategoryBreadcrumbs path={selectedCategoryPath} className="uk-margin-remove" />
+                    ) : (
+                      <span className="uk-text-muted">{t('ads.selectCategory')}</span>
                     )}
                   </div>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </Grid>
-        </div>
+                  <Button 
+                    type="button" 
+                    variant="default" 
+                    size="small" 
+                    className="uk-width-1-1 uk-width-auto@m uk-margin-small-left@m"
+                    uk-toggle="target: #category-selector"
+                  >
+                    {selectedCategoryPath.length > 0 ? t('ads.changeCategory') : t('ads.selectCategory')}
+                  </Button>
+                </div>
+                <CategorySelector onSelect={handleCategorySelect} />
+              </div>
+            </CardBody>
+          </Card>
+        </motion.div>
 
-        <div className="uk-margin-large-top uk-flex uk-flex-right">
+        <motion.div variants={itemVariants} className="uk-margin-medium-bottom">
+          <Card>
+            <CardBody>
+              <Heading as="h4" divider>{t('ads.pricingStock')}</Heading>
+              <Grid gap="small">
+                <div className="uk-width-1-2@m">
+                  <label className="uk-form-label">{t('ads.price')}</label>
+                  <Input 
+                    {...register('price')} 
+                    type="number" 
+                    step="0.00000001" 
+                    onFocus={() => setPriceFocused(true)}
+                    onBlur={(e) => {
+                      register('price').onBlur(e);
+                      setPriceFocused(false);
+                    }}
+                  />
+                  {priceFocused && (
+                    <div className="uk-text-primary uk-text-small uk-margin-small-top">
+                      {t('ads.priceGuidance')}
+                    </div>
+                  )}
+                </div>
+                <div className="uk-width-1-2@m">
+                  <label className="uk-form-label">{t('ads.currency')}</label>
+                  <Select {...register('currency')}>
+                    {allowedCurrencies.map(c => (
+                      <option key={c.code} value={c.code}>{c.code} ({c.name})</option>
+                    ))}
+                  </Select>
+                </div>
+              </Grid>
+
+              <div className="uk-margin">
+                <label className="uk-form-label">{t('ads.stock')}</label>
+                <Input 
+                  {...register('stock')} 
+                  type="number" 
+                  min="0" 
+                  onFocus={() => setStockFocused(true)}
+                  onBlur={(e) => {
+                    register('stock').onBlur(e);
+                    setStockFocused(false);
+                  }}
+                />
+                {stockFocused && (
+                  <div className="uk-text-primary uk-text-small uk-margin-small-top">
+                    {t('ads.stockGuidance')}
+                  </div>
+                )}
+              </div>
+            </CardBody>
+          </Card>
+        </motion.div>
+
+        <motion.div variants={itemVariants} className="uk-margin-medium-bottom">
+          <Card>
+            <CardBody>
+              <Heading as="h4" divider>{t('ads.media')}</Heading>
+              
+              {/* Desktop Drop Area */}
+              <div className="uk-visible@m">
+                <Upload 
+                  url=""
+                  multiple={true}
+                  className={`uk-placeholder uk-text-center uk-padding-large uk-border-rounded ${styles.uploadArea}`}
+                  beforeAll={(_: any, files: FileList) => {
+                    handleUpload(files);
+                    return false;
+                  }}
+                >
+                  <span uk-icon="icon: cloud-upload; ratio: 2"></span>
+                  <div className="uk-margin-small-top">
+                    <span className="uk-text-middle">{t('ads.uploadText')}</span>
+                    <div uk-form-custom="">
+                      <input type="file" multiple onChange={(e) => e.target.files && handleUpload(e.target.files)} />
+                      <span className="uk-link uk-text-bold">{t('ads.selectFiles')}</span>
+                    </div>
+                  </div>
+                </Upload>
+              </div>
+
+              {/* Mobile Buttons */}
+              <div className="uk-hidden@m">
+                <div className="uk-grid-small uk-child-width-1-2" uk-grid="">
+                  <div>
+                    <div uk-form-custom="" className="uk-width-1-1">
+                      <input type="file" multiple onChange={(e) => e.target.files && handleUpload(e.target.files)} />
+                      <Button type="button" variant="default" className="uk-width-1-1">
+                        <span uk-icon="icon: upload" className="uk-margin-small-right"></span>
+                        {t('ads.uploadFile')}
+                      </Button>
+                    </div>
+                  </div>
+                  <div>
+                    <div uk-form-custom="" className="uk-width-1-1">
+                      <input type="file" accept="image/*" capture="environment" onChange={(e) => e.target.files && handleUpload(e.target.files)} />
+                      <Button type="button" variant="default" className="uk-width-1-1">
+                        <span uk-icon="icon: camera" className="uk-margin-small-right"></span>
+                        {t('ads.takePhoto')}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <Lightbox>
+                <Grid gap="small" className="uk-child-width-1-2 uk-child-width-1-4@m uk-margin-top">
+                  <AnimatePresence>
+                    {mediaPaths.map((path) => (
+                      <motion.div 
+                        key={path} 
+                        layout
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        className="uk-inline"
+                      >
+                        <div className="uk-card uk-card-default uk-card-body uk-padding-remove uk-overflow-hidden uk-border-rounded">
+                          <LightboxItem href={`${API_URL}/api/media?p=${path}`}>
+                            <img 
+                              src={`${API_URL}/api/media?p=${path}`} 
+                              alt="media" 
+                              style={{ height: '150px', width: '100%', objectFit: 'cover', cursor: 'pointer' }} 
+                            />
+                          </LightboxItem>
+                          <div className="uk-position-top-left uk-padding-small uk-flex uk-flex-column">
+                              <button 
+                                type="button" 
+                                className={`uk-icon-button uk-margin-small-bottom ${mainPhotoPath === path ? 'uk-button-primary' : 'uk-background-default'}`} 
+                                onClick={() => setMainPhotoPath(path)}
+                                title={mainPhotoPath === path ? t('ads.mainPhoto') : t('ads.setAsMain')}
+                                uk-icon={`icon: ${mainPhotoPath === path ? 'star' : 'image'}; ratio: 0.8`}
+                              ></button>
+                              <button 
+                                type="button" 
+                                className="uk-icon-button uk-background-default" 
+                                onClick={() => setEditingImagePath(path)}
+                                title={t('common.edit')}
+                                uk-icon="icon: pencil; ratio: 0.8"
+                              ></button>
+                          </div>
+                          <div className="uk-position-top-right uk-padding-small">
+                              <button 
+                                type="button" 
+                                className="uk-close uk-background-default uk-border-circle uk-padding-small" 
+                                onClick={() => {
+                                  const updated = mediaPaths.filter(p => p !== path);
+                                  setMediaPaths(updated);
+                                  if (mainPhotoPath === path) {
+                                    setMainPhotoPath(updated.length > 0 ? updated[0] : null);
+                                  }
+                                }}
+                                uk-icon="icon: close; ratio: 0.8"
+                              ></button>
+                          </div>
+                          {mainPhotoPath === path && (
+                            <div className="uk-position-bottom-center uk-margin-small-bottom">
+                              <Label variant="success">
+                                <span uk-icon="icon: star; ratio: 0.6" className="uk-margin-xsmall-right"></span>
+                                {t('ads.mainPhoto')}
+                              </Label>
+                            </div>
+                          )}
+                        </div>
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
+                </Grid>
+              </Lightbox>
+            </CardBody>
+          </Card>
+        </motion.div>
+
+        <motion.div variants={itemVariants} className="uk-margin-large-top uk-flex uk-flex-right">
           <Button 
             type="button" 
             className="uk-margin-right" 
@@ -353,8 +550,16 @@ const EditAdPage: React.FC = () => {
           <Button type="submit" variant="primary" disabled={saving || allowedCurrencies.length === 0}>
             {saving ? <><Spinner ratio={0.5} className="uk-margin-small-right" /> {t('ads.saving')}</> : t('common.save')}
           </Button>
-        </div>
+        </motion.div>
       </Form>
+
+      {editingImagePath && (
+        <MediaEditor 
+          imageSrc={`${API_URL}/api/media?p=${editingImagePath}`}
+          onSave={handleSaveEditedImage}
+          onCancel={() => setEditingImagePath(null)}
+        />
+      )}
     </motion.div>
   );
 };

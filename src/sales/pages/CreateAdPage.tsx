@@ -9,6 +9,9 @@ import { Button } from '../../components/uikit/Button/Button';
 import { Form, Input } from '../../components/uikit/Form/Form';
 import { Alert } from '../../components/uikit/Alert/Alert';
 import { Spinner } from '../../components/uikit/Spinner/Spinner';
+import { Card, CardBody } from '../../components/uikit/Card/Card';
+import { useNavbarMode } from '../../hooks/useNavbarMode';
+import NavbarPortal from '../../components/Navbar/NavbarPortal';
 import type { CurrencyInfoDto } from '../../types/api';
 
 interface CreateAdForm {
@@ -26,6 +29,8 @@ const CreateAdPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [titleFocused, setTitleFocused] = useState(false);
   const [allowedCurrencies, setAllowedCurrencies] = useState<CurrencyInfoDto[]>([]);
+
+  useNavbarMode('focused', '/sales/ads');
 
   useEffect(() => {
     salesService.getAllowedCurrencies()
@@ -58,68 +63,81 @@ const CreateAdPage: React.FC = () => {
       transition={{ type: 'spring', stiffness: 400, damping: 40 }}
       className="uk-flex uk-flex-center"
     >
+      <NavbarPortal>
+        <span className="uk-text-bold">{t('ads.createNew')}</span>
+      </NavbarPortal>
+
       <div className="uk-width-large">
-        <Heading as="h2" className="uk-text-center uk-margin-medium-bottom">
-          {t('ads.createNew')}
-        </Heading>
+        <Card>
+          <CardBody>
+            <Heading as="h2" className="uk-text-center uk-margin-medium-bottom">
+              {t('ads.createNew')}
+            </Heading>
 
-        {error && <Alert variant="danger">{error}</Alert>}
+            {error && <Alert variant="danger">{error}</Alert>}
 
-        {allowedCurrencies.length === 0 && (
-          <Alert variant="warning" className="uk-margin-medium-bottom">
-            <Heading as="h4" className="uk-margin-small-bottom">{t('ads.notEligibleTitle')}</Heading>
-            <p className="uk-margin-small-bottom">{t('ads.notEligibleMessage')}</p>
-            <Button 
-              variant="primary" 
-              size="small" 
-              onClick={() => navigate('/profile')}
-            >
-              {t('ads.goToProfile')}
-            </Button>
-          </Alert>
-        )}
+            {allowedCurrencies.length === 0 && (
+              <Alert variant="warning" className="uk-margin-medium-bottom">
+                <Heading as="h4" className="uk-margin-small-bottom">{t('ads.notEligibleTitle')}</Heading>
+                <p className="uk-margin-small-bottom">{t('ads.notEligibleMessage')}</p>
+                <Button 
+                  variant="primary" 
+                  size="small" 
+                  onClick={() => navigate('/profile')}
+                >
+                  {t('ads.goToProfile')}
+                </Button>
+              </Alert>
+            )}
 
-        <Form onSubmit={handleSubmit(onSubmit)}>
-          <div className="uk-margin">
-            <label className="uk-form-label">{t('ads.title')}</label>
-            <div className="uk-form-controls">
-              <Input
-                {...titleRegister}
-                placeholder={t('ads.title')}
-                status={errors.title && !titleFocused && touchedFields.title ? 'danger' : undefined}
-                onFocus={() => setTitleFocused(true)}
-                onBlur={(e) => {
-                  titleRegister.onBlur(e);
-                  setTitleFocused(false);
-                }}
-                autoFocus
-              />
-              {errors.title && !titleFocused && touchedFields.title && (
-                <div className="uk-text-danger uk-text-small uk-margin-small-top">
-                   {t('auth.errors.minLength', { count: 5 })}
+            <Form onSubmit={handleSubmit(onSubmit)}>
+              <div className="uk-margin">
+                <label className="uk-form-label">{t('ads.title')}</label>
+                <div className="uk-form-controls">
+                  <Input
+                    {...titleRegister}
+                    placeholder={t('ads.title')}
+                    status={errors.title && !titleFocused && touchedFields.title ? 'danger' : undefined}
+                    onFocus={() => setTitleFocused(true)}
+                    onBlur={(e) => {
+                      titleRegister.onBlur(e);
+                      setTitleFocused(false);
+                    }}
+                    autoFocus
+                  />
+                  {errors.title && !titleFocused && touchedFields.title && (
+                    <div className="uk-text-danger uk-text-small uk-margin-small-top">
+                       {t('auth.errors.minLength', { count: 5 })}
+                    </div>
+                  )}
+                  {titleFocused && (
+                    <div className="uk-text-primary uk-text-small uk-margin-small-top">
+                      {t('ads.titleGuidance')}
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-          </div>
+              </div>
 
-          <div className="uk-margin-large-top">
-            <Button
-              type="submit"
-              variant="primary"
-              className="uk-width-1-1"
-              disabled={loading || !isValid || allowedCurrencies.length === 0}
-            >
-              {loading ? t('common.loading') : t('common.save')}
-            </Button>
-            <Button
-              type="button"
-              className="uk-width-1-1 uk-margin-small-top"
-              onClick={() => navigate('/sales/ads')}
-            >
-              {t('common.cancel')}
-            </Button>
-          </div>
-        </Form>
+              <div className="uk-margin-large-top">
+                <Button
+                  type="submit"
+                  variant="primary"
+                  className="uk-width-1-1"
+                  disabled={loading || !isValid || allowedCurrencies.length === 0}
+                >
+                  {loading ? t('common.loading') : t('common.save')}
+                </Button>
+                <Button
+                  type="button"
+                  className="uk-width-1-1 uk-margin-small-top"
+                  onClick={() => navigate('/sales/ads')}
+                >
+                  {t('common.cancel')}
+                </Button>
+              </div>
+            </Form>
+          </CardBody>
+        </Card>
       </div>
     </motion.div>
   );
