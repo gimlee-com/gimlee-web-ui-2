@@ -237,7 +237,12 @@ const EditAdPage: React.FC = () => {
       animate="visible"
     >
       <NavbarPortal>
-        <span className="uk-text-bold uk-text-truncate">{ad?.title || t('ads.editTitle')}</span>
+        <div className="uk-flex uk-flex-middle" style={{ minWidth: 0 }}>
+          <span className="uk-text-bold uk-text-truncate">{ad?.title || t('ads.editTitle')}</span>
+          <Label variant="warning" className="uk-margin-small-left uk-flex-none">
+            {t('common.editing')}
+          </Label>
+        </div>
       </NavbarPortal>
 
       <Heading as="h2" className="uk-margin-medium-bottom">{t('ads.editTitle')}: {ad.title}</Heading>

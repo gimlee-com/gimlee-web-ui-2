@@ -17,7 +17,7 @@ const getInitialState = (): PurchaseState => {
         return { activePurchase: purchase, isModalOpen: true };
       }
       localStorage.removeItem('activePurchase');
-    } catch (e) {
+    } catch {
       localStorage.removeItem('activePurchase');
     }
   }

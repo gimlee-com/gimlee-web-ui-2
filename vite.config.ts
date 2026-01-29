@@ -18,6 +18,9 @@ export default defineConfig(({ mode }) => ({
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['gimlee.svg', 'favicon.ico', 'apple-touch-icon.png', 'gimlee-192x192.png', 'gimlee-512x512.png'],
+      workbox: {
+        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
+      },
       manifest: {
         name: 'Gimlee Marketplace',
         short_name: 'Gimlee',
@@ -55,7 +58,7 @@ export default defineConfig(({ mode }) => ({
     }),
     visualizer({
       filename: './dist/stats.html',
-      open: true,
+      open: false,
       gzipSize: true,
       brotliSize: true,
     }),

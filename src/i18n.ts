@@ -19,7 +19,8 @@ const resources = {
         "memo": "Memo",
         "undo": "Undo",
         "redo": "Redo",
-        "rotate": "Rotate"
+        "rotate": "Rotate",
+        "editing": "Editing"
       },
       "navbar": {
         "browseAds": "Browse Ads",
@@ -205,7 +206,8 @@ const resources = {
         "memo": "Memo",
         "undo": "Cofnij",
         "redo": "Ponów",
-        "rotate": "Obróć"
+        "rotate": "Obróć",
+        "editing": "Edycja"
       },
       "navbar": {
         "browseAds": "Przeglądaj ogłoszenia",

@@ -17,7 +17,7 @@ export const formatPrice = (amount: number, currency: string): string => {
       style: 'currency',
       currency: currency,
     }).format(amount);
-  } catch (e) {
+  } catch {
     // Fallback for non-standard or crypto currencies (e.g., ARRR, YEC) 
     // that might not be recognized by the Intl API.
     const formattedNumber = new Intl.NumberFormat(locale, {
