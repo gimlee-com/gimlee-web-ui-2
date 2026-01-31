@@ -20,6 +20,7 @@ import { Container } from '../uikit/Container/Container';
 import { Offcanvas, OffcanvasBar, OffcanvasClose } from '../uikit/Offcanvas/Offcanvas';
 import { Nav, NavItem } from '../uikit/Nav/Nav';
 import { GeometricAvatar } from '../GeometricAvatar/GeometricAvatar';
+import { Image } from '../Image/Image';
 import styles from './Navbar.module.scss';
 
 const MotionNavbarItem = motion.create(NavbarItem);
@@ -119,7 +120,7 @@ const Navbar: React.FC = () => {
                 <div className="uk-flex uk-flex-middle">
                   <div className="uk-border-circle uk-overflow-hidden" style={{ width: 32, height: 32 }}>
                     {userProfile?.avatarUrl ? (
-                      <img
+                      <Image
                         src={userProfile.avatarUrl}
                         className="uk-preserve-width"
                         width="32"
@@ -193,7 +194,7 @@ const Navbar: React.FC = () => {
               <div className="uk-flex uk-flex-middle">
                 <div className="uk-border-circle uk-overflow-hidden" style={{ width: 40, height: 40 }}>
                   {userProfile?.avatarUrl ? (
-                    <img src={userProfile.avatarUrl} width="40" height="40" alt={username || ''} />
+                    <Image src={userProfile.avatarUrl} width="40" height="40" alt={username || ''} />
                   ) : (
                     <GeometricAvatar username={username || ''} size={40} />
                   )}

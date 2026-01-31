@@ -7,6 +7,7 @@ import { Card, CardBody } from '../../components/uikit/Card/Card';
 import { Label } from '../../components/uikit/Label/Label';
 import { Icon } from '../../components/uikit/Icon/Icon';
 import { formatPrice } from '../../utils/currencyUtils';
+import { Image } from '../../components/Image/Image';
 import styles from './AdCard.module.scss';
 
 interface AdCardProps {
@@ -47,7 +48,13 @@ export const AdCard: React.FC<AdCardProps> = ({ ad }) => {
             {!isSold && isOutOfStock && <Label variant="warning">{t('ads.status.outOfStock')}</Label>}
             {isNew && !isSold && <Label variant="success">{t('ads.status.new')}</Label>}
           </div>
-          <img src={photoUrl} alt={ad.title} className={styles.image} loading="lazy" />
+          <Image 
+            src={photoUrl} 
+            alt={ad.title} 
+            className={styles.image} 
+            containerClassName={styles.image}
+            loading="lazy" 
+          />
         </div>
 
         <CardBody className={styles.content}>

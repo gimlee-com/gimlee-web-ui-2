@@ -3,6 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import UIkit from 'uikit';
 import { useTranslation } from 'react-i18next';
+import { Image } from '../Image/Image';
 
 interface MarkdownProps {
   content: string;
@@ -69,7 +70,7 @@ export const Markdown: React.FC<MarkdownProps> = ({ content, className }) => {
             const isSafe = src.startsWith('/') || src.startsWith('blob:') || (API_URL && src.startsWith(API_URL));
             
             if (isSafe) {
-              return <img {...props} className="uk-responsive-width" alt={props.alt || ''} />;
+              return <Image {...(props as any)} className="uk-responsive-width" alt={props.alt || ''} />;
             }
             return (
               <span className="uk-text-muted uk-text-italic uk-text-small">

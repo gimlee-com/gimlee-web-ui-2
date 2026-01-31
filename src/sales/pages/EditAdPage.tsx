@@ -22,6 +22,7 @@ import { CategoryBreadcrumbs } from '../../ads/components/CategoryBreadcrumbs/Ca
 import { useNavbarMode } from '../../hooks/useNavbarMode';
 import NavbarPortal from '../../components/Navbar/NavbarPortal';
 import { MediaEditor } from '../components/MediaEditor/MediaEditor';
+import { Image } from '../../components/Image/Image';
 import { MarkdownEditor } from '../../components/Markdown/MarkdownEditor';
 import styles from './EditAdPage.module.scss';
 
@@ -500,10 +501,12 @@ const EditAdPage: React.FC = () => {
                       >
                         <div className="uk-card uk-card-default uk-card-body uk-padding-remove uk-overflow-hidden uk-border-rounded">
                           <LightboxItem href={`${API_URL}/api/media?p=${path}`}>
-                            <img 
+                            <Image 
                               src={`${API_URL}/api/media?p=${path}`} 
                               alt="media" 
-                              style={{ height: '150px', width: '100%', objectFit: 'cover', cursor: 'pointer' }} 
+                              className="uk-width-1-1"
+                              containerStyle={{ height: '150px', width: '100%', cursor: 'pointer' }}
+                              style={{ height: '150px', width: '100%', objectFit: 'cover' }} 
                             />
                           </LightboxItem>
                           <div className="uk-position-top-left uk-padding-small uk-flex uk-flex-column">

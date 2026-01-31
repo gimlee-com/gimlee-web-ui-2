@@ -1,4 +1,5 @@
 import React, { forwardRef } from 'react'
+import { Image } from '../Image/Image'
 
 type CommentProps = React.HTMLAttributes<HTMLElement> & {
   primary?: boolean
@@ -76,7 +77,7 @@ export const CommentAvatar = forwardRef<HTMLImageElement, React.ImgHTMLAttribute
     if (customClassName) classNames.push(customClassName)
 
     return (
-      <img ref={ref} className={classNames.join(' ')} alt="" {...props} />
+      <Image ref={ref as any} className={classNames.join(' ')} alt="" {...props} />
     )
   }
 )

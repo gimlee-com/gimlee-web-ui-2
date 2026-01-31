@@ -19,6 +19,7 @@ import { Progress } from '../../components/uikit/Progress/Progress';
 import { useAppDispatch } from '../../store';
 import { updateActivePurchaseStatus, setModalOpen, clearActivePurchase } from '../../store/purchaseSlice';
 import { formatPrice } from '../../utils/currencyUtils';
+import { Image } from '../../components/Image/Image';
 import { purchaseService } from '../services/purchaseService';
 import { currencyService } from '../../payments/services/currencyService';
 import { useAuth } from '../../context/AuthContext';
@@ -284,7 +285,7 @@ export const PurchaseModal = forwardRef<HTMLDivElement, PurchaseModalProps>(
           <ModalBody>
             <div className="uk-grid-small uk-flex-middle" uk-grid="">
               <div className="uk-width-auto">
-                <img 
+                <Image 
                   src={purchase.currency === 'YEC' ? '/currencies/yec-primary.svg' : '/currencies/pirate-black.svg'}
                   alt={purchase.currency} 
                   width="40" 

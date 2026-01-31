@@ -23,6 +23,7 @@ import { useNavbarMode } from '../../hooks/useNavbarMode';
 import NavbarPortal from '../../components/Navbar/NavbarPortal';
 import { formatPrice } from '../../utils/currencyUtils';
 import { Markdown } from '../../components/Markdown/Markdown';
+import { Image } from '../../components/Image/Image';
 import styles from './AdDetailsPage.module.scss';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
@@ -261,10 +262,11 @@ const AdDetailsPage: React.FC = () => {
                       {images.map((img, index) => (
                         <SliderItem key={index} data-index={index}>
                           <LightboxItem href={img.original} caption={img.alt} thumb={img.thumbXs}>
-                            <img
+                            <Image
                               src={visitedIndices.includes(index) ? img.thumbMd : img.thumbXs}
                               alt={img.alt}
                               className={`uk-border-rounded uk-width-1-1 uk-background-muted uk-object-cover ${styles.adDetailsLightboxImage}`}
+                              containerClassName={`uk-border-rounded uk-width-1-1 uk-background-muted uk-object-cover ${styles.adDetailsLightboxImage}`}
                             />
                           </LightboxItem>
                         </SliderItem>
@@ -286,10 +288,11 @@ const AdDetailsPage: React.FC = () => {
                               onClick={(e) => { e.preventDefault(); setActiveIndex(index); }}
                               className={`uk-display-block ${styles.adDetailsThumbLink}`}
                             >
-                              <img
+                              <Image
                                 src={img.thumbXs}
                                 alt=""
                                 className="uk-border-rounded uk-width-1-1 uk-height-1-1 uk-object-cover"
+                                containerClassName="uk-border-rounded uk-width-1-1 uk-height-1-1"
                               />
                             </a>
                           </SliderItem>
@@ -313,11 +316,12 @@ const AdDetailsPage: React.FC = () => {
             </>
           ) : (
             <div className="uk-width-1-1 uk-text-center">
-              <img
+              <Image
                 src="/placeholder-image.svg"
                 alt={ad.title}
                 className={`uk-border-rounded uk-width-1-1 uk-background-muted uk-object-cover ${styles.adDetailsLightboxImage}`}
-                style={{ cursor: 'default' }}
+                containerClassName={`uk-border-rounded uk-width-1-1 uk-background-muted uk-object-cover ${styles.adDetailsLightboxImage}`}
+                containerStyle={{ cursor: 'default' }}
               />
               <p className="uk-text-muted uk-margin-small-top">{t('ads.noImages')}</p>
             </div>

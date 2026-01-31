@@ -9,6 +9,7 @@ import { Button } from '../../components/uikit/Button/Button';
 import { Icon } from '../../components/uikit/Icon/Icon';
 import { Grid } from '../../components/uikit/Grid/Grid';
 import { formatPrice } from '../../utils/currencyUtils';
+import { Image } from '../../components/Image/Image';
 import styles from './SalesAdCard.module.scss';
 
 interface SalesAdCardProps {
@@ -47,7 +48,12 @@ export const SalesAdCard: React.FC<SalesAdCardProps> = ({ ad, onToggleStatus }) 
     >
       <Card className={styles.salesCard}>
         <div className={styles.mediaWrapper}>
-          <img src={photoUrl} alt={ad.title} className={styles.image} />
+          <Image 
+            src={photoUrl} 
+            alt={ad.title} 
+            className={styles.image} 
+            containerClassName={styles.image}
+          />
           <div className={styles.statusOverlay}>
             <Label variant={statusVariant}>{ad.status}</Label>
           </div>

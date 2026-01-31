@@ -140,6 +140,11 @@ To ensure a consistent user experience, especially with localized messages, we f
     - **Auth Redirects**: Ensure that authentication redirects (e.g., to the login page) preserve and pass along this `from` state so that the user can return to their original context after logging in.
 ---
 
+#### **O. Image Rendering & Placeholders**
+- **Enhanced `Image` Component**: To provide a polished, high-end feel, always use the custom `Image` component (`src/components/Image/Image.tsx`) instead of raw `<img>` tags or the base UIKit wrapper.
+- **Loading Placeholders**: This component automatically provides a subtle "shimmer" animation while images are loading, preventing jarring layout jumps and giving immediate visual feedback.
+- **Layout Preservation**: Always provide `containerClassName` or `containerStyle` to the `Image` component to ensure the placeholder correctly matches the intended dimensions of the image.
+
 ### 4. Code Structure Standards
 The project follows a modular, business-oriented directory structure to ensure scalability and maintainability.
 
@@ -197,3 +202,4 @@ Every component (whether shared or module-specific) follows the same pattern:
 23. **Immersive Task Focus**: For complex, multi-step tasks (like category selection), use full-screen, immersive modals on mobile to maximize usable space and provide a "native" app feel.
 24. **React-Compatible Modals**: Always set `container: false` for UIKit modals to keep them within the React root. This is strictly required to ensure React event delegation (for clicks, inputs, etc.) works correctly within the modal.
 25. **Hybrid Traversal Speed**: Combine high-density Miller Columns (desktop) with focused Drill-Down stacks (mobile) to provide the fastest possible navigation through deep hierarchies.
+26. **Favor Enhanced Images**: Never use raw `<img>` tags. Always use the project's enhanced `Image` component to ensure consistent loading placeholders and smooth transitions across the platform.
