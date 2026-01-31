@@ -5,6 +5,8 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { salesService } from '../services/salesService';
 import { cityService } from '../../ads/services/cityService';
 import { I18nextProvider } from 'react-i18next';
+import { Provider } from 'react-redux';
+import { store } from '../../store';
 import i18n from '../../i18n';
 
 vi.mock('../services/salesService', () => ({
@@ -19,6 +21,16 @@ vi.mock('../../ads/services/cityService', () => ({
   cityService: {
     getSuggestions: vi.fn(),
   },
+}));
+
+vi.mock('../../components/Markdown/MarkdownEditor', () => ({
+  MarkdownEditor: ({ value, onChange }: any) => (
+    <textarea value={value} onChange={(e) => onChange(e.target.value)} data-testid="markdown-editor" />
+  ),
+}));
+
+vi.mock('../../ads/components/CategorySelector/CategorySelector', () => ({
+  CategorySelector: () => <div data-testid="category-selector" />,
 }));
 
 const mockAd = {
@@ -42,13 +54,15 @@ const mockAd = {
 
 const renderEditAdPage = () => {
   return render(
-    <I18nextProvider i18n={i18n}>
-      <MemoryRouter initialEntries={['/sales/ads/edit/1']}>
-        <Routes>
-          <Route path="/sales/ads/edit/:id" element={<EditAdPage />} />
-        </Routes>
-      </MemoryRouter>
-    </I18nextProvider>
+    <Provider store={store}>
+      <I18nextProvider i18n={i18n}>
+        <MemoryRouter initialEntries={['/sales/ads/edit/1']}>
+          <Routes>
+            <Route path="/sales/ads/edit/:id" element={<EditAdPage />} />
+          </Routes>
+        </MemoryRouter>
+      </I18nextProvider>
+    </Provider>
   );
 };
 

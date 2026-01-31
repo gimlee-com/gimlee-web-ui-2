@@ -1,0 +1,102 @@
+@import "../../styles/_uikit-imports.scss";
+
+.editorContainer {
+  border: 1px solid $form-border;
+  border-radius: $global-border-radius;
+  background: $form-background;
+  transition: 0.2s ease-in-out;
+  transition-property: color, background-color, border-color;
+  min-height: 150px;
+  position: relative;
+
+  &:focus-within {
+    background-color: $form-focus-background;
+    color: $form-focus-color;
+    border-color: $form-focus-border;
+  }
+
+  &.danger {
+    border-color: $form-danger-border;
+    color: $form-danger-color;
+  }
+
+  :global(.milkdown) {
+    background: transparent;
+    padding: 8px 12px;
+    
+    :global(.editor) {
+      outline: none;
+      min-height: 150px;
+      font-family: inherit;
+      color: inherit;
+      
+      :global(p) {
+        margin: 0 0 10px 0;
+      }
+
+      :global(h1), :global(h2), :global(h3) {
+        margin-top: 15px;
+        margin-bottom: 10px;
+      }
+    }
+  }
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 4px;
+  border-bottom: 1px solid $form-border;
+  background: rgba(0, 0, 0, 0.02);
+  border-top-left-radius: $global-border-radius;
+  border-top-right-radius: $global-border-radius;
+
+  button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 4px;
+    color: $global-muted-color;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: bold;
+    min-width: 32px;
+    height: 32px;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.05);
+      color: $global-color;
+    }
+
+    &:active {
+      background: rgba(0, 0, 0, 0.1);
+    }
+    
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+  }
+  
+  .divider {
+    width: 1px;
+    height: 20px;
+    background: $form-border;
+    margin: 6px 4px;
+  }
+}
+
+.disabled {
+  background-color: $form-disabled-background;
+  color: $form-disabled-color;
+  border-color: $form-disabled-border;
+  cursor: not-allowed;
+  
+  :global(.editor) {
+    cursor: not-allowed;
+  }
+}

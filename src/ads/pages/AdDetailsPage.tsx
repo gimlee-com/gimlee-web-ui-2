@@ -22,6 +22,7 @@ import { Breadcrumb, BreadcrumbItem } from '../../components/uikit/Breadcrumb/Br
 import { useNavbarMode } from '../../hooks/useNavbarMode';
 import NavbarPortal from '../../components/Navbar/NavbarPortal';
 import { formatPrice } from '../../utils/currencyUtils';
+import { Markdown } from '../../components/Markdown/Markdown';
 import styles from './AdDetailsPage.module.scss';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
@@ -321,6 +322,17 @@ const AdDetailsPage: React.FC = () => {
               <p className="uk-text-muted uk-margin-small-top">{t('ads.noImages')}</p>
             </div>
           )}
+
+          <div className="uk-margin-large-top">
+            <Heading as="h4" divider>{t('ads.description')}</Heading>
+            <div className="uk-margin">
+              {ad.description ? (
+                <Markdown content={ad.description} className="uk-text-break" />
+              ) : (
+                <p className="uk-text-muted">{t('ads.noDescription')}</p>
+              )}
+            </div>
+          </div>
         </div>
         <div className="uk-width-1-3@m">
           <Heading as="h2">{ad.title}</Heading>
@@ -339,17 +351,15 @@ const AdDetailsPage: React.FC = () => {
             </p>
           )}
           <hr />
-          <div className="uk-margin">
-            <Heading as="h4">{t('ads.description')}</Heading>
-            <p className="uk-text-break">{ad.description || t('ads.noDescription')}</p>
-          </div>
           {ad.location?.city && (
-            <div className="uk-margin">
-              <Heading as="h4">{t('ads.location')}</Heading>
-              <p>{ad.location.city.name}{ad.location.city.district ? ` (${ad.location.city.district})` : ''}, {ad.location.city.country}</p>
-            </div>
+            <>
+              <div className="uk-margin">
+                <Heading as="h4">{t('ads.location')}</Heading>
+                <p>{ad.location.city.name}{ad.location.city.district ? ` (${ad.location.city.district})` : ''}, {ad.location.city.country}</p>
+              </div>
+              <hr />
+            </>
           )}
-          <hr />
           <Card className="uk-margin-medium-top uk-border-rounded">
             <CardBody>
               <div className="uk-margin">

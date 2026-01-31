@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'motion/react';
 import { salesService } from '../services/salesService';
@@ -12,7 +12,7 @@ import { Spinner } from '../../components/uikit/Spinner/Spinner';
 import { Button } from '../../components/uikit/Button/Button';
 import { Alert } from '../../components/uikit/Alert/Alert';
 import { Label } from '../../components/uikit/Label/Label';
-import { Form, Input, TextArea, Select } from '../../components/uikit/Form/Form';
+import { Form, Input, Select } from '../../components/uikit/Form/Form';
 import { Grid } from '../../components/uikit/Grid/Grid';
 import { Card, CardBody } from '../../components/uikit/Card/Card';
 import { Upload } from '../../components/uikit/Upload/Upload';
@@ -22,6 +22,7 @@ import { CategoryBreadcrumbs } from '../../ads/components/CategoryBreadcrumbs/Ca
 import { useNavbarMode } from '../../hooks/useNavbarMode';
 import NavbarPortal from '../../components/Navbar/NavbarPortal';
 import { MediaEditor } from '../components/MediaEditor/MediaEditor';
+import { MarkdownEditor } from '../../components/Markdown/MarkdownEditor';
 import styles from './EditAdPage.module.scss';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
@@ -49,7 +50,7 @@ const EditAdPage: React.FC = () => {
   const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<UpdateAdRequestDto>({
+  const { register, handleSubmit, reset, control, formState: { errors } } = useForm<UpdateAdRequestDto>({
     mode: 'onBlur'
   });
   const [ad, setAd] = useState<AdDetailsDto | null>(null);
@@ -143,6 +144,12 @@ const EditAdPage: React.FC = () => {
     setSelectedCategoryId(id);
     setSelectedCategoryPath(path);
   };
+
+  const onDescriptionFocus = useCallback(() => setDescriptionFocused(true), []);
+  const onDescriptionBlur = useCallback((fieldOnBlur: () => void) => {
+    fieldOnBlur();
+    setDescriptionFocused(false);
+  }, []);
 
   const onSubmit = async (data: UpdateAdRequestDto) => {
     if (!id) return;
@@ -288,14 +295,17 @@ const EditAdPage: React.FC = () => {
 
               <div className="uk-margin">
                 <label className="uk-form-label">{t('ads.description')}</label>
-                <TextArea 
-                  {...register('description')} 
-                  rows={5} 
-                  onFocus={() => setDescriptionFocused(true)}
-                  onBlur={(e) => {
-                    register('description').onBlur(e);
-                    setDescriptionFocused(false);
-                  }}
+                <Controller
+                  name="description"
+                  control={control}
+                  render={({ field }) => (
+                    <MarkdownEditor 
+                      {...field} 
+                      status={errors.description && !descriptionFocused ? 'danger' : undefined}
+                      onFocus={onDescriptionFocus}
+                      onBlur={() => onDescriptionBlur(field.onBlur)}
+                    />
+                  )}
                 />
                 {descriptionFocused && (
                   <div className="uk-text-primary uk-text-small uk-margin-small-top">

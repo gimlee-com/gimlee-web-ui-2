@@ -20,7 +20,8 @@ const resources = {
         "undo": "Undo",
         "redo": "Redo",
         "rotate": "Rotate",
-        "editing": "Editing"
+        "editing": "Editing",
+        "externalLinkWarning": "You are leaving Gimlee. We are not responsible for the content of external websites. Do you want to proceed?"
       },
       "navbar": {
         "browseAds": "Browse Ads",
@@ -118,12 +119,22 @@ const resources = {
         "classificationLocation": "Classification & Location",
         "pricingStock": "Pricing & Stock",
         "titleGuidance": "Enter a clear, descriptive title to help buyers find your item.",
-        "descriptionGuidance": "Describe your item in detail, including condition, features, and any other relevant info.",
+        "descriptionGuidance": "Describe your item in detail. Supports Markdown (bold, lists, links).",
         "priceGuidance": "Set a fair price for your item.",
         "stockGuidance": "How many items do you have available?",
+        "imageProhibited": "External images are prohibited",
         "editPhoto": "Edit Photo",
         "aspectRatio": "Aspect Ratio",
-        "zoom": "Zoom"
+        "zoom": "Zoom",
+        "markdown": {
+          "bold": "Bold",
+          "italic": "Italic",
+          "heading": "Heading",
+          "link": "Link",
+          "image": "Insert Image",
+          "linkPrompt": "Enter URL:",
+          "linkPlaceholder": "https://..."
+        }
       },
       "sales": {
         "title": "Sales",
@@ -207,7 +218,8 @@ const resources = {
         "undo": "Cofnij",
         "redo": "Ponów",
         "rotate": "Obróć",
-        "editing": "Edycja"
+        "editing": "Edycja",
+        "externalLinkWarning": "Opuszczasz Gimlee. Nie ponosimy odpowiedzialności za treści na zewnętrznych stronach. Czy chcesz kontynuować?"
       },
       "navbar": {
         "browseAds": "Przeglądaj ogłoszenia",
@@ -305,12 +317,22 @@ const resources = {
         "classificationLocation": "Klasyfikacja i lokalizacja",
         "pricingStock": "Cena i stan magazynowy",
         "titleGuidance": "Wprowadź jasny, opisowy tytuł, który pomoże kupującym znaleźć Twój przedmiot.",
-        "descriptionGuidance": "Opisz szczegółowo swój przedmiot, w tym stan, funkcje i wszelkie inne istotne informacje.",
+        "descriptionGuidance": "Opisz szczegółowo swój przedmiot. Obsługuje Markdown (pogrubienie, listy, linki).",
         "priceGuidance": "Ustal sprawiedliwą cenę za swój przedmiot.",
         "stockGuidance": "Ile sztuk masz dostępnych?",
+        "imageProhibited": "Zewnętrzne obrazy są zabronione",
         "editPhoto": "Edytuj zdjęcie",
         "aspectRatio": "Proporcje",
-        "zoom": "Powiększenie"
+        "zoom": "Powiększenie",
+        "markdown": {
+          "bold": "Pogrubienie",
+          "italic": "Kursywa",
+          "heading": "Nagłówek",
+          "link": "Link",
+          "image": "Wstaw obraz",
+          "linkPrompt": "Wprowadź adres URL:",
+          "linkPlaceholder": "https://..."
+        }
       },
       "sales": {
         "title": "Sprzedaż",

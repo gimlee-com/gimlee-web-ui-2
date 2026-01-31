@@ -28,7 +28,7 @@ class ApiClient {
 
     headers.set('Accept-Language', i18n.language);
 
-    if (!(options.body instanceof FormData)) {
+    if (!(options.body instanceof FormData) && !(options.body instanceof Blob) && options.body !== undefined) {
         headers.set('Content-Type', 'application/json');
     }
 
@@ -64,7 +64,7 @@ class ApiClient {
     return this.request<T>(path, {
       ...options,
       method: 'POST',
-      body: body instanceof FormData ? body : JSON.stringify(body),
+      body: (body instanceof FormData || body instanceof Blob) ? body : JSON.stringify(body),
     });
   }
 
@@ -72,7 +72,7 @@ class ApiClient {
     return this.request<T>(path, {
       ...options,
       method: 'PUT',
-      body: body instanceof FormData ? body : JSON.stringify(body),
+      body: (body instanceof FormData || body instanceof Blob) ? body : JSON.stringify(body),
     });
   }
 
@@ -80,7 +80,7 @@ class ApiClient {
     return this.request<T>(path, {
       ...options,
       method: 'PATCH',
-      body: body instanceof FormData ? body : JSON.stringify(body),
+      body: (body instanceof FormData || body instanceof Blob) ? body : JSON.stringify(body),
     });
   }
 
