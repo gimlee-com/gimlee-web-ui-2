@@ -201,6 +201,18 @@ const resources = {
       },
       "spaces": {
         "userAds": "{{username}}'s Ads"
+      },
+      "presence": {
+        "status": "Presence Status",
+        "online": "Online",
+        "away": "Away",
+        "busy": "Busy",
+        "offline": "Offline",
+        "customMessage": "Custom Status Message",
+        "customMessagePlaceholder": "What's on your mind?",
+        "updateStatus": "Update Status",
+        "statusUpdated": "Presence status updated.",
+        "failedToUpdate": "Failed to update presence status."
       }
     }
   },
@@ -402,6 +414,18 @@ const resources = {
       },
       "spaces": {
         "userAds": "Ogłoszenia użytkownika {{username}}"
+      },
+      "presence": {
+        "status": "Status dostępności",
+        "online": "Dostępny",
+        "away": "Zaraz wracam",
+        "busy": "Zajęty",
+        "offline": "Niedostępny",
+        "customMessage": "Własny opis statusu",
+        "customMessagePlaceholder": "O czym myślisz?",
+        "updateStatus": "Aktualizuj status",
+        "statusUpdated": "Status dostępności został zaktualizowany.",
+        "failedToUpdate": "Nie udało się zaktualizować statusu dostępności."
       }
     }
   }

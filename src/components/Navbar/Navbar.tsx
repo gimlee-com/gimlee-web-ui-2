@@ -19,8 +19,8 @@ import { Icon } from '../uikit/Icon/Icon';
 import { Container } from '../uikit/Container/Container';
 import { Offcanvas, OffcanvasBar, OffcanvasClose } from '../uikit/Offcanvas/Offcanvas';
 import { Nav, NavItem } from '../uikit/Nav/Nav';
-import { GeometricAvatar } from '../GeometricAvatar/GeometricAvatar';
-import { Image } from '../Image/Image';
+import { AvatarWithPresence } from '../AvatarWithPresence';
+import { usePresence } from '../../context/PresenceContext';
 import styles from './Navbar.module.scss';
 
 const MotionNavbarItem = motion.create(NavbarItem);
@@ -29,6 +29,7 @@ const MotionNavItem = motion.create(NavItem);
 const Navbar: React.FC = () => {
   const { t } = useTranslation();
   const { isAuthenticated, logout, userProfile, username, roles } = useAuth();
+  const { presence } = usePresence();
   const navigate = useNavigate();
   const location = useLocation();
   const { mode, backLink } = useAppSelector(state => state.navbar);
@@ -118,19 +119,14 @@ const Navbar: React.FC = () => {
             >
               <Link to="#">
                 <div className="uk-flex uk-flex-middle">
-                  <div className="uk-border-circle uk-overflow-hidden" style={{ width: 32, height: 32 }}>
-                    {userProfile?.avatarUrl ? (
-                      <Image
-                        src={userProfile.avatarUrl}
-                        className="uk-preserve-width"
-                        width="32"
-                        height="32"
-                        alt={username || ''}
-                      />
-                    ) : (
-                      <GeometricAvatar username={username || ''} size={32} />
-                    )}
-                  </div>
+                  <AvatarWithPresence 
+                    username={username || ''} 
+                    avatarUrl={userProfile?.avatarUrl} 
+                    size={32} 
+                    status={presence?.status} 
+                    customStatus={presence?.customStatus}
+                    badgeSize={10}
+                  />
                   <span className="uk-margin-small-left">{username}</span>
                   <span className="uk-margin-small-left" uk-icon="icon: triangle-down; ratio: 0.8"></span>
                 </div>
@@ -192,13 +188,14 @@ const Navbar: React.FC = () => {
               className="uk-nav-header"
             >
               <div className="uk-flex uk-flex-middle">
-                <div className="uk-border-circle uk-overflow-hidden" style={{ width: 40, height: 40 }}>
-                  {userProfile?.avatarUrl ? (
-                    <Image src={userProfile.avatarUrl} width="40" height="40" alt={username || ''} />
-                  ) : (
-                    <GeometricAvatar username={username || ''} size={40} />
-                  )}
-                </div>
+                <AvatarWithPresence 
+                  username={username || ''} 
+                  avatarUrl={userProfile?.avatarUrl} 
+                  size={40} 
+                  status={presence?.status} 
+                  customStatus={presence?.customStatus}
+                  badgeSize={12}
+                />
                 <div className="uk-margin-small-left">
                   <div className="uk-text-bold uk-text-emphasis">{username}</div>
                   <div className="uk-text-meta uk-text-lowercase uk-text-truncate" style={{ maxWidth: '150px' }}>

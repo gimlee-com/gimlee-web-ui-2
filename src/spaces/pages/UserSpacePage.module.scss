@@ -1,5 +1,5 @@
 .header {
-  padding-top: 40px;
+  padding: 40px 15px 0 15px; // Added horizontal padding to prevent content hitting edges
   background: linear-gradient(180deg, var(--uikit-card-default-background, #f8f8f8) 0%, rgba(255,255,255,0) 100%);
   border-radius: 0 0 40px 40px;
 }

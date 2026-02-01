@@ -1,0 +1,38 @@
+@import '../../styles/uikit-imports';
+
+.presenceBadge {
+  display: flex;
+  align-items: center;
+  max-width: 100%; // Ensure it doesn't exceed container
+}
+
+.circle {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0; // Fix Issue #2: Prevent squashing
+}
+
+.statusOnline {
+  background-color: $global-success-background;
+}
+
+.statusAway {
+  background-color: $global-warning-background;
+}
+
+.statusBusy {
+  background-color: $global-danger-background;
+}
+
+.statusOffline {
+  background-color: #999;
+}
+
+.statusText {
+  font-size: $global-small-font-size;
+  color: $global-muted-color;
+  overflow-wrap: anywhere;
+  min-width: 0; // Allow shrinking for truncation/wrapping
+}

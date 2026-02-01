@@ -290,6 +290,7 @@ export interface PagePurchaseHistoryDto {
 }
 
 export interface UserSpaceDetailsDto {
+  userId: string;
   username: string;
   avatarUrl?: string;
 }
@@ -297,12 +298,27 @@ export interface UserSpaceDetailsDto {
 export interface UserSpaceDto {
   user: UserSpaceDetailsDto;
   ads: PageAdPreviewDto;
+  presence?: UserPresenceDto;
 }
 
 export interface UserProfileDto {
   userId: string;
   avatarUrl: string;
   updatedAt: number;
+}
+
+export type PresenceStatus = 'ONLINE' | 'AWAY' | 'BUSY' | 'OFFLINE';
+
+export interface UserPresenceDto {
+  userId: string;
+  lastSeenAt: number;
+  status: PresenceStatus;
+  customStatus?: string;
+}
+
+export interface UpdateUserPresenceRequestDto {
+  status: PresenceStatus;
+  customStatus?: string;
 }
 
 export interface SessionInitResponseDto {

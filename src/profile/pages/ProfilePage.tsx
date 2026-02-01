@@ -5,7 +5,8 @@ import { motion, AnimatePresence } from 'motion/react';
 import { paymentService } from '../../payments/services/paymentService';
 import { userService } from '../services/userService';
 import { useAuth } from '../../context/AuthContext';
-import type { PirateChainTransaction, YCashTransaction, CurrencyDto } from '../../types/api';
+import { usePresence } from '../../context/PresenceContext';
+import type { PirateChainTransaction, YCashTransaction, CurrencyDto, PresenceStatus } from '../../types/api';
 import { Heading } from '../../components/uikit/Heading/Heading';
 import { Button } from '../../components/uikit/Button/Button';
 import { Alert } from '../../components/uikit/Alert/Alert';
@@ -43,6 +44,7 @@ const cardVariants = {
 const ProfilePage: React.FC = () => {
   const { t, i18n } = useTranslation();
   const { isAuthenticated, preferredCurrency, setPreferredCurrency } = useAuth();
+  const { presence, updatePresence } = usePresence();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [arrrViewKey, setArrrViewKey] = useState('');
   const [yecViewKey, setYecViewKey] = useState('');
@@ -56,7 +58,37 @@ const ProfilePage: React.FC = () => {
   const [savingArrr, setSavingArrr] = useState(false);
   const [savingYec, setSavingYec] = useState(false);
   const [savingCurrency, setSavingCurrency] = useState(false);
+  const [savingPresence, setSavingPresence] = useState(false);
+  const [customStatus, setCustomStatus] = useState('');
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (presence) {
+      setCustomStatus(presence.customStatus || '');
+    }
+  }, [presence]);
+
+  const handleUpdatePresence = async (status: PresenceStatus) => {
+    setSavingPresence(true);
+    setError(null);
+    setSuccess(null);
+    try {
+      await updatePresence(status, customStatus);
+      setSuccess(t('presence.statusUpdated'));
+    } catch (err: any) {
+      setError(err.message || t('presence.failedToUpdate'));
+    } finally {
+      setSavingPresence(false);
+    }
+  };
+
+  const handleCustomStatusSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (presence) {
+      handleUpdatePresence(presence.status);
+    }
+  };
+
   const [arrrError, setArrrError] = useState<string | null>(null);
   const [yecError, setYecError] = useState<string | null>(null);
   const [arrrFocused, setArrrFocused] = useState(false);
@@ -268,6 +300,66 @@ const ProfilePage: React.FC = () => {
                   </div>
                 )}
               </div>
+            </div>
+
+            <hr />
+
+            <div className="uk-margin">
+              <FormLabel>{t('presence.status')}</FormLabel>
+              <div className="uk-button-group uk-margin-small-top uk-display-block">
+                <Button
+                  size="small"
+                  variant={presence?.status === 'ONLINE' ? 'primary' : 'default'}
+                  onClick={() => handleUpdatePresence('ONLINE')}
+                  disabled={savingPresence}
+                >
+                  {t('presence.online')}
+                </Button>
+                <Button
+                  size="small"
+                  variant={presence?.status === 'AWAY' ? 'primary' : 'default'}
+                  onClick={() => handleUpdatePresence('AWAY')}
+                  disabled={savingPresence}
+                >
+                  {t('presence.away')}
+                </Button>
+                <Button
+                  size="small"
+                  variant={presence?.status === 'BUSY' ? 'primary' : 'default'}
+                  onClick={() => handleUpdatePresence('BUSY')}
+                  disabled={savingPresence}
+                >
+                  {t('presence.busy')}
+                </Button>
+              </div>
+            </div>
+
+            <div className="uk-margin">
+              <FormLabel>{t('presence.customMessage')}</FormLabel>
+              <form onSubmit={handleCustomStatusSubmit} className="uk-margin-small-top">
+                <Grid gap="small">
+                  <div className="uk-width-expand">
+                    <Input
+                      className="uk-width-1-1"
+                      placeholder={t('presence.customMessagePlaceholder')}
+                      value={customStatus}
+                      onChange={(e) => setCustomStatus(e.target.value)}
+                      disabled={savingPresence}
+                      maxLength={100}
+                    />
+                  </div>
+                  <div className="uk-width-auto">
+                    <Button 
+                      type="submit" 
+                      variant="primary" 
+                      size="small"
+                      disabled={savingPresence || customStatus === (presence?.customStatus || '')}
+                    >
+                      {savingPresence ? <Spinner ratio={0.5} /> : t('presence.updateStatus')}
+                    </Button>
+                  </div>
+                </Grid>
+              </form>
             </div>
           </CardBody>
         </Card>

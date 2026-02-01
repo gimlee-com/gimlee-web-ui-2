@@ -2,12 +2,22 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import ProfilePage from './ProfilePage';
 import { AuthProvider } from '../../context/AuthContext';
+import { PresenceProvider } from '../../context/PresenceContext';
 import { userService } from '../services/userService';
 import { paymentService } from '../../payments/services/paymentService';
 import { apiClient } from '../../services/apiClient';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '../../i18n';
 import { MemoryRouter } from 'react-router-dom';
+
+vi.mock('../services/presenceService', () => ({
+  presenceService: {
+    ping: vi.fn(),
+    getMyPresence: vi.fn().mockResolvedValue({ status: 'ONLINE', userId: '1' }),
+    updateMyPresence: vi.fn(),
+    getUserPresence: vi.fn(),
+  },
+}));
 
 vi.mock('motion/react', () => ({
   motion: {
@@ -64,9 +74,11 @@ describe('ProfilePage', () => {
     render(
       <I18nextProvider i18n={i18n}>
         <AuthProvider>
-          <MemoryRouter>
-            <ProfilePage />
-          </MemoryRouter>
+          <PresenceProvider>
+            <MemoryRouter>
+              <ProfilePage />
+            </MemoryRouter>
+          </PresenceProvider>
         </AuthProvider>
       </I18nextProvider>
     );
@@ -90,9 +102,11 @@ describe('ProfilePage', () => {
     render(
       <I18nextProvider i18n={i18n}>
         <AuthProvider>
-          <MemoryRouter>
-            <ProfilePage />
-          </MemoryRouter>
+          <PresenceProvider>
+            <MemoryRouter>
+              <ProfilePage />
+            </MemoryRouter>
+          </PresenceProvider>
         </AuthProvider>
       </I18nextProvider>
     );
@@ -116,9 +130,11 @@ describe('ProfilePage', () => {
     render(
       <I18nextProvider i18n={i18n}>
         <AuthProvider>
-          <MemoryRouter>
-            <ProfilePage />
-          </MemoryRouter>
+          <PresenceProvider>
+            <MemoryRouter>
+              <ProfilePage />
+            </MemoryRouter>
+          </PresenceProvider>
         </AuthProvider>
       </I18nextProvider>
     );
@@ -154,9 +170,11 @@ describe('ProfilePage', () => {
     render(
       <I18nextProvider i18n={i18n}>
         <AuthProvider>
-          <MemoryRouter>
-            <ProfilePage />
-          </MemoryRouter>
+          <PresenceProvider>
+            <MemoryRouter>
+              <ProfilePage />
+            </MemoryRouter>
+          </PresenceProvider>
         </AuthProvider>
       </I18nextProvider>
     );
@@ -194,9 +212,11 @@ describe('ProfilePage', () => {
     render(
       <I18nextProvider i18n={i18n}>
         <AuthProvider>
-          <MemoryRouter>
-            <ProfilePage />
-          </MemoryRouter>
+          <PresenceProvider>
+            <MemoryRouter>
+              <ProfilePage />
+            </MemoryRouter>
+          </PresenceProvider>
         </AuthProvider>
       </I18nextProvider>
     );
@@ -215,5 +235,27 @@ describe('ProfilePage', () => {
     await waitFor(() => {
       expect(screen.getByText(/Invalid key format/i)).toBeInTheDocument();
     });
+  });
+
+  it('should have a 100-character limit on the custom status input', async () => {
+    (apiClient.get as any).mockResolvedValue({
+      accessToken: 'fake-token',
+      userProfile: { userId: '1', avatarUrl: '', updatedAt: 0 }
+    });
+
+    render(
+      <I18nextProvider i18n={i18n}>
+        <AuthProvider>
+          <PresenceProvider>
+            <MemoryRouter>
+              <ProfilePage />
+            </MemoryRouter>
+          </PresenceProvider>
+        </AuthProvider>
+      </I18nextProvider>
+    );
+
+    const input = await screen.findByPlaceholderText(/What's on your mind?/i);
+    expect(input).toHaveAttribute('maxLength', '100');
   });
 });

@@ -7,6 +7,7 @@ import './index.css'
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { PresenceProvider } from './context/PresenceContext';
 import { store } from './store';
 import App from './App.tsx'
 
@@ -16,9 +17,11 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Provider store={store}>
       <AuthProvider>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
+        <PresenceProvider>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </PresenceProvider>
       </AuthProvider>
     </Provider>
   </StrictMode>,

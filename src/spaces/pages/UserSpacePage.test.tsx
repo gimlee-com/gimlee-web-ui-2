@@ -5,10 +5,18 @@ import { configureStore } from '@reduxjs/toolkit';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import UserSpacePage from './UserSpacePage';
 import { spacesService } from '../services/spacesService';
+import { AuthProvider } from '../../context/AuthContext';
+import { PresenceProvider } from '../../context/PresenceContext';
 
 vi.mock('../services/spacesService', () => ({
   spacesService: {
     fetchUserSpace: vi.fn(),
+  },
+}));
+
+vi.mock('../../profile/services/presenceService', () => ({
+  presenceService: {
+    getUserPresence: vi.fn().mockResolvedValue({ status: 'ONLINE', userId: '1' }),
   },
 }));
 
@@ -47,15 +55,19 @@ describe('UserSpacePage', () => {
     
     render(
       <Provider store={createMockStore()}>
-        <MemoryRouter initialEntries={['/u/johndoe']}>
-          <Routes>
-            <Route path="/u/:userName" element={<UserSpacePage />} />
-          </Routes>
-        </MemoryRouter>
+        <AuthProvider>
+          <PresenceProvider>
+            <MemoryRouter initialEntries={['/u/johndoe']}>
+              <Routes>
+                <Route path="/u/:userName" element={<UserSpacePage />} />
+              </Routes>
+            </MemoryRouter>
+          </PresenceProvider>
+        </AuthProvider>
       </Provider>
     );
 
-    expect(screen.getByRole('status')).toBeDefined();
+    expect(await screen.findByRole('status')).toBeDefined();
   });
 
   it('renders user data and ads after successful fetch', async () => {
@@ -63,11 +75,15 @@ describe('UserSpacePage', () => {
 
     render(
       <Provider store={createMockStore()}>
-        <MemoryRouter initialEntries={['/u/johndoe']}>
-          <Routes>
-            <Route path="/u/:userName" element={<UserSpacePage />} />
-          </Routes>
-        </MemoryRouter>
+        <AuthProvider>
+          <PresenceProvider>
+            <MemoryRouter initialEntries={['/u/johndoe']}>
+              <Routes>
+                <Route path="/u/:userName" element={<UserSpacePage />} />
+              </Routes>
+            </MemoryRouter>
+          </PresenceProvider>
+        </AuthProvider>
       </Provider>
     );
 
@@ -83,11 +99,15 @@ describe('UserSpacePage', () => {
 
     render(
       <Provider store={createMockStore()}>
-        <MemoryRouter initialEntries={['/u/johndoe']}>
-          <Routes>
-            <Route path="/u/:userName" element={<UserSpacePage />} />
-          </Routes>
-        </MemoryRouter>
+        <AuthProvider>
+          <PresenceProvider>
+            <MemoryRouter initialEntries={['/u/johndoe']}>
+              <Routes>
+                <Route path="/u/:userName" element={<UserSpacePage />} />
+              </Routes>
+            </MemoryRouter>
+          </PresenceProvider>
+        </AuthProvider>
       </Provider>
     );
 

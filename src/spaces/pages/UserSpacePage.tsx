@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useSearchParams, useLocation } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence, stagger } from 'motion/react';
 import { spacesService } from '../services/spacesService';
-import type { UserSpaceDto } from '../../types/api';
+import { presenceService } from '../../profile/services/presenceService';
+import type { UserSpaceDto, UserPresenceDto } from '../../types/api';
 import { AdCard } from '../../ads/components/AdCard';
 import { Alert } from '../../components/uikit/Alert/Alert';
 import { Grid } from '../../components/uikit/Grid/Grid';
 import { Heading } from '../../components/uikit/Heading/Heading';
 import { Spinner } from '../../components/uikit/Spinner/Spinner';
 import { SmartPagination } from '../../components/SmartPagination';
+import { AvatarWithPresence } from '../../components/AvatarWithPresence';
 import { GeometricAvatar } from '../../components/GeometricAvatar/GeometricAvatar';
+import { PresenceBadge } from '../../profile/components/PresenceBadge';
 import { useNavbarMode } from '../../hooks/useNavbarMode';
 import NavbarPortal from '../../components/Navbar/NavbarPortal';
 import styles from './UserSpacePage.module.scss';
@@ -38,8 +41,8 @@ const UserSpacePage: React.FC = () => {
   const { t } = useTranslation();
   const { userName } = useParams<{ userName: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
-  const location = useLocation();
   const [data, setData] = useState<UserSpaceDto | null>(null);
+  const [presence, setPresence] = useState<UserPresenceDto | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -56,7 +59,17 @@ const UserSpacePage: React.FC = () => {
     setError(null);
 
     spacesService.fetchUserSpace(userName, page, { signal: controller.signal })
-      .then(setData)
+      .then(userSpaceData => {
+        setData(userSpaceData);
+        if (userSpaceData.presence) {
+          setPresence(userSpaceData.presence);
+        } else if (userSpaceData.user.userId) {
+          // If not in DTO, try fetching separately
+          presenceService.getUserPresence(userSpaceData.user.userId)
+            .then(setPresence)
+            .catch(() => {}); // Optional: ignore presence error
+        }
+      })
       .catch(err => {
         if (err.name !== 'AbortError') {
           setError(err.message || t('auth.errors.generic'));
@@ -99,7 +112,14 @@ const UserSpacePage: React.FC = () => {
       <NavbarPortal>
         <div className="uk-flex uk-flex-middle">
           <div className="uk-margin-small-right">
-             <GeometricAvatar username={data.user.username} size={32} />
+             <AvatarWithPresence 
+                username={data.user.username} 
+                avatarUrl={data.user.avatarUrl} 
+                size={32} 
+                status={presence?.status} 
+                customStatus={presence?.customStatus}
+                badgeSize={10}
+             />
           </div>
           <Heading as="h5" className="uk-margin-remove uk-text-truncate">
             {data.user.username}
@@ -111,8 +131,13 @@ const UserSpacePage: React.FC = () => {
          <motion.div variants={itemVariants} className={styles.avatarWrapper}>
             <GeometricAvatar username={data.user.username} size={120} />
          </motion.div>
-         <motion.div variants={itemVariants}>
-            <Heading as="h2" className="uk-margin-small-top">{data.user.username}</Heading>
+         <motion.div variants={itemVariants} className="uk-flex uk-flex-column uk-flex-middle">
+            <Heading as="h2" className="uk-margin-small-top uk-margin-remove-bottom">{data.user.username}</Heading>
+            <PresenceBadge 
+              status={presence?.status} 
+              customStatus={presence?.customStatus} 
+              className="uk-margin-small-top"
+            />
          </motion.div>
       </div>
 

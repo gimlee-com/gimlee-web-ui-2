@@ -14,6 +14,6 @@ export const Spinner = forwardRef<HTMLDivElement, SpinnerProps>(
 
     const mergedRef = useMergeRefs(uikitRef, ref)
 
-    return <div ref={mergedRef} uk-spinner="" {...props} />
+    return <div ref={mergedRef} uk-spinner="" role="status" {...props} />
   },
 )
