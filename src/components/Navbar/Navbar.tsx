@@ -409,7 +409,7 @@ const Navbar: React.FC = () => {
                           }}
                           transition={{ type: 'spring', stiffness: 400, damping: 40 }}
                           className="uk-margin-small-right"
-                          style={{ color: 'var(--global-primary-background)' }}
+                          style={{ color: 'var(--global-primary-color)' }}
                           aria-label="Gimlee"
                         />
                       </Link>

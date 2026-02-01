@@ -11,7 +11,7 @@ const SmokePuff: React.FC<{ cx: number; cy: number; delay: number }> = ({ cx, cy
     cx={cx}
     cy={cy}
     r={35}
-    fill="currentColor"
+    fill="var(--logo-smoke-fill, currentColor)"
     initial={{ opacity: 0, scale: 0.5 }}
     animate={{
       opacity: [0, 0.4, 0],
@@ -46,19 +46,27 @@ const Logo = forwardRef<SVGSVGElement, LogoProps>(({ size = '100%', style, ...pr
           width={size}
           height={size}
           viewBox="0 0 2048 2048"
-          fill="currentColor"
+          fill="none"
           xmlns="http://www.w3.org/2000/svg"
           preserveAspectRatio="xMidYMid meet"
           role="img"
           style={{ display: 'block', ...style }}
           {...props}
       >
+        <defs>
+          <linearGradient id="gimlee-logo-gradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="white" />
+            <stop offset="30%" stopColor="#FFD700" />
+            <stop offset="100%" stopColor="#FFD700" />
+          </linearGradient>
+        </defs>
         <path
+            fill="var(--logo-fill, currentColor)"
             fillRule="evenodd"
             clipRule="evenodd"
             d={mainPath}
         />
-        <path d={detailPath} />
+        <path fill="var(--logo-fill, currentColor)" d={detailPath} />
         <g className={styles.smokeEffect}>
           <SmokePuff cx={1710} cy={750} delay={0} />
           <SmokePuff cx={1710} cy={750} delay={1} />
