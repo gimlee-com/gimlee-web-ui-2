@@ -18,7 +18,7 @@ import {
 import { Icon } from '../uikit/Icon/Icon';
 import { Container } from '../uikit/Container/Container';
 import { Offcanvas, OffcanvasBar, OffcanvasClose } from '../uikit/Offcanvas/Offcanvas';
-import { Nav, NavItem } from '../uikit/Nav/Nav';
+import { Nav, NavItem, NavHeader, NavDivider, SubNav } from '../uikit/Nav/Nav';
 import { AvatarWithPresence } from '../AvatarWithPresence';
 import { usePresence } from '../../context/PresenceContext';
 import { useTheme } from '../../context/ThemeContext';
@@ -29,7 +29,7 @@ const MotionNavItem = motion.create(NavItem);
 
 const Navbar: React.FC = () => {
   const { t } = useTranslation();
-  const { theme, toggleTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
   const { isAuthenticated, logout, userProfile, username, roles } = useAuth();
   const { presence } = usePresence();
   const navigate = useNavigate();
@@ -134,11 +134,53 @@ const Navbar: React.FC = () => {
                 </div>
               </Link>
               <div className="uk-navbar-dropdown" uk-dropdown="mode: click; pos: bottom-right">
-                <ul className="uk-nav uk-navbar-dropdown-nav">
-                  <li><Link to="/profile">{t('navbar.profile')}</Link></li>
-                  <li className="uk-nav-divider"></li>
-                  <li><Link to="#" onClick={handleLogout}>{t('navbar.logout')}</Link></li>
-                </ul>
+                <Nav variant="dropdown">
+                  <NavItem>
+                    <Link to="/profile">
+                      <Icon icon="user" className="uk-margin-small-right" />
+                      {t('navbar.profile')}
+                    </Link>
+                  </NavItem>
+                  <NavItem>
+                    <Link to="/sales/ads">
+                      <Icon icon="cart" className="uk-margin-small-right" />
+                      {t('navbar.myAds')}
+                    </Link>
+                  </NavItem>
+                  <NavItem>
+                    <Link to="/purchases">
+                      <Icon icon="bag" className="uk-margin-small-right" />
+                      {t('navbar.purchases')}
+                    </Link>
+                  </NavItem>
+                  <NavDivider />
+                  <NavHeader>{t('navbar.theme')}</NavHeader>
+                  <NavItem active={theme === 'light'}>
+                    <Link to="#" onClick={(e) => { e.preventDefault(); setTheme('light'); }}>
+                      <Icon icon="bolt" className="uk-margin-small-right" />
+                      {t('profile.themes.light')}
+                    </Link>
+                  </NavItem>
+                  <NavItem active={theme === 'dark'}>
+                    <Link to="#" onClick={(e) => { e.preventDefault(); setTheme('dark'); }}>
+                      <Icon icon="star" className="uk-margin-small-right" />
+                      {t('profile.themes.dark')}
+                    </Link>
+                  </NavItem>
+                  <NavItem active={theme === 'dark-unicorn'}>
+                    <Link to="#" onClick={(e) => { e.preventDefault(); setTheme('dark-unicorn'); }}>
+                      <Icon icon="heart" className="uk-margin-small-right" />
+                      {t('profile.themes.dark-unicorn')}
+                    </Link>
+                  </NavItem>
+                  <NavDivider />
+                  <NavItem>
+                    <Link to="#" onClick={handleLogout}>
+                      <Icon icon="sign-out" className="uk-margin-small-right" />
+                      {t('navbar.logout')}
+                    </Link>
+                  </NavItem>
+                </Nav>
               </div>
             </MotionNavbarItem>
           </AnimatePresence>
@@ -250,14 +292,17 @@ const Navbar: React.FC = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2, delay: 0.3 }}
+              parent
             >
-              <Link to="#" onClick={(e) => { e.preventDefault(); toggleTheme(); }}>
-                <Icon 
-                  icon={theme === 'light' ? 'bolt' : (theme === 'dark' ? 'star' : 'heart')} 
-                  className="uk-margin-small-right" 
-                />
-                {t('navbar.theme')}: {t(`profile.themes.${theme === 'light' ? 'dark' : (theme === 'dark' ? 'dark-unicorn' : 'light')}`)}
+              <Link to="#">
+                <Icon icon="paint-bucket" className="uk-margin-small-right" />
+                {t('navbar.theme')}: <span className="uk-text-bold">{t(`profile.themes.${theme}`)}</span>
               </Link>
+              <SubNav>
+                <NavItem active={theme === 'light'}><Link to="#" onClick={(e) => { e.preventDefault(); setTheme('light'); }} uk-toggle="target: #mobile-menu">{t('profile.themes.light')}</Link></NavItem>
+                <NavItem active={theme === 'dark'}><Link to="#" onClick={(e) => { e.preventDefault(); setTheme('dark'); }} uk-toggle="target: #mobile-menu">{t('profile.themes.dark')}</Link></NavItem>
+                <NavItem active={theme === 'dark-unicorn'}><Link to="#" onClick={(e) => { e.preventDefault(); setTheme('dark-unicorn'); }} uk-toggle="target: #mobile-menu">{t('profile.themes.dark-unicorn')}</Link></NavItem>
+              </SubNav>
             </MotionNavItem>
             <MotionNavItem
               key="logout-off"
@@ -297,6 +342,25 @@ const Navbar: React.FC = () => {
               transition={{ duration: 0.2, delay: 0.15 }}
             >
               <Link to="/register" uk-toggle="target: #mobile-menu">{t('navbar.register')}</Link>
+            </MotionNavItem>
+            <li className="uk-nav-divider"></li>
+            <MotionNavItem
+              key="theme-off-guest"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2, delay: 0.2 }}
+              parent
+            >
+              <Link to="#">
+                <Icon icon="paint-bucket" className="uk-margin-small-right" />
+                {t('navbar.theme')}: <span className="uk-text-bold">{t(`profile.themes.${theme}`)}</span>
+              </Link>
+              <SubNav>
+                <NavItem active={theme === 'light'}><Link to="#" onClick={(e) => { e.preventDefault(); setTheme('light'); }} uk-toggle="target: #mobile-menu">{t('profile.themes.light')}</Link></NavItem>
+                <NavItem active={theme === 'dark'}><Link to="#" onClick={(e) => { e.preventDefault(); setTheme('dark'); }} uk-toggle="target: #mobile-menu">{t('profile.themes.dark')}</Link></NavItem>
+                <NavItem active={theme === 'dark-unicorn'}><Link to="#" onClick={(e) => { e.preventDefault(); setTheme('dark-unicorn'); }} uk-toggle="target: #mobile-menu">{t('profile.themes.dark-unicorn')}</Link></NavItem>
+              </SubNav>
             </MotionNavItem>
           </React.Fragment>
         )
@@ -382,11 +446,6 @@ const Navbar: React.FC = () => {
               </NavbarLeft>
               <NavbarRight>
                 <NavbarNav>
-                  <NavbarItem className="uk-visible@s">
-                    <Link to="#" onClick={(e) => { e.preventDefault(); toggleTheme(); }} title={t(`profile.themes.${theme === 'light' ? 'dark' : (theme === 'dark' ? 'dark-unicorn' : 'light')}`)}>
-                      <Icon icon={theme === 'light' ? 'bolt' : (theme === 'dark' ? 'star' : 'heart')} />
-                    </Link>
-                  </NavbarItem>
                   {navLinks}
                   <NavbarItem className="uk-hidden@m">
                     <NavbarToggle uk-toggle="target: #mobile-menu" className={styles.hamburgerToggle}>
