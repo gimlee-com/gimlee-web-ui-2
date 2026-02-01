@@ -79,3 +79,30 @@
   border-radius: 8px;
   margin-top: 12px;
 }
+
+.actionButtons {
+  display: flex;
+  gap: 8px;
+}
+
+.actionButton {
+  background-color: $global-muted-background !important;
+  color: $global-muted-color !important;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: $global-border !important;
+    color: $global-color !important;
+  }
+
+  &.isFavorite {
+    background-color: color-mix(in srgb, $global-danger-background, transparent 90%) !important;
+    color: $global-danger-background !important;
+
+    &:hover {
+      background-color: color-mix(in srgb, $global-danger-background, transparent 80%) !important;
+    }
+  }
+}

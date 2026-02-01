@@ -458,17 +458,15 @@ const AdDetailsPage: React.FC = () => {
                   {ad.condition && (
                     <Label variant="default">{t(`ads.conditions.${ad.condition}`)}</Label>
                   )}
-                  <div className="uk-flex uk-gap-small">
+                  <div className={styles.actionButtons}>
                     <button 
-                      className="uk-icon-button" 
-                      style={{ cursor: 'pointer', border: 'none', background: ad.isFavorite ? '#fee' : '#f8f9fa' }}
+                      className={`uk-icon-button ${styles.actionButton} ${ad.isFavorite ? styles.isFavorite : ''}`}
                       title={t('adDetails.favorites')}
                     >
-                      <Icon icon="heart" className={ad.isFavorite ? 'uk-text-danger' : 'uk-text-muted'} />
+                      <Icon icon="heart" className={ad.isFavorite ? 'uk-text-danger' : ''} />
                     </button>
                     <button 
-                      className="uk-icon-button" 
-                      style={{ cursor: 'pointer', border: 'none', background: '#f8f9fa' }}
+                      className={`uk-icon-button ${styles.actionButton}`}
                       title={t('common.actions')}
                     >
                       <Icon icon="more-vertical" />
@@ -501,20 +499,24 @@ const AdDetailsPage: React.FC = () => {
 
                 <div className="uk-margin-small">
                   <label className="uk-form-label uk-text-small" htmlFor="quantity">{t('purchases.quantity')}</label>
-                  <div className="uk-form-controls uk-flex uk-flex-middle uk-gap-small uk-margin-small-top">
-                    <input 
-                      className="uk-input uk-form-width-xsmall uk-form-small uk-border-rounded" 
-                      id="quantity" 
-                      type="number" 
-                      min="1" 
-                      max={ad.availableStock}
-                      value={quantity}
-                      onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
-                    />
-                    <span className="uk-text-meta">
-                      {t('ads.onlyLeft', { count: ad.availableStock || 0 })}
-                    </span>
-                  </div>
+                  <Grid gap="small" className="uk-form-controls uk-flex-middle uk-margin-small-top">
+                    <div>
+                      <input 
+                        className="uk-input uk-form-width-xsmall uk-form-small uk-border-rounded" 
+                        id="quantity" 
+                        type="number" 
+                        min="1" 
+                        max={ad.availableStock}
+                        value={quantity}
+                        onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
+                      />
+                    </div>
+                    <div>
+                      <span className="uk-text-meta">
+                        {t('ads.onlyLeft', { count: ad.availableStock || 0 })}
+                      </span>
+                    </div>
+                  </Grid>
                 </div>
 
                 <Button 
@@ -556,39 +558,45 @@ const AdDetailsPage: React.FC = () => {
 
           {ad.user && (
             <motion.div variants={itemVariants} className="uk-margin-medium-top">
-              <Card className={`uk-border-rounded ${styles.sellerCard}`}>
-                <CardBody>
-                  <Heading as="h4" className="uk-margin-small-bottom">{t('adDetails.seller')}</Heading>
-                  <div className="uk-flex uk-flex-middle uk-gap-small">
-                    <Link to={`/u/${ad.user.username}`}>
-                      <AvatarWithPresence 
-                        username={ad.user.username} 
-                        avatarUrl={ad.user.avatarUrl} 
-                        status={ad.user.presence?.status}
-                        size={50}
-                      />
-                    </Link>
-                    <div className="uk-flex uk-flex-column">
-                      <Link to={`/u/${ad.user.username}`} className="uk-link-reset uk-text-bold">
-                        {ad.user.username}
-                      </Link>
-                      <span className="uk-text-meta uk-flex uk-flex-middle uk-gap-small">
-                        <span className="uk-text-warning"><Icon icon="star" ratio={0.8} /> 4.9</span>
-                        <span>(128 {t('adDetails.questions')})</span>
-                      </span>
+              <Link to={`/u/${ad.user.username}`} className="uk-link-reset uk-display-block">
+                <Card className={`uk-border-rounded ${styles.sellerCard}`}>
+                  <CardBody>
+                    <Heading as="h4" className="uk-margin-small-bottom">{t('adDetails.seller')}</Heading>
+                    <Grid gap="small" className="uk-flex-middle">
+                      <div className="uk-width-auto">
+                        <AvatarWithPresence 
+                          username={ad.user.username} 
+                          avatarUrl={ad.user.avatarUrl} 
+                          status={ad.user.presence?.status}
+                          size={50}
+                        />
+                      </div>
+                      <div className="uk-width-expand">
+                        <div className="uk-flex uk-flex-column">
+                          <div className="uk-text-bold">{ad.user.username}</div>
+                          <Grid gap="small" className="uk-text-meta uk-flex-middle uk-child-width-auto">
+                            <div>
+                              <span className="uk-text-warning"><Icon icon="star" ratio={0.8} /> 4.9</span>
+                            </div>
+                            <div>
+                              <span>(128 {t('adDetails.questions')})</span>
+                            </div>
+                          </Grid>
+                        </div>
+                      </div>
+                    </Grid>
+                    <div className="uk-margin-small-top">
+                      <div className="uk-text-meta uk-margin-xsmall-bottom">
+                        {t('adDetails.memberSince', { date: ad.user.memberSince ? formatRelativeTime(ad.user.memberSince) : '2024' })}
+                      </div>
+                      <Label variant="success" className="uk-text-small">
+                        <Icon icon="check" ratio={0.7} className="uk-margin-xsmall-right" />
+                        {t('adDetails.verified')}
+                      </Label>
                     </div>
-                  </div>
-                  <div className="uk-margin-small-top">
-                    <div className="uk-text-meta uk-margin-xsmall-bottom">
-                      {t('adDetails.memberSince', { date: ad.user.memberSince ? formatRelativeTime(ad.user.memberSince) : '2024' })}
-                    </div>
-                    <Label variant="success" className="uk-text-small">
-                      <Icon icon="check" ratio={0.7} className="uk-margin-xsmall-right" />
-                      {t('adDetails.verified')}
-                    </Label>
-                  </div>
-                </CardBody>
-              </Card>
+                  </CardBody>
+                </Card>
+              </Link>
             </motion.div>
           )}
 
@@ -596,24 +604,30 @@ const AdDetailsPage: React.FC = () => {
             <Card className="uk-border-rounded">
               <CardBody>
                 <Heading as="h4" className="uk-margin-small-bottom">{t('adDetails.popularity')}</Heading>
-                <div className="uk-flex uk-flex-column uk-gap-small">
-                  <div className={styles.statItem}>
-                    <Icon icon="history" />
-                    <span>{t('adDetails.views', { count: ad.stats?.viewsCount })}</span>
+                <Grid gap="small" className="uk-child-width-1-1">
+                  <div>
+                    <div className={styles.statItem}>
+                      <Icon icon="history" />
+                      <span>{t('adDetails.views', { count: ad.stats?.viewsCount })}</span>
+                    </div>
                   </div>
-                  <div className={styles.statItem}>
-                    <Icon icon="heart" />
-                    <span>{t('adDetails.favorites', { count: ad.stats?.favoritesCount })}</span>
+                  <div>
+                    <div className={styles.statItem}>
+                      <Icon icon="heart" />
+                      <span>{t('adDetails.favorites', { count: ad.stats?.favoritesCount })}</span>
+                    </div>
                   </div>
                   {ad.stats?.lastPurchasedAt && (
-                    <div className="uk-alert-primary uk-padding-xsmall uk-border-rounded uk-margin-remove-bottom">
-                      <p className="uk-text-xsmall uk-margin-remove">
-                        <Icon icon="cart" ratio={0.8} className="uk-margin-xsmall-right" />
-                        5 people bought this in the last 24h
-                      </p>
+                    <div>
+                      <div className="uk-alert-primary uk-padding-xsmall uk-border-rounded uk-margin-remove-bottom">
+                        <p className="uk-text-xsmall uk-margin-remove">
+                          <Icon icon="cart" ratio={0.8} className="uk-margin-xsmall-right" />
+                          5 people bought this in the last 24h
+                        </p>
+                      </div>
                     </div>
                   )}
-                </div>
+                </Grid>
               </CardBody>
             </Card>
           </motion.div>
@@ -623,16 +637,24 @@ const AdDetailsPage: React.FC = () => {
               <CardBody>
                 <Heading as="h4" className="uk-margin-small-bottom">{t('adDetails.shipping')}</Heading>
                 {ad.location?.city && (
-                  <div className="uk-flex uk-flex-middle uk-gap-small uk-margin-small-bottom">
-                    <Icon icon="location" className="uk-text-primary" />
-                    <span>{ad.location.city.name}{ad.location.city.district ? `, ${ad.location.city.district}` : ''}, {ad.location.city.country}</span>
-                  </div>
+                  <Grid gap="small" className="uk-flex-middle uk-margin-small-bottom">
+                    <div className="uk-width-auto">
+                      <Icon icon="location" className="uk-text-primary" />
+                    </div>
+                    <div className="uk-width-expand">
+                      <span>{ad.location.city.name}{ad.location.city.district ? `, ${ad.location.city.district}` : ''}, {ad.location.city.country}</span>
+                    </div>
+                  </Grid>
                 )}
                 <div className={styles.shippingInfo}>
-                  <div className="uk-flex uk-flex-middle uk-gap-small uk-margin-small-bottom">
-                    <Icon icon="receiver" />
-                    <span>{ad.shipping?.methods.join(', ')}</span>
-                  </div>
+                  <Grid gap="small" className="uk-flex-middle uk-margin-small-bottom">
+                    <div className="uk-width-auto">
+                      <Icon icon="receiver" />
+                    </div>
+                    <div className="uk-width-expand">
+                      <span>{ad.shipping?.methods.join(', ')}</span>
+                    </div>
+                  </Grid>
                   <div className="uk-text-small uk-text-bold uk-text-success">
                     {t('adDetails.deliveryEstimate', { estimate: ad.shipping?.estimatedDelivery })}
                   </div>
