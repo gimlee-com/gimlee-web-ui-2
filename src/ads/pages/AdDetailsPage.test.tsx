@@ -55,7 +55,7 @@ describe('AdDetailsPage', () => {
     renderAdDetailsPage();
 
     await waitFor(() => {
-      expect(screen.getByText('Test Ad')).toBeInTheDocument();
+      expect(screen.getAllByText('Test Ad')[0]).toBeInTheDocument();
       expect(screen.getByText('Test Description')).toBeInTheDocument();
       expect(screen.getByText(/ARRR 100\.00/)).toBeInTheDocument();
       expect(screen.getByText('Test City, Test Country')).toBeInTheDocument();
@@ -68,7 +68,7 @@ describe('AdDetailsPage', () => {
     renderAdDetailsPage();
 
     await waitFor(() => {
-      expect(screen.getByText('Test Ad')).toBeInTheDocument();
+      expect(screen.getAllByText('Test Ad')[0]).toBeInTheDocument();
     });
 
     // Initial state: only first image has thumbs-md due to progressive loading
@@ -99,7 +99,7 @@ describe('AdDetailsPage', () => {
     renderAdDetailsPage();
 
     await waitFor(() => {
-      expect(screen.getByText('Test Ad')).toBeInTheDocument();
+      expect(screen.getAllByText('Test Ad')[0]).toBeInTheDocument();
     });
 
     const getMdImages = () => screen.getAllByRole('img').filter(img => (img as HTMLImageElement).src.includes('thumbs-md'));
@@ -163,7 +163,7 @@ describe('AdDetailsPage', () => {
     renderAdDetailsPage();
 
     await waitFor(() => {
-      expect(screen.getByText('Test Ad')).toBeInTheDocument();
+      expect(screen.getAllByText('Test Ad')[0]).toBeInTheDocument();
     });
 
     // The main slider items should have data-index attributes
@@ -193,5 +193,69 @@ describe('AdDetailsPage', () => {
       expect(screen.getByText('Electronics')).toBeInTheDocument();
       expect(screen.getByText('Computers')).toBeInTheDocument();
     });
+  });
+
+  it('should render "Member since" as relative time', async () => {
+    const oneYearAgo = (Date.now() - 365 * 24 * 60 * 60 * 1000) * 1000; // microseconds
+    const adWithMemberSince: AdDetailsDto = {
+      ...mockAd,
+      user: {
+        userId: 'u1',
+        username: 'Seller1',
+        memberSince: oneYearAgo
+      }
+    };
+    vi.mocked(adService.getAdById).mockResolvedValue(adWithMemberSince);
+
+    renderAdDetailsPage();
+
+    await waitFor(() => {
+      // "about 1 year ago" is the default for date-fns enUS locale for 365 days
+      expect(screen.getByText(/Member since (about )?1 year ago/)).toBeInTheDocument();
+    });
+  });
+
+  it('should limit other ads to 4 and show "Display all" button', async () => {
+    const manyOtherAds = Array.from({ length: 10 }, (_, i) => ({
+      id: `other-${i}`,
+      title: `Other Ad ${i}`,
+      price: { amount: 10 + i, currency: 'ARRR' }
+    }));
+    
+    vi.mocked(adService.getAdById).mockResolvedValue({
+      ...mockAd,
+      user: {
+        userId: 'u1',
+        username: 'Seller1'
+      },
+      otherAds: manyOtherAds
+    });
+
+    renderAdDetailsPage();
+
+    await waitFor(() => {
+      const otherAdTitles = screen.queryAllByText(/Other Ad \d/);
+      // It should only render 4 items due to slice(0, 4)
+      expect(otherAdTitles).toHaveLength(4);
+    });
+
+    // Should have "Display all" button
+    expect(screen.getByText(/Display all/i)).toBeInTheDocument();
+    expect(screen.getByText(/Display all/i).closest('a')).toHaveAttribute('href', '/u/Seller1');
+
+    // Grid items should NOT have visibility classes anymore as they should always be visible
+    const getGridItem = (text: string) => {
+      const element = screen.getByText(text);
+      // AdCard structure: Link -> CardBody -> Card -> motion.div -> Container Div
+      return element.closest('.uk-card')?.parentElement?.parentElement;
+    };
+
+    const firstItem = getGridItem('Other Ad 0');
+    expect(firstItem).not.toHaveClass('uk-visible@m');
+    expect(firstItem).not.toHaveClass('uk-visible@l');
+
+    const fourthItem = getGridItem('Other Ad 3');
+    expect(fourthItem).not.toHaveClass('uk-visible@m');
+    expect(fourthItem).not.toHaveClass('uk-visible@l');
   });
 });

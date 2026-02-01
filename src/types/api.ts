@@ -70,6 +70,25 @@ export interface CategorySuggestionDto {
   displayPath: string;
 }
 
+export type ItemCondition = 'NEW' | 'LIKE_NEW' | 'GOOD' | 'FAIR';
+
+export interface AdAttributeDto {
+  label: string;
+  value: string;
+}
+
+export interface ShippingDetailsDto {
+  methods: string[];
+  estimatedDelivery?: string;
+  origin?: string;
+}
+
+export interface AdStatsDto {
+  viewsCount: number;
+  favoritesCount: number;
+  lastPurchasedAt?: string;
+}
+
 export interface AdDetailsDto {
   id: string;
   title: string;
@@ -82,12 +101,21 @@ export interface AdDetailsDto {
   mediaPaths?: string[];
   mainPhotoPath?: string;
   status?: 'ACTIVE' | 'INACTIVE' | 'SOLD' | 'DELETED';
-  userId?: string;
+  user?: UserSpaceDetailsDto;
   createdAt?: string;
   updatedAt?: string;
   stock?: number;
   availableStock?: number;
   lockedStock?: number;
+  otherAds?: AdPreviewDto[];
+  
+  // Mocked fields for overhaul
+  condition?: ItemCondition;
+  attributes?: AdAttributeDto[];
+  shipping?: ShippingDetailsDto;
+  stats?: AdStatsDto;
+  isFavorite?: boolean;
+  userCanPurchase?: boolean;
 }
 
 export interface CreateAdRequestDto {
@@ -293,6 +321,8 @@ export interface UserSpaceDetailsDto {
   userId: string;
   username: string;
   avatarUrl?: string;
+  presence?: UserPresenceDto;
+  memberSince?: number;
 }
 
 export interface UserSpaceDto {

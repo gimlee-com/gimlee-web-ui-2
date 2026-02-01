@@ -111,6 +111,12 @@ const resources = {
           "new": "New",
           "outOfStock": "Out of Stock"
         },
+        "conditions": {
+          "NEW": "New",
+          "LIKE_NEW": "Like New",
+          "GOOD": "Good",
+          "FAIR": "Fair"
+        },
         "onlyLeft": "Only {{count}} left!",
         "notEligibleTitle": "Action Required",
         "notEligibleMessage": "To activate your ad, you must first register a viewing key for at least one supported cryptocurrency. This allows the platform to verify payments securely without holding your funds.",
@@ -202,8 +208,25 @@ const resources = {
       "spaces": {
         "userAds": "{{username}}'s Ads"
       },
+      "adDetails": {
+        "seller": "Seller",
+        "memberSince": "Member since {{date}}",
+        "verified": "Verified",
+        "popularity": "Popularity",
+        "views": "{{count}} views",
+        "favorites": "{{count}} favorites",
+        "condition": "Condition",
+        "shipping": "Shipping & Delivery",
+        "deliveryEstimate": "Estimated delivery: {{estimate}}",
+        "shipsFrom": "Ships from: {{origin}}",
+        "specs": "Specifications",
+        "otherAds": "More from this seller",
+        "viewAll": "Display all",
+        "questions": "Questions & Answers",
+        "noQuestions": "No questions yet. Be the first to ask!",
+        "askQuestion": "Ask a Question"
+      },
       "presence": {
-        "status": "Presence Status",
         "online": "Online",
         "away": "Away",
         "busy": "Busy",
@@ -324,6 +347,12 @@ const resources = {
           "new": "Nowe",
           "outOfStock": "Brak w magazynie"
         },
+        "conditions": {
+          "NEW": "Nowy",
+          "LIKE_NEW": "Jak nowy",
+          "GOOD": "Dobry",
+          "FAIR": "Używany"
+        },
         "onlyLeft": "Ostatnie {{count}} sztuk!",
         "notEligibleTitle": "Wymagane działanie",
         "notEligibleMessage": "Aby aktywować ogłoszenie, musisz najpierw zarejestrować klucz podglądu dla przynajmniej jednej obsługiwanej kryptowaluty. Pozwala to platformie na bezpieczną weryfikację płatności bez przejmowania Twoich środków.",
@@ -415,8 +444,25 @@ const resources = {
       "spaces": {
         "userAds": "Ogłoszenia użytkownika {{username}}"
       },
+      "adDetails": {
+        "seller": "Sprzedawca",
+        "memberSince": "W serwisie od {{date}}",
+        "verified": "Zweryfikowany",
+        "popularity": "Popularność",
+        "views": "{{count}} wyświetleń",
+        "favorites": "{{count}} obserwujących",
+        "condition": "Stan",
+        "shipping": "Wysyłka i dostawa",
+        "deliveryEstimate": "Przewidywana dostawa: {{estimate}}",
+        "shipsFrom": "Wysyłka z: {{origin}}",
+        "specs": "Specyfikacja",
+        "otherAds": "Więcej od tego sprzedawcy",
+        "viewAll": "Pokaż wszystkie",
+        "questions": "Pytania i odpowiedzi",
+        "noQuestions": "Brak pytań. Bądź pierwszy!",
+        "askQuestion": "Zadaj pytanie"
+      },
       "presence": {
-        "status": "Status dostępności",
         "online": "Dostępny",
         "away": "Zaraz wracam",
         "busy": "Zajęty",
