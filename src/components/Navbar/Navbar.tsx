@@ -408,7 +408,7 @@ const Navbar: React.FC = () => {
                             width: isScrolled ? 30 : 40
                           }}
                           transition={{ type: 'spring', stiffness: 400, damping: 40 }}
-                          className="uk-margin-small-right"
+                          className="uk-margin-right"
                           style={{ color: 'var(--global-primary-color)' }}
                           aria-label="Gimlee"
                         />
