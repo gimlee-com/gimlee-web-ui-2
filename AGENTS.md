@@ -8,6 +8,7 @@ This file serves as a comprehensive guide for AI agents and developers working o
 **Gimlee** is a decentralized, peer-to-peer (P2P) cryptocurrency marketplace.
 - **Goal**: Connect buyers and sellers directly for exchanging goods and services using crypto.
 - **Core Innovation**: Trustless, non-custodial payment verification. Sellers provide a **viewing key** (read-only), allowing the platform to verify payments on the blockchain without ever taking custody of funds.
+- **User Spaces**: Users can create their own "Spaces" (personalized public profile pages) to showcase their ads, build reputation, and establish a unique identity within the marketplace.
 - **Current Focus**: Integration with **PirateChain (ARRR)**, with plans for Monero (XMR) and Firo (FIRO).
 - **Vision**: A community-driven, secure, and transparent economy that eliminates financial intermediaries.
 - **Ambition**: Gimlee is not a small-scale project; it is built to compete with global tech giants by providing a superior, privacy-centric, and decentralized alternative.
@@ -101,7 +102,7 @@ To ensure a consistent user experience, especially with localized messages, we f
 
 #### **I. Authentication & Session Management**
 - **Unified Initialization**: The application must bootstrap using the `/api/session/init` endpoint. This call should include all necessary `decorators` (e.g., `accessToken`, `userProfile`, `featureFlags`) as query parameters to retrieve the essential application state in a single network round-trip.
-- **Graceful Identity Fallbacks**: When a user is authenticated but lacks an explicit avatar, use `GeometricAvatar`. This ensures a visually rich and unique representation for every user.
+- **Graceful Identity Fallbacks**: When a identity (user profile, seller, etc.) lacks an explicit avatar, use `GeometricAvatar`. This ensures a visually rich and unique representation for every identity in the system.
 - **Async Context Strategy**: Components relying on `AuthContext` must account for its initial `loading` state. Ensure that critical UI elements (like the Navbar or protected routes) wait for the session to initialize to prevent flickering or incorrect "Guest" state flashes.
 
 #### **J. Progressive Web App (PWA)**
@@ -131,7 +132,7 @@ To ensure a consistent user experience, especially with localized messages, we f
 - **LocalStorage Sync**: Persist critical global state to `localStorage` to ensure continuity after page refreshes or app restarts. Re-hydrate this state during store initialization.
 
 #### **N. Focused Navbar & Navigation Context**
-- **Focused Mode**: Use the "focused" navbar mode for detail pages to declutter the UI. This mode replaces the logo/main menu with a back button and a slot for page-specific content (e.g., ad titles, breadcrumbs).
+- **Focused Mode**: Use the "focused" navbar mode for detail pages and user-centric views (like User Spaces) to declutter the UI. This mode replaces the logo/main menu with a back button and a slot for page-specific content (e.g., ad titles, usernames, breadcrumbs).
 - **`useNavbarMode` Hook**: Activate focused mode using this hook. It should be called at the top of the page component.
 - **`NavbarPortal`**: Use this component to "teleport" custom content into the navbar's focused slot.
 - **Context Preservation**:
@@ -144,6 +145,13 @@ To ensure a consistent user experience, especially with localized messages, we f
 - **Enhanced `Image` Component**: To provide a polished, high-end feel, always use the custom `Image` component (`src/components/Image/Image.tsx`) instead of raw `<img>` tags or the base UIKit wrapper.
 - **Loading Placeholders**: This component automatically provides a subtle "shimmer" animation while images are loading, preventing jarring layout jumps and giving immediate visual feedback.
 - **Layout Preservation**: Always provide `containerClassName` or `containerStyle` to the `Image` component to ensure the placeholder correctly matches the intended dimensions of the image.
+
+#### **P. Safe Content Handling**
+- **External Link Safety**: When displaying user-provided links (e.g., in descriptions), always warn the user before they leave the platform. Use `UIkit.modal.confirm` with `stack: true` and standardized i18n keys (`common.externalLinkWarning`) to provide a consistent safety checkpoint.
+- **Sanitized Markdown Rendering**: For user-generated descriptions, use the standardized `Markdown` component. It ensures that:
+    - **External Images are Prohibited**: Only images from the platform's API or local paths are rendered; others are replaced with a placeholder to prevent tracking and bandwidth hijacking.
+    - **UIkit Styling**: Tables, lists, and headers are automatically wrapped in UIkit classes for visual consistency.
+    - **Link Behavior**: External links automatically open in a new tab (`target="_blank"`) with appropriate security headers (`rel="noopener noreferrer"`) and an external link icon.
 
 ### 4. Code Structure Standards
 The project follows a modular, business-oriented directory structure to ensure scalability and maintainability.
@@ -161,7 +169,7 @@ Code that is reusable across the entire application remains in top-level directo
 - **`src/styles/`**: Global SASS variables and theme overrides.
 
 #### **B. Business-Oriented Modules**
-Logic specific to a particular business domain (e.g., Ads, Profile, Auth) is encapsulated within its own directory under `src/` (e.g., `src/ads/`). Each module mirrors a simplified project structure:
+Logic specific to a particular business domain (e.g., Ads, Profile, Auth, Spaces) is encapsulated within its own directory under `src/` (e.g., `src/ads/`). Each module mirrors a simplified project structure:
 - **`src/[module]/pages/`**: High-level layouts and form orchestration specific to the domain.
 - **`src/[module]/components/`**: Components used exclusively within this module.
 - **`src/[module]/services/`**: API clients and business logic for the module. Services should use `apiClient` and typed DTOs from `src/types/api.ts`.
@@ -203,3 +211,6 @@ Every component (whether shared or module-specific) follows the same pattern:
 24. **React-Compatible Modals**: Always set `container: false` for UIKit modals to keep them within the React root. This is strictly required to ensure React event delegation (for clicks, inputs, etc.) works correctly within the modal.
 25. **Hybrid Traversal Speed**: Combine high-density Miller Columns (desktop) with focused Drill-Down stacks (mobile) to provide the fastest possible navigation through deep hierarchies.
 26. **Favor Enhanced Images**: Never use raw `<img>` tags. Always use the project's enhanced `Image` component to ensure consistent loading placeholders and smooth transitions across the platform.
+27. **Identity-First Trust**: Build trust through personalized identity. Use "User Spaces" and unique visual identifiers like `GeometricAvatar` to give every participant a professional and recognizable presence.
+28. **Safe Passage**: Always warn users when they are about to leave the "safety" of the platform's ecosystem via external links. User trust is maintained by acknowledging the boundary between Gimlee and the wild web.
+29. **Content Integrity**: Enforce strict sanitization and platform-consistent styling for all user-generated content (like descriptions) using the `Markdown` component. This prevents visual fragmentation, bandwidth hijacking, and potential tracking via external images.
