@@ -7,6 +7,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useUIKit } from '../../hooks/useUIkit';
 import { useAppSelector } from '../../store';
 import { NAVBAR_PORTAL_ID } from './NavbarPortal';
+import Logo from '../Logo/Logo';
 import {
   Navbar as UkNavbar,
   NavbarLeft,
@@ -26,6 +27,7 @@ import styles from './Navbar.module.scss';
 
 const MotionNavbarItem = motion.create(NavbarItem);
 const MotionNavItem = motion.create(NavItem);
+const MotionLogo = motion.create(Logo);
 
 const Navbar: React.FC = () => {
   const { t } = useTranslation();
@@ -399,14 +401,16 @@ const Navbar: React.FC = () => {
                       transition={{ duration: 0.2 }}
                     >
                       <Link to="/" className={`uk-navbar-item uk-logo ${styles.logo}`}>
-                        <motion.img
-                          src="/gimlee.svg"
-                          alt="Gimlee"
-                          height="40"
+                        <MotionLogo
                           initial={false}
-                          animate={{ height: isScrolled ? 30 : 40 }}
+                          animate={{ 
+                            height: isScrolled ? 30 : 40,
+                            width: isScrolled ? 30 : 40
+                          }}
                           transition={{ type: 'spring', stiffness: 400, damping: 40 }}
                           className="uk-margin-small-right"
+                          style={{ color: 'var(--global-primary-background)' }}
+                          aria-label="Gimlee"
                         />
                       </Link>
                       <NavbarNav>
