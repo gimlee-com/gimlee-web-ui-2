@@ -22,6 +22,7 @@ import { Slidenav } from '../../components/uikit/Slidenav/Slidenav';
 import { Breadcrumb, BreadcrumbItem } from '../../components/uikit/Breadcrumb/Breadcrumb';
 import { Label } from '../../components/uikit/Label/Label';
 import { Icon } from '../../components/uikit/Icon/Icon';
+import { NumberInput } from '../../components/Form/Form';
 import { useNavbarMode } from '../../hooks/useNavbarMode';
 import NavbarPortal from '../../components/Navbar/NavbarPortal';
 import { formatPrice } from '../../utils/currencyUtils';
@@ -499,24 +500,25 @@ const AdDetailsPage: React.FC = () => {
 
                 <div className="uk-margin-small">
                   <label className="uk-form-label uk-text-small" htmlFor="quantity">{t('purchases.quantity')}</label>
-                  <Grid gap="small" className="uk-form-controls uk-flex-middle uk-margin-small-top">
-                    <div>
-                      <input 
-                        className="uk-input uk-form-width-xsmall uk-form-small uk-border-rounded" 
-                        id="quantity" 
-                        type="number" 
-                        min="1" 
-                        max={ad.availableStock}
-                        value={quantity}
-                        onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
-                      />
-                    </div>
-                    <div>
-                      <span className="uk-text-meta">
-                        {t('ads.onlyLeft', { count: ad.availableStock || 0 })}
-                      </span>
-                    </div>
-                  </Grid>
+                  <div className="uk-form-controls uk-margin-small-top">
+                    <Grid gap="small" className="uk-flex-middle">
+                      <div>
+                        <NumberInput 
+                          id="quantity" 
+                          min={1} 
+                          max={ad.availableStock}
+                          value={quantity}
+                          onValueChange={setQuantity}
+                          formWidth="xsmall"
+                        />
+                      </div>
+                      <div>
+                        <span className="uk-text-meta">
+                          {t('ads.onlyLeft', { count: ad.availableStock || 0 })}
+                        </span>
+                      </div>
+                    </Grid>
+                  </div>
                 </div>
 
                 <Button 

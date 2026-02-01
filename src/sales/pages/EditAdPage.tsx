@@ -12,7 +12,7 @@ import { Spinner } from '../../components/uikit/Spinner/Spinner';
 import { Button } from '../../components/uikit/Button/Button';
 import { Alert } from '../../components/uikit/Alert/Alert';
 import { Label } from '../../components/uikit/Label/Label';
-import { Form, Input, Select } from '../../components/uikit/Form/Form';
+import { Form, Input, Select, NumberInput } from '../../components/Form/Form';
 import { Grid } from '../../components/uikit/Grid/Grid';
 import { Card, CardBody } from '../../components/uikit/Card/Card';
 import { Upload } from '../../components/uikit/Upload/Upload';
@@ -416,15 +416,21 @@ const EditAdPage: React.FC = () => {
 
               <div className="uk-margin">
                 <label className="uk-form-label">{t('ads.stock')}</label>
-                <Input 
-                  {...register('stock')} 
-                  type="number" 
-                  min="0" 
-                  onFocus={() => setStockFocused(true)}
-                  onBlur={(e) => {
-                    register('stock').onBlur(e);
-                    setStockFocused(false);
-                  }}
+                <Controller
+                  control={control}
+                  name="stock"
+                  render={({ field }) => (
+                    <NumberInput 
+                      {...field}
+                      min={0}
+                      formWidth="small"
+                      onFocus={() => setStockFocused(true)}
+                      onBlur={() => {
+                        field.onBlur();
+                        setStockFocused(false);
+                      }}
+                    />
+                  )}
                 />
                 {stockFocused && (
                   <div className="uk-text-primary uk-text-small uk-margin-small-top">

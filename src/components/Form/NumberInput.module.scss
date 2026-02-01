@@ -1,0 +1,85 @@
+@import '../../styles/uikit-imports';
+
+.container {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid var(--global-border);
+  border-radius: var(--global-border-radius);
+  overflow: hidden;
+  background: var(--global-background);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  height: 40px; // Standard UIKit height for medium inputs
+  padding: 0;
+  box-sizing: border-box;
+
+  &:focus-within {
+    border-color: var(--global-primary-background);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--global-primary-background), transparent 80%);
+  }
+
+  &.status-danger {
+    border-color: var(--global-danger-background);
+    &:focus-within {
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--global-danger-background), transparent 80%);
+    }
+  }
+
+  &.status-success {
+    border-color: var(--global-success-background);
+  }
+}
+
+.width-xsmall { width: 120px; }
+.width-small { width: 160px; }
+.width-medium { width: 200px; }
+.width-large { width: 100%; }
+
+.button {
+  background: transparent;
+  border: none;
+  padding: 0 12px;
+  color: var(--global-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  outline: none;
+  flex-shrink: 0;
+
+  &:hover:not(:disabled) {
+    background-color: color-mix(in srgb, var(--global-color), transparent 95%);
+  }
+
+  &:active:not(:disabled) {
+    background-color: color-mix(in srgb, var(--global-color), transparent 90%);
+  }
+
+  &:disabled {
+    color: var(--global-muted-color);
+    cursor: not-allowed;
+  }
+}
+
+.input {
+  border: none !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+  flex: 1;
+  min-width: 0;
+  height: 100% !important;
+  background: transparent !important;
+  padding: 0 !important;
+  text-align: center;
+  font-size: 1rem;
+  color: var(--global-color);
+
+  &:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+  
+  // Override UIKit default width if it was set via class
+  &[class*="uk-form-width-"] {
+    width: auto !important;
+  }
+}

@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'motion/react';
 import { Grid } from '../../../components/uikit/Grid/Grid';
-import { Input, Select, FormLabel } from '../../../components/uikit/Form/Form';
+import { Input, Select, FormLabel } from '../../../components/Form/Form';
 import { Button } from '../../../components/uikit/Button/Button';
 import { Icon } from '../../../components/uikit/Icon/Icon';
 import { CategorySelector } from '../CategorySelector/CategorySelector';

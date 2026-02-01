@@ -23,6 +23,8 @@ const resources = {
         "editing": "Editing",
         "search": "Search",
         "reset": "Reset",
+        "increment": "Increment",
+        "decrement": "Decrement",
         "externalLinkWarning": "You are leaving Gimlee. We are not responsible for the content of external websites. Do you want to proceed?"
       },
       "navbar": {
@@ -282,6 +284,8 @@ const resources = {
         "editing": "Edycja",
         "search": "Szukaj",
         "reset": "Resetuj",
+        "increment": "Zwiększ",
+        "decrement": "Zmniejsz",
         "externalLinkWarning": "Opuszczasz Gimlee. Nie ponosimy odpowiedzialności za treści na zewnętrznych stronach. Czy chcesz kontynuować?"
       },
       "navbar": {

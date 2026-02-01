@@ -5,6 +5,7 @@ import { useMergeRefs } from '../../hooks/useMergeRefs'
 import UIkit from 'uikit'
 
 export { motion, AnimatePresence } from 'motion/react'
+export * from './NumberInput'
 
 export type FormLayout = 'stacked' | 'horizontal'
 
