@@ -6,6 +6,7 @@ import { paymentService } from '../../payments/services/paymentService';
 import { userService } from '../services/userService';
 import { useAuth } from '../../context/AuthContext';
 import { usePresence } from '../../context/PresenceContext';
+import { useTheme } from '../../context/ThemeContext';
 import type { PirateChainTransaction, YCashTransaction, CurrencyDto, PresenceStatus } from '../../types/api';
 import { Heading } from '../../components/uikit/Heading/Heading';
 import { Button } from '../../components/uikit/Button/Button';
@@ -44,6 +45,7 @@ const cardVariants = {
 const ProfilePage: React.FC = () => {
   const { t, i18n } = useTranslation();
   const { isAuthenticated, preferredCurrency, setPreferredCurrency } = useAuth();
+  const { theme, setTheme } = useTheme();
   const { presence, updatePresence } = usePresence();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [arrrViewKey, setArrrViewKey] = useState('');
@@ -253,6 +255,33 @@ const ProfilePage: React.FC = () => {
                   onClick={() => handleLanguageChange('pl-PL')}
                 >
                   Polski
+                </Button>
+              </div>
+            </div>
+
+            <div className="uk-margin">
+              <FormLabel>{t('profile.theme')}</FormLabel>
+              <div className="uk-button-group uk-margin-small-top uk-display-block">
+                <Button
+                  size="small"
+                  variant={theme === 'light' ? 'primary' : 'default'}
+                  onClick={() => setTheme('light')}
+                >
+                  {t('profile.themes.light')}
+                </Button>
+                <Button
+                  size="small"
+                  variant={theme === 'dark' ? 'primary' : 'default'}
+                  onClick={() => setTheme('dark')}
+                >
+                  {t('profile.themes.dark')}
+                </Button>
+                <Button
+                  size="small"
+                  variant={theme === 'dark-unicorn' ? 'primary' : 'default'}
+                  onClick={() => setTheme('dark-unicorn')}
+                >
+                  {t('profile.themes.dark-unicorn')}
                 </Button>
               </div>
             </div>

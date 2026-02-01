@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { Capacitor } from '@capacitor/core';
 import { useAppSelector } from './store';
+import { useTheme } from './context/ThemeContext';
 import { PurchaseModal } from './purchases/components/PurchaseModal';
 import './i18n';
 import Navbar from './components/Navbar/Navbar';
@@ -19,18 +20,29 @@ import SalesOrdersPage from './sales/pages/SalesOrdersPage';
 import PurchasesPage from './purchases/pages/PurchasesPage';
 import ProfilePage from './profile/pages/ProfilePage';
 import UserSpacePage from './spaces/pages/UserSpacePage';
-import './App.css';
 
 function App() {
   const { activePurchase, isModalOpen } = useAppSelector(state => state.purchase);
+  const { theme } = useTheme();
 
   useEffect(() => {
     if (Capacitor.isNativePlatform()) {
-      StatusBar.setBackgroundColor({ color: '#ffffff' }).catch(() => {});
-      StatusBar.setStyle({ style: Style.Light }).catch(() => {});
+      const colorMap = {
+        'light': '#ffffff',
+        'dark': '#1a1a1a',
+        'dark-unicorn': '#0f0c29'
+      };
+      const styleMap = {
+        'light': Style.Light,
+        'dark': Style.Dark,
+        'dark-unicorn': Style.Dark
+      };
+      
+      StatusBar.setBackgroundColor({ color: colorMap[theme] }).catch(() => {});
+      StatusBar.setStyle({ style: styleMap[theme] }).catch(() => {});
       StatusBar.setOverlaysWebView({ overlay: false }).catch(() => {});
     }
-  }, []);
+  }, [theme]);
 
   return (
     <div className="App">

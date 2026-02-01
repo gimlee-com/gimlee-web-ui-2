@@ -2,7 +2,7 @@
 
 .adCard {
   position: relative;
-  border-radius: $global-border-radius;
+  border-radius: $card-border-radius;
   overflow: hidden;
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;

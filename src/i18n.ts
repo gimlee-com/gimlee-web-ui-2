@@ -220,7 +220,13 @@ const resources = {
         "failedToSaveLanguage": "Failed to save language preference.",
         "preferredCurrency": "Preferred Currency",
         "searchCurrency": "Search for a currency...",
-        "failedToSaveCurrency": "Failed to save preferred currency."
+        "failedToSaveCurrency": "Failed to save preferred currency.",
+        "theme": "Theme",
+        "themes": {
+          "light": "Light",
+          "dark": "Dark",
+          "dark-unicorn": "Dark Unicorn"
+        }
       },
       "spaces": {
         "userAds": "{{username}}'s Ads"
@@ -473,7 +479,13 @@ const resources = {
         "failedToSaveLanguage": "Nie udało się zapisać preferencji języka.",
         "preferredCurrency": "Preferowana waluta",
         "searchCurrency": "Szukaj waluty...",
-        "failedToSaveCurrency": "Nie udało się zapisać preferowanej waluty."
+        "failedToSaveCurrency": "Nie udało się zapisać preferowanej waluty.",
+        "theme": "Motyw",
+        "themes": {
+          "light": "Jasny",
+          "dark": "Ciemny",
+          "dark-unicorn": "Ciemny Jednorożec"
+        }
       },
       "spaces": {
         "userAds": "Ogłoszenia użytkownika {{username}}"

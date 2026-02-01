@@ -1,10 +1,11 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-type Theme = 'light' | 'dark';
+export type Theme = 'light' | 'dark' | 'dark-unicorn';
 
 interface ThemeContextType {
   theme: Theme;
   toggleTheme: () => void;
+  setTheme: (theme: Theme) => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -12,7 +13,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [theme, setTheme] = useState<Theme>(() => {
     const saved = localStorage.getItem('theme');
-    if (saved === 'light' || saved === 'dark') return saved;
+    if (saved === 'light' || saved === 'dark' || saved === 'dark-unicorn') return saved;
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   });
 
@@ -23,16 +24,25 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     // Update theme-color meta tag for PWA and mobile browsers
     const metaThemeColor = document.querySelector('meta[name="theme-color"]');
     if (metaThemeColor) {
-      metaThemeColor.setAttribute('content', theme === 'dark' ? '#1a1a1a' : '#ffffff');
+      const colorMap = {
+        'light': '#ffffff',
+        'dark': '#1a1a1a',
+        'dark-unicorn': '#0f0c29'
+      };
+      metaThemeColor.setAttribute('content', colorMap[theme]);
     }
   }, [theme]);
 
   const toggleTheme = () => {
-    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+    setTheme(prev => {
+      if (prev === 'light') return 'dark';
+      if (prev === 'dark') return 'dark-unicorn';
+      return 'light';
+    });
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme, setTheme }}>
       {children}
     </ThemeContext.Provider>
   );

@@ -252,8 +252,11 @@ const Navbar: React.FC = () => {
               transition={{ duration: 0.2, delay: 0.3 }}
             >
               <Link to="#" onClick={(e) => { e.preventDefault(); toggleTheme(); }}>
-                <Icon icon={theme === 'light' ? 'bolt' : 'star'} className="uk-margin-small-right" />
-                {t('navbar.theme')}: {theme === 'light' ? 'Dark' : 'Light'}
+                <Icon 
+                  icon={theme === 'light' ? 'bolt' : (theme === 'dark' ? 'star' : 'heart')} 
+                  className="uk-margin-small-right" 
+                />
+                {t('navbar.theme')}: {t(`profile.themes.${theme === 'light' ? 'dark' : (theme === 'dark' ? 'dark-unicorn' : 'light')}`)}
               </Link>
             </MotionNavItem>
             <MotionNavItem
@@ -380,8 +383,8 @@ const Navbar: React.FC = () => {
               <NavbarRight>
                 <NavbarNav>
                   <NavbarItem className="uk-visible@s">
-                    <Link to="#" onClick={(e) => { e.preventDefault(); toggleTheme(); }} title={theme === 'light' ? 'Dark Mode' : 'Light Mode'}>
-                      <Icon icon={theme === 'light' ? 'bolt' : 'star'} />
+                    <Link to="#" onClick={(e) => { e.preventDefault(); toggleTheme(); }} title={t(`profile.themes.${theme === 'light' ? 'dark' : (theme === 'dark' ? 'dark-unicorn' : 'light')}`)}>
+                      <Icon icon={theme === 'light' ? 'bolt' : (theme === 'dark' ? 'star' : 'heart')} />
                     </Link>
                   </NavbarItem>
                   {navLinks}

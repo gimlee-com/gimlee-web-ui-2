@@ -12,6 +12,8 @@
   --navbar-shadow: 0 2px 10px rgba(0,0,0,0.1);
   --global-medium-shadow: 0 12px 24px rgba(0, 0, 0, 0.05);
   --global-large-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  --global-border-radius: 5px;
+  --card-border-radius: 5px;
 }
 
 [data-theme='dark'] {
@@ -25,6 +27,24 @@
   --navbar-shadow: 0 4px 15px rgba(0,0,0,0.5);
   --global-medium-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
   --global-large-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  --global-border-radius: 5px;
+  --card-border-radius: 5px;
+}
+
+[data-theme='dark-unicorn'] {
+  --global-background: #0f0c29;
+  --global-background-gradient: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
+  --global-color: #ffffff;
+  --global-muted-color: #b983ff;
+  --global-muted-background: rgba(255, 255, 255, 0.05);
+  --global-border: rgba(255, 255, 255, 0.1);
+  --global-primary-background: linear-gradient(90deg, #ff00cc 0%, #3333ff 100%);
+  --global-secondary-background: #1a1a2e;
+  --navbar-shadow: 0 4px 20px rgba(255, 0, 204, 0.3);
+  --global-medium-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+  --global-large-shadow: 0 20px 40px rgba(255, 0, 204, 0.2);
+  --global-border-radius: 500px;
+  --card-border-radius: 12px;
 }
 
 // 1. Your custom variables and variable overwrites.
@@ -35,23 +55,71 @@
 @import 'uikit/src/scss/mixins-theme.scss';
 
 // 3. Your custom mixin overwrites.
-// For example:
-// @mixin hook-card() { color: #000; }
+@mixin hook-button-primary() {
+  background: var(--global-primary-background);
+  border: none;
+}
+
+@mixin hook-button-secondary() {
+  border-radius: var(--global-border-radius);
+}
+
+@mixin hook-button-danger() {
+  border-radius: var(--global-border-radius);
+}
+
+@mixin hook-button-default() {
+  border-radius: var(--global-border-radius);
+}
+
+@mixin hook-card() {
+  border-radius: var(--card-border-radius);
+}
+
+@mixin hook-form() {
+  border-radius: var(--global-border-radius) !important;
+}
 
 // 4. Import the full UIkit theme.
 @import 'uikit/src/scss/uikit-theme.scss';
 
 html {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
   overflow-y: auto;
   scrollbar-gutter: stable;
   background-color: var(--global-background);
+  background-image: var(--global-background-gradient, none);
+  background-attachment: fixed;
   color: var(--global-color);
   transition: background-color 0.3s ease, color 0.3s ease;
+  min-height: 100vh;
 }
 
 body {
-  background-color: var(--global-background);
+  margin: 0;
+  min-width: 320px;
+  background-color: transparent;
   color: var(--global-color);
+}
+
+.uk-section-default {
+  background: transparent;
+}
+
+[data-theme='dark-unicorn'] {
+  .uk-card-default {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
 }
 
 ::selection {

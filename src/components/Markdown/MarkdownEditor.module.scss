@@ -2,7 +2,7 @@
 
 .editorContainer {
   border: 1px solid $form-border;
-  border-radius: $global-border-radius;
+  border-radius: $card-border-radius;
   background: $form-background;
   transition: 0.2s ease-in-out;
   transition-property: color, background-color, border-color;
@@ -48,8 +48,8 @@
   padding: 4px;
   border-bottom: 1px solid $form-border;
   background: color-mix(in srgb, $global-color, transparent 98%);
-  border-top-left-radius: $global-border-radius;
-  border-top-right-radius: $global-border-radius;
+  border-top-left-radius: $card-border-radius;
+  border-top-right-radius: $card-border-radius;
 
   button {
     background: transparent;

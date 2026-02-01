@@ -89,10 +89,17 @@ $search-default-focus-background: var(--global-muted-background);
 $search-medium-focus-background: var(--global-muted-background);
 $search-large-focus-background: var(--global-muted-background);
 
+// Sections
+$section-default-background: var(--global-background);
+$section-muted-background: var(--global-muted-background);
+$section-primary-background: var(--global-primary-background);
+$section-secondary-background: var(--global-secondary-background);
+
 // Text
 $text-background-color: var(--global-primary-background);
 $internal-text-background-color-gradient: var(--global-primary-background);
 
 // 3. Other overrides
 $navbar-nav-item-text-transform: none;
-$global-border-radius: 5px;
+$global-border-radius: var(--global-border-radius);
+$card-border-radius: var(--card-border-radius);
