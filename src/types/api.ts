@@ -289,6 +289,16 @@ export interface PagePurchaseHistoryDto {
   page: PageMetadata;
 }
 
+export interface UserSpaceDetailsDto {
+  username: string;
+  avatarUrl?: string;
+}
+
+export interface UserSpaceDto {
+  user: UserSpaceDetailsDto;
+  ads: PageAdPreviewDto;
+}
+
 export interface UserProfileDto {
   userId: string;
   avatarUrl: string;

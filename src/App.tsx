@@ -18,6 +18,7 @@ import EditAdPage from './sales/pages/EditAdPage';
 import SalesOrdersPage from './sales/pages/SalesOrdersPage';
 import PurchasesPage from './purchases/pages/PurchasesPage';
 import ProfilePage from './profile/pages/ProfilePage';
+import UserSpacePage from './spaces/pages/UserSpacePage';
 import './App.css';
 
 function App() {
@@ -49,6 +50,7 @@ function App() {
             <Route path="/sales/orders" element={<SalesOrdersPage />} />
             <Route path="/purchases" element={<PurchasesPage />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/u/:userName" element={<UserSpacePage />} />
           </Routes>
         </div>
       </main>

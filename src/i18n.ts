@@ -198,6 +198,9 @@ const resources = {
         "preferredCurrency": "Preferred Currency",
         "searchCurrency": "Search for a currency...",
         "failedToSaveCurrency": "Failed to save preferred currency."
+      },
+      "spaces": {
+        "userAds": "{{username}}'s Ads"
       }
     }
   },
@@ -396,6 +399,9 @@ const resources = {
         "preferredCurrency": "Preferowana waluta",
         "searchCurrency": "Szukaj waluty...",
         "failedToSaveCurrency": "Nie udało się zapisać preferowanej waluty."
+      },
+      "spaces": {
+        "userAds": "Ogłoszenia użytkownika {{username}}"
       }
     }
   }
