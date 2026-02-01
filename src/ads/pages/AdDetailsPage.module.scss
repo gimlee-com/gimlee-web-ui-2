@@ -1,3 +1,5 @@
+@import "../../styles/uikit-imports.scss";
+
 .adDetailsLightboxImage {
   height: 500px;
   cursor: zoom-in;
@@ -48,7 +50,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #666;
+  color: $global-muted-color;
   font-size: 0.875rem;
 }
 
@@ -56,14 +58,14 @@
   display: flex;
   justify-content: space-between;
   padding: 8px 0;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid $global-border;
   &:last-child {
     border-bottom: none;
   }
 }
 
 .specLabel {
-  color: #666;
+  color: $global-muted-color;
   font-weight: 500;
 }
 
@@ -72,7 +74,7 @@
 }
 
 .shippingInfo {
-  background-color: #f8f9fa;
+  background-color: $global-muted-background;
   padding: 12px;
   border-radius: 8px;
   margin-top: 12px;

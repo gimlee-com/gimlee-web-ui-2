@@ -1,8 +1,98 @@
 // Your custom UIkit variable overrides will go here.
-// For example:
-// $global-primary-background: #BF3026;
 
+// 1. Global variables mapped to CSS custom properties for theme support
+$global-background: var(--global-background);
+$global-color: var(--global-color);
+$global-emphasis-color: var(--global-color);
+$global-muted-color: var(--global-muted-color);
+$global-muted-background: var(--global-muted-background);
+$global-border: var(--global-border);
+
+$global-primary-background: var(--global-primary-background);
+$global-secondary-background: var(--global-secondary-background);
+$global-success-background: var(--global-success-background);
+$global-warning-background: var(--global-warning-background);
+$global-danger-background: var(--global-danger-background);
+
+// 2. Overriding derived variables that use Sass color functions
+// This is necessary because Sass functions don't support CSS variables.
+
+// Alerts
+$alert-primary-background: var(--global-muted-background);
+$alert-primary-color: var(--global-primary-background);
+$alert-success-background: var(--global-muted-background);
+$alert-success-color: var(--global-success-background);
+$alert-warning-background: var(--global-muted-background);
+$alert-warning-color: var(--global-warning-background);
+$alert-danger-background: var(--global-muted-background);
+$alert-danger-color: var(--global-danger-background);
+
+// Base
+$base-code-color: var(--global-danger-background);
+$base-em-color: var(--global-danger-background);
+
+// Buttons
+$button-default-background: var(--global-muted-background);
+$button-default-color: var(--global-color);
+$button-default-hover-background: var(--global-border);
+$button-default-hover-color: var(--global-color);
+$button-default-hover-border: var(--global-border);
+$button-default-active-background: var(--global-border);
+$button-default-active-color: var(--global-color);
+$button-default-active-border: var(--global-border);
+
+$button-primary-background: var(--global-primary-background);
+$button-primary-color: #fff;
+$button-primary-hover-background: var(--global-primary-background);
+$button-primary-hover-color: #fff;
+$button-primary-active-background: var(--global-primary-background);
+$button-primary-active-color: #fff;
+
+$button-secondary-background: var(--global-secondary-background);
+$button-secondary-color: #fff;
+$button-secondary-hover-background: var(--global-secondary-background);
+$button-secondary-hover-color: #fff;
+$button-secondary-active-background: var(--global-secondary-background);
+$button-secondary-active-color: #fff;
+
+$button-danger-background: var(--global-danger-background);
+$button-danger-color: #fff;
+$button-danger-hover-background: var(--global-danger-background);
+$button-danger-hover-color: #fff;
+$button-danger-active-background: var(--global-danger-background);
+$button-danger-active-color: #fff;
+
+// Cards
+$card-default-background: var(--global-background);
+$card-primary-background: var(--global-primary-background);
+$card-secondary-background: var(--global-secondary-background);
+$card-overlay-background: var(--global-background);
+$card-overlay-hover-background: var(--global-background);
+
+// Forms
+$form-range-track-background: var(--global-muted-background);
+$form-range-track-focus-background: var(--global-muted-background);
+$form-range-thumb-background: var(--global-primary-background);
+$form-range-thumb-border: var(--global-border);
+
+$form-radio-focus-background: var(--global-muted-background);
+$form-radio-checked-focus-background: var(--global-primary-background);
+$form-radio-border: var(--global-border);
+
+// Icons
+$icon-link-active-color: var(--global-color);
+$icon-button-hover-background: var(--global-muted-background);
+$icon-button-active-background: var(--global-border);
+
+// Search
+$search-default-focus-background: var(--global-muted-background);
+$search-medium-focus-background: var(--global-muted-background);
+$search-large-focus-background: var(--global-muted-background);
+
+// Text
+$text-background-color: var(--global-primary-background);
+$internal-text-background-color-gradient: var(--global-primary-background);
+
+// 3. Other overrides
 $navbar-nav-item-text-transform: none;
-
-$global-primary-background: #009ae3;
 $global-border-radius: 5px;

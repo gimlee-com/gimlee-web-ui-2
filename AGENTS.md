@@ -178,6 +178,16 @@ Hierarchical selectors (e.g., `CategorySelector`) must adapt their behavior base
 - **Creation/Editing Mode**: When used for creating or editing a resource (like an ad), selectors must strictly enforce leaf-only selection to ensure the resource is accurately categorized in the database.
 - **Visual Cues**: Parent selection options (e.g., "All in [Category]") should be visually distinguished (e.g., via bold text or primary color) to clarify their function.
 
+#### **U. Theme-Aware Development (Light/Dark Mode)**
+To maintain a high-quality visual experience across both light and dark themes, we use a CSS-variable-driven approach integrated with UIkit.
+- **Single Source of Truth**: All core colors and shadows are defined as CSS custom properties in `src/styles/main.scss` under `:root` (light) and `[data-theme='dark']` (dark).
+- **UIkit Integration**: We map these CSS variables to UIkit's SCSS variables in `src/styles/uikit-variables.scss`. This ensures that all standard UIkit components automatically adapt to the current theme.
+- **No Hardcoded Colors**: Avoid using hex codes or `rgb()` values directly in SCSS modules. Always use the provided UIkit variables (e.g., `$global-background`, `$global-color`, `$global-border`, `$global-primary-background`, etc.).
+- **Modern Transparency**: Since Sass functions (like `rgba()` or `color.adjust`) do not support CSS variables, use the native CSS `color-mix()` function for transparency: `color-mix(in srgb, $global-primary-background, transparent 95%)`.
+- **Theme-Aware Shadows**: Use global shadow variables like `var(--global-medium-shadow)` and `var(--global-large-shadow)` instead of hardcoded `rgba()` values. These variables are automatically tuned for visibility in both light and dark modes.
+- **Theme-Aware Assets**: Placeholders and simple graphics (like `PlaceholderImage`) should be implemented as inline SVGs using `currentColor` for fills, allowing them to adapt dynamically via CSS.
+- **Anti-Flicker Strategy**: The theme is applied via a `data-theme` attribute on the `<html>` element. A small script in `index.html` ensures the correct theme is applied before React hydrates to prevent a "flash of light mode."
+
 ### 4. Code Structure Standards
 The project follows a modular, business-oriented directory structure to ensure scalability and maintainability.
 
@@ -246,3 +256,6 @@ Every component (whether shared or module-specific) follows the same pattern:
 34. **Animation-Safe Overflows**: When using Framer Motion to animate height (e.g., in advanced filters or expandable cards), toggle the container to `overflow: visible` using `onAnimationComplete`. This prevents absolute-positioned children, such as autocomplete dropdowns, from being clipped.
 35. **Branch vs. Leaf Selection**: In hierarchical selectors, distinguish between searching (where selecting a parent branch like "All in Electronics" is desired) and resource creation (where strict leaf-only selection is required for data integrity).
 36. **PopLayout for Lists**: When filtering list items, use `AnimatePresence mode="popLayout"` on the container. This ensures that items being removed from the DOM don't cause the remaining items to "jump" instantly, allowing for a smooth layout transition.
+37. **Themeability is First-Class**: Never hardcode colors. Every UI element must be designed to look perfect in both light and dark modes by using the centralized theme variables and UIkit variables.
+38. **Color Mixing over Sass Adjust**: Prefer the CSS native `color-mix()` function for dynamic transparency and color adjustments. This maintains compatibility with CSS-variable-based themes where traditional Sass color functions fail.
+39. **Physical Theme Transitions**: When switching themes, ensure smooth transitions for background and text colors to maintain a high-end, polished feel. Global transition rules in `main.scss` handle this for the base layers.

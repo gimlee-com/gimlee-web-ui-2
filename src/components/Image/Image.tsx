@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, forwardRef } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { Image as UIKitImage, type ImageProps as UIKitImageProps } from '../uikit/Image/Image'
+import { PlaceholderImage } from './PlaceholderImage'
 import styles from './Image.module.scss'
 
 export interface ImageProps extends UIKitImageProps {
@@ -48,6 +49,8 @@ export const Image = forwardRef<HTMLDivElement, ImageProps>(
       onLoad?.(event)
     }
 
+    const isPlaceholder = !props.src || props.src === '/placeholder-image.svg'
+
     return (
       <div 
         ref={ref}
@@ -55,7 +58,7 @@ export const Image = forwardRef<HTMLDivElement, ImageProps>(
         style={containerStyle}
       >
         <AnimatePresence>
-          {!isLoaded && (
+          {!isLoaded && !isPlaceholder && (
             <motion.div
               className={styles.placeholder}
               initial={{ opacity: 1 }}
@@ -72,14 +75,20 @@ export const Image = forwardRef<HTMLDivElement, ImageProps>(
             </motion.div>
           )}
         </AnimatePresence>
-        <UIKitImage
-          {...props}
-          ref={imageInternalRef}
-          className={`${className || ''} ${styles.image} ${
-            isLoaded ? styles.loaded : styles.hidden
-          }`}
-          onLoad={handleLoad}
-        />
+        {isPlaceholder ? (
+          <div className={`${className || ''} ${styles.placeholderIconWrapper}`}>
+            <PlaceholderImage className={styles.placeholderIcon} />
+          </div>
+        ) : (
+          <UIKitImage
+            {...props}
+            ref={imageInternalRef}
+            className={`${className || ''} ${styles.image} ${
+              isLoaded ? styles.loaded : styles.hidden
+            }`}
+            onLoad={handleLoad}
+          />
+        )}
       </div>
     )
   }

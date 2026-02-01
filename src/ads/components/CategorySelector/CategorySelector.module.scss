@@ -1,7 +1,7 @@
 @import "../../../styles/uikit-imports.scss";
 
 .allInItem {
-  background: rgba($global-primary-background, 0.05);
+  background: color-mix(in srgb, $global-primary-background, transparent 95%);
   font-weight: 500;
 }
 

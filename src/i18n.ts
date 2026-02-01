@@ -32,7 +32,8 @@ const resources = {
         "profile": "Profile",
         "logout": "Logout",
         "login": "Login",
-        "register": "Register"
+        "register": "Register",
+        "theme": "Theme"
       },
       "home": {
         "featuredAds": "Featured Ads",
@@ -284,7 +285,8 @@ const resources = {
         "profile": "Profil",
         "logout": "Wyloguj",
         "login": "Zaloguj",
-        "register": "Zarejestruj"
+        "register": "Zarejestruj",
+        "theme": "Motyw"
       },
       "home": {
         "featuredAds": "Wyróżnione ogłoszenia",

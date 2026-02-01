@@ -1,3 +1,32 @@
+:root {
+  --global-background: #ffffff;
+  --global-color: #333;
+  --global-muted-color: #999;
+  --global-muted-background: #f8f8f8;
+  --global-border: #e5e5e5;
+  --global-primary-background: #009ae3;
+  --global-secondary-background: #222;
+  --global-success-background: #32d296;
+  --global-warning-background: #faa05a;
+  --global-danger-background: #f0506e;
+  --navbar-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  --global-medium-shadow: 0 12px 24px rgba(0, 0, 0, 0.05);
+  --global-large-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='dark'] {
+  --global-background: #1a1a1a;
+  --global-color: #e5e5e5;
+  --global-muted-color: #a0a0a0;
+  --global-muted-background: #222;
+  --global-border: #333;
+  --global-primary-background: #1e87f0;
+  --global-secondary-background: #121212;
+  --navbar-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  --global-medium-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+  --global-large-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+
 // 1. Your custom variables and variable overwrites.
 @import 'uikit-variables';
 
@@ -15,4 +44,17 @@
 html {
   overflow-y: auto;
   scrollbar-gutter: stable;
+  background-color: var(--global-background);
+  color: var(--global-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body {
+  background-color: var(--global-background);
+  color: var(--global-color);
+}
+
+::selection {
+  background: var(--global-primary-background);
+  color: #fff;
 }

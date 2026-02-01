@@ -152,8 +152,7 @@ describe('AdDetailsPage', () => {
 
     await waitFor(() => {
       expect(screen.getByText(/No images available/i)).toBeInTheDocument();
-      const placeholder = screen.getByRole('img');
-      expect(placeholder.getAttribute('src')).toBe('/placeholder-image.svg');
+      expect(screen.getByRole('img')).toBeInTheDocument();
     });
   });
 

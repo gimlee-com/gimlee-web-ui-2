@@ -44,8 +44,8 @@ export const AvatarWithPresence: React.FC<AvatarWithPresenceProps> = ({
             status={status} 
             customStatus={customStatus} 
             showText={false} 
-            style={{ 
-              backgroundColor: '#fff',
+            style={{
+              backgroundColor: 'var(--global-background)',
               borderRadius: '50%',
               display: 'flex',
               alignItems: 'center',

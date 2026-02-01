@@ -21,6 +21,7 @@ import { Offcanvas, OffcanvasBar, OffcanvasClose } from '../uikit/Offcanvas/Offc
 import { Nav, NavItem } from '../uikit/Nav/Nav';
 import { AvatarWithPresence } from '../AvatarWithPresence';
 import { usePresence } from '../../context/PresenceContext';
+import { useTheme } from '../../context/ThemeContext';
 import styles from './Navbar.module.scss';
 
 const MotionNavbarItem = motion.create(NavbarItem);
@@ -28,6 +29,7 @@ const MotionNavItem = motion.create(NavItem);
 
 const Navbar: React.FC = () => {
   const { t } = useTranslation();
+  const { theme, toggleTheme } = useTheme();
   const { isAuthenticated, logout, userProfile, username, roles } = useAuth();
   const { presence } = usePresence();
   const navigate = useNavigate();
@@ -241,6 +243,19 @@ const Navbar: React.FC = () => {
             >
               <Link to="/profile" uk-toggle="target: #mobile-menu">{t('navbar.profile')}</Link>
             </MotionNavItem>
+            <li className="uk-nav-divider"></li>
+            <MotionNavItem
+              key="theme-off"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2, delay: 0.3 }}
+            >
+              <Link to="#" onClick={(e) => { e.preventDefault(); toggleTheme(); }}>
+                <Icon icon={theme === 'light' ? 'bolt' : 'star'} className="uk-margin-small-right" />
+                {t('navbar.theme')}: {theme === 'light' ? 'Dark' : 'Light'}
+              </Link>
+            </MotionNavItem>
             <MotionNavItem
               key="logout-off"
               initial={{ opacity: 0 }}
@@ -294,8 +309,8 @@ const Navbar: React.FC = () => {
         initial={false}
         animate={{
           height: isScrolled ? 60 : 80,
-          backgroundColor: isScrolled ? 'rgba(255, 255, 255, 1)' : 'rgba(255, 255, 255, 0)',
-          boxShadow: isScrolled ? '0 2px 10px rgba(0,0,0,0.1)' : '0 0 0 rgba(0,0,0,0)',
+          backgroundColor: isScrolled ? 'var(--global-background)' : 'transparent',
+          boxShadow: isScrolled ? 'var(--navbar-shadow)' : '0 0 0 transparent',
         }}
         transition={{ type: 'spring', stiffness: 400, damping: 40 }}
       >
@@ -364,6 +379,11 @@ const Navbar: React.FC = () => {
               </NavbarLeft>
               <NavbarRight>
                 <NavbarNav>
+                  <NavbarItem className="uk-visible@s">
+                    <Link to="#" onClick={(e) => { e.preventDefault(); toggleTheme(); }} title={theme === 'light' ? 'Dark Mode' : 'Light Mode'}>
+                      <Icon icon={theme === 'light' ? 'bolt' : 'star'} />
+                    </Link>
+                  </NavbarItem>
                   {navLinks}
                   <NavbarItem className="uk-hidden@m">
                     <NavbarToggle uk-toggle="target: #mobile-menu" className={styles.hamburgerToggle}>

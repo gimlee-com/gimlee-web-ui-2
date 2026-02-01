@@ -12,7 +12,7 @@
   background: $global-background;
   
   &:hover {
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--global-medium-shadow, 0 12px 24px rgba(0, 0, 0, 0.05));
   }
 }
 
@@ -20,7 +20,7 @@
   position: relative;
   overflow: hidden;
   height: 160px;
-  background-color: #f9f9f9;
+  background-color: $global-muted-background;
 }
 
 .image {
@@ -46,7 +46,7 @@
 .titleLink {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #222;
+  color: $global-emphasis-color;
   text-decoration: none !important;
   margin-bottom: 8px;
   display: -webkit-box;
@@ -79,7 +79,7 @@
 
 .secondaryPrice {
   font-size: 0.8rem;
-  color: #888;
+  color: $global-muted-color;
   font-weight: 400;
   margin-top: 2px;
 }
@@ -89,7 +89,7 @@
   flex-direction: column;
   gap: 8px;
   font-size: 0.8125rem;
-  color: #666;
+  color: $global-muted-color;
   margin-bottom: 16px;
   
   .metaItem {
@@ -98,7 +98,7 @@
     gap: 8px;
     
     .icon {
-      color: #999;
+      color: $global-muted-color;
       display: flex;
       align-items: center;
     }
@@ -110,6 +110,6 @@
   z-index: 2;
   margin-top: auto;
   padding: 12px 16px;
-  background: #fafafa;
-  border-top: 1px solid #f0f0f0;
+  background: $global-muted-background;
+  border-top: 1px solid $global-border;
 }

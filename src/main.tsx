@@ -8,6 +8,7 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { PresenceProvider } from './context/PresenceContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { store } from './store';
 import App from './App.tsx'
 
@@ -18,9 +19,11 @@ createRoot(document.getElementById('root')!).render(
     <Provider store={store}>
       <AuthProvider>
         <PresenceProvider>
-          <BrowserRouter>
-            <App />
-          </BrowserRouter>
+          <ThemeProvider>
+            <BrowserRouter>
+              <App />
+            </BrowserRouter>
+          </ThemeProvider>
         </PresenceProvider>
       </AuthProvider>
     </Provider>

@@ -7,7 +7,7 @@
   &:global(.uk-dragover) {
     border-style: solid;
     border-color: $global-primary-background !important;
-    background-color: rgba($global-primary-background, 0.05);
-    box-shadow: 0 0 10px rgba($global-primary-background, 0.2);
+    background-color: color-mix(in srgb, $global-primary-background, transparent 95%);
+    box-shadow: 0 0 10px color-mix(in srgb, $global-primary-background, transparent 80%);
   }
 }
