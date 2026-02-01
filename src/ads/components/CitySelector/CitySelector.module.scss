@@ -1,0 +1,9 @@
+@import "../../../styles/uikit-imports";
+
+.dropdown {
+    max-height: 300px;
+    overflow-y: auto;
+    box-shadow: $global-medium-box-shadow;
+    border-radius: $global-border-radius;
+    padding: $dropdown-padding;
+}

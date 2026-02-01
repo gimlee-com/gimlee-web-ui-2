@@ -223,6 +223,10 @@ export interface UpdateUserPreferencesRequestDto {
 export interface FetchAdsRequestDto {
   t?: string;
   cty?: string;
+  cat?: number;
+  x?: number;
+  y?: number;
+  r?: number;
   minp?: number;
   maxp?: number;
   by?: 'CREATED_DATE' | 'PRICE';

@@ -1,0 +1,27 @@
+@import "../../../styles/uikit-imports";
+
+.filtersContainer {
+  margin-bottom: $global-medium-margin;
+}
+
+.advancedWrapper {
+  overflow: hidden;
+
+  &.expanded {
+    overflow: visible;
+  }
+}
+
+.activeFilters {
+  margin-top: $global-small-margin;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.priceInput {
+  flex: 1;
+  @media (min-width: $breakpoint-medium) {
+    flex: initial;
+    width: $form-width-small;
+  }
+}

@@ -33,3 +33,34 @@ export const formatPrice = (amount: number, currency: string): string => {
     }
   }
 };
+
+/**
+ * Returns currency symbol and whether it should be a prefix based on current language.
+ */
+export const getCurrencyFormatInfo = (currency: string): { symbol: string; isPrefix: boolean } => {
+  const locale = i18n.language || 'en-US';
+
+  try {
+    const formatter = new Intl.NumberFormat(locale, {
+      style: 'currency',
+      currency: currency,
+    });
+    
+    const parts = formatter.formatToParts(1);
+    const symbolPart = parts.find(p => p.type === 'currency');
+    const symbol = symbolPart ? symbolPart.value : currency;
+    
+    const currencyIndex = parts.findIndex(p => p.type === 'currency');
+    const numberIndex = parts.findIndex(p => p.type === 'integer' || p.type === 'decimal');
+    
+    return {
+      symbol,
+      isPrefix: currencyIndex < numberIndex
+    };
+  } catch {
+    return {
+      symbol: currency,
+      isPrefix: locale.startsWith('en')
+    };
+  }
+};

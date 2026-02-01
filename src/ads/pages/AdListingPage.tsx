@@ -5,6 +5,7 @@ import { motion, AnimatePresence, stagger } from 'motion/react';
 import { adService } from '../services/adService';
 import type { PageAdPreviewDto } from '../../types/api';
 import { AdCard } from '../components/AdCard';
+import { AdSearchFilters } from '../components/AdSearchFilters/AdSearchFilters';
 import { Alert } from '../../components/uikit/Alert/Alert';
 import { Grid } from '../../components/uikit/Grid/Grid';
 import { Heading } from '../../components/uikit/Heading/Heading';
@@ -36,7 +37,6 @@ const AdListingPage: React.FC = () => {
   const [data, setData] = useState<PageAdPreviewDto | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [searchText, setSearchText] = useState(searchParams.get('t') || '');
 
   useEffect(() => {
     const controller = new AbortController();
@@ -59,11 +59,6 @@ const AdListingPage: React.FC = () => {
     return () => controller.abort();
   }, [searchParams, t]);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSearchParams({ t: searchText, p: '0' });
-  };
-
   const handlePageChange = (page: number) => {
     const newParams = new URLSearchParams(searchParams);
     newParams.set('p', page.toString());
@@ -81,18 +76,7 @@ const AdListingPage: React.FC = () => {
       </motion.div>
   
       <motion.div variants={itemVariants}>
-        <form onSubmit={handleSearch} className="uk-margin-medium-bottom">
-          <div className="uk-inline uk-width-1-1">
-            <span className="uk-form-icon" uk-icon="icon: search"></span>
-            <input
-              className="uk-input"
-              type="text"
-              placeholder={t('ads.searchPlaceholder')}
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-            />
-          </div>
-        </form>
+        <AdSearchFilters />
       </motion.div>
 
       <AnimatePresence mode="wait">

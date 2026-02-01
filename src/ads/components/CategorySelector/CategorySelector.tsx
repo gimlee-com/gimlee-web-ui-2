@@ -14,9 +14,10 @@ import styles from './CategorySelector.module.scss';
 interface CategorySelectorProps {
   id?: string;
   onSelect: (id: number, path: CategoryPathElementDto[]) => void;
+  allowParentSelection?: boolean;
 }
 
-export const CategorySelector = forwardRef<HTMLDivElement, CategorySelectorProps>(({ id = 'category-selector', onSelect }, ref) => {
+export const CategorySelector = forwardRef<HTMLDivElement, CategorySelectorProps>(({ id = 'category-selector', onSelect, allowParentSelection = false }, ref) => {
   const { t } = useTranslation();
   const [columns, setColumns] = useState<CategoryTreeDto[][]>([]);
   const [selectedPath, setSelectedPath] = useState<CategoryTreeDto[]>([]);
@@ -92,10 +93,7 @@ export const CategorySelector = forwardRef<HTMLDivElement, CategorySelectorProps
     } else {
       // Leaf node
       setColumns(columns.slice(0, columnIndex + 1));
-      onSelect(category.id, newPath.map(c => ({ id: c.id, name: c.name })));
-      if (modalInstance) {
-        modalInstance.hide();
-      }
+      confirmSelection(category.id, newPath.map(c => ({ id: c.id, name: c.name })));
     }
   };
 
@@ -104,6 +102,13 @@ export const CategorySelector = forwardRef<HTMLDivElement, CategorySelectorProps
       const newPath = selectedPath.slice(0, -1);
       setSelectedPath(newPath);
       setColumns(columns.slice(0, -1));
+    }
+  };
+
+  const confirmSelection = (id: number, path: CategoryPathElementDto[]) => {
+    onSelect(id, path);
+    if (modalInstance) {
+      modalInstance.hide();
     }
   };
 
@@ -130,12 +135,9 @@ export const CategorySelector = forwardRef<HTMLDivElement, CategorySelectorProps
   };
 
   const handleSuggestionClick = (suggestion: CategorySuggestionDto) => {
-    onSelect(suggestion.id, suggestion.path);
+    confirmSelection(suggestion.id, suggestion.path);
     setSearchQuery('');
     setSuggestions([]);
-    if (modalInstance) {
-      modalInstance.hide();
-    }
   };
 
   const springTransition = { type: 'spring', stiffness: 400, damping: 40 } as const;
@@ -206,6 +208,19 @@ export const CategorySelector = forwardRef<HTMLDivElement, CategorySelectorProps
                     </div>
                   )}
                   <ul className="uk-nav uk-nav-default">
+                    {allowParentSelection && selectedPath.length > 0 && (
+                      <li 
+                        className={`${styles.mobileItem} ${styles.allInItem}`} 
+                        onClick={() => confirmSelection(
+                          selectedPath[selectedPath.length - 1].id, 
+                          selectedPath.map(c => ({ id: c.id, name: c.name }))
+                        )}
+                      >
+                        <span className="uk-text-primary">
+                          {t('ads.allIn', { category: selectedPath[selectedPath.length - 1].name })}
+                        </span>
+                      </li>
+                    )}
                     {(columns[selectedPath.length] || []).map((cat) => (
                       <li key={cat.id} className={styles.mobileItem} onClick={() => handleCategoryClick(cat, selectedPath.length)}>
                         <span>{cat.name}</span>
@@ -226,6 +241,19 @@ export const CategorySelector = forwardRef<HTMLDivElement, CategorySelectorProps
                   transition={springTransition}
                   className={styles.column}
                 >
+                  {allowParentSelection && idx > 0 && (
+                    <div 
+                      className={`${styles.columnItem} ${styles.allInItem}`}
+                      onClick={() => confirmSelection(
+                        selectedPath[idx - 1].id, 
+                        selectedPath.slice(0, idx).map(c => ({ id: c.id, name: c.name }))
+                      )}
+                    >
+                      <span className="uk-text-primary">
+                        {t('ads.allIn', { category: selectedPath[idx - 1].name })}
+                      </span>
+                    </div>
+                  )}
                   {column.map((cat) => (
                     <div
                       key={cat.id}

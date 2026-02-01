@@ -1,5 +1,10 @@
 @import "../../../styles/uikit-imports.scss";
 
+.allInItem {
+  background: rgba($global-primary-background, 0.05);
+  font-weight: 500;
+}
+
 .millerColumns {
   display: flex;
   overflow-x: auto;

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import UIkit from 'uikit';
 import { useAuth } from '../../context/AuthContext';
 import { adService } from '../services/adService';
@@ -46,7 +46,7 @@ const containerVariants = {
       staggerChildren: 0.1
     }
   }
-};
+} as const;
 
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -59,7 +59,7 @@ const itemVariants = {
       damping: 40
     }
   }
-};
+} as const;
 
 const enrichAdWithMocks = (ad: AdDetailsDto): AdDetailsDto => {
   return {
@@ -81,7 +81,7 @@ const enrichAdWithMocks = (ad: AdDetailsDto): AdDetailsDto => {
     ],
     isFavorite: ad.isFavorite !== undefined ? ad.isFavorite : false,
     userCanPurchase: ad.userCanPurchase !== undefined ? ad.userCanPurchase : true,
-    user: ad.user || (ad.userId ? { userId: ad.userId, username: 'Seller' } : undefined)
+    user: ad.user
   };
 };
 
@@ -456,7 +456,7 @@ const AdDetailsPage: React.FC = () => {
               <CardBody>
                 <div className="uk-flex uk-flex-between uk-flex-middle uk-margin-small-bottom">
                   {ad.condition && (
-                    <Label variant="info">{t(`ads.conditions.${ad.condition}`)}</Label>
+                    <Label variant="default">{t(`ads.conditions.${ad.condition}`)}</Label>
                   )}
                   <div className="uk-flex uk-gap-small">
                     <button 

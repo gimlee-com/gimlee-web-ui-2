@@ -21,6 +21,8 @@ const resources = {
         "redo": "Redo",
         "rotate": "Rotate",
         "editing": "Editing",
+        "search": "Search",
+        "reset": "Reset",
         "externalLinkWarning": "You are leaving Gimlee. We are not responsible for the content of external websites. Do you want to proceed?"
       },
       "navbar": {
@@ -78,6 +80,19 @@ const resources = {
         "noAdsYet": "You have no ads yet.",
         "activate": "Activate",
         "deactivate": "Deactivate",
+        "filters": "Filters",
+        "advancedFilters": "Advanced Filters",
+        "sorting": "Sorting",
+        "sort": {
+          "date": "Date",
+          "price": "Price",
+          "desc": "Descending",
+          "asc": "Ascending"
+        },
+        "priceRange": "Price Range",
+        "minPrice": "Min",
+        "maxPrice": "Max",
+        "applyFilters": "Apply Filters",
         "price": "Price",
         "title": "Title",
         "description": "Description",
@@ -92,6 +107,7 @@ const resources = {
         "selectCategory": "Select Category",
         "changeCategory": "Change Category",
         "categorySearchPlaceholder": "Search categories...",
+        "allIn": "All in {{category}}",
         "currency": "Currency",
         "media": "Media",
         "stock": "Stock",
@@ -257,6 +273,8 @@ const resources = {
         "redo": "Ponów",
         "rotate": "Obróć",
         "editing": "Edycja",
+        "search": "Szukaj",
+        "reset": "Resetuj",
         "externalLinkWarning": "Opuszczasz Gimlee. Nie ponosimy odpowiedzialności za treści na zewnętrznych stronach. Czy chcesz kontynuować?"
       },
       "navbar": {
@@ -314,6 +332,19 @@ const resources = {
         "noAdsYet": "Nie masz jeszcze żadnych ogłoszeń.",
         "activate": "Aktywuj",
         "deactivate": "Dezaktywuj",
+        "filters": "Filtry",
+        "advancedFilters": "Zaawansowane filtry",
+        "sorting": "Sortowanie",
+        "sort": {
+          "date": "Data",
+          "price": "Cena",
+          "desc": "Malejąco",
+          "asc": "Rosnąco"
+        },
+        "priceRange": "Zakres cen",
+        "minPrice": "Od",
+        "maxPrice": "Do",
+        "applyFilters": "Zastosuj filtry",
         "price": "Cena",
         "title": "Tytuł",
         "description": "Opis",
@@ -328,6 +359,7 @@ const resources = {
         "selectCategory": "Wybierz kategorię",
         "changeCategory": "Zmień kategorię",
         "categorySearchPlaceholder": "Szukaj kategorii...",
+        "allIn": "Wszystko w {{category}}",
         "currency": "Waluta",
         "media": "Media",
         "stock": "Stan magazynowy",
