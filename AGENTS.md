@@ -153,6 +153,31 @@ To ensure a consistent user experience, especially with localized messages, we f
     - **UIkit Styling**: Tables, lists, and headers are automatically wrapped in UIkit classes for visual consistency.
     - **Link Behavior**: External links automatically open in a new tab (`target="_blank"`) with appropriate security headers (`rel="noopener noreferrer"`) and an external link icon.
 
+#### **Q. Handling Absolute Children in Animated Containers**
+When using Framer Motion's `layout` or height animations on a container, `overflow: hidden` is often required to prevent jitter or scrollbars during the transition. However, this clips absolute-positioned children like dropdowns or autocomplete suggestions.
+- **Convention**: Use a local state (e.g., `isExpanded`) and Framer Motion's `onAnimationComplete` prop to toggle the container's class between `overflow: hidden` (during animation) and `overflow: visible` (after expansion).
+- This ensures that UI elements like `CitySelector` suggestions remain fully visible once the filter drawer is open.
+
+#### **R. Localized Form Ornaments**
+For inputs that require localized decorations (like currency symbols), the placement (prefix vs. suffix) must strictly follow the conventions of the user's current locale.
+- **Implementation**: Use the `getCurrencyFormatInfo` utility from `src/utils/currencyUtils.ts`. It leverages the `Intl.NumberFormat` API to identify the correct symbol and its conventional position.
+- **UI Logic**: Conditionally render the symbol span before or after the `Input` component based on the `isPrefix` boolean returned by the utility.
+
+#### **S. URL-Driven Filter Synchronization**
+Complex listing pages (like Browse Ads) must treat the URL as the "Single Source of Truth" for their filtering and sorting state.
+- **Synchronization Pattern**:
+    - Use `useSearchParams` from `react-router-dom`.
+    - **URL to State**: Use a `useEffect` to sync query parameters to local component state whenever `searchParams` change.
+    - **State to URL**: Use a `useCallback` (e.g., `applyFilters`) to update the `searchParams` when a user interacts with the filters.
+- **Pagination Reset**: Always reset the page parameter (`p=0`) when any filter or sorting criteria is modified to prevent "empty page" states.
+- **Active Filter Badges**: Provide a clear overview of applied filters using interactive badges that allow users to remove individual criteria and immediately trigger a URL update.
+
+#### **T. Context-Aware Selection Modes**
+Hierarchical selectors (e.g., `CategorySelector`) must adapt their behavior based on the task being performed:
+- **Filtering Mode**: When used for searching, selectors should allow the selection of parent nodes (e.g., "All in Electronics") to broaden the search scope. Use the `allowParentSelection` prop to enable this.
+- **Creation/Editing Mode**: When used for creating or editing a resource (like an ad), selectors must strictly enforce leaf-only selection to ensure the resource is accurately categorized in the database.
+- **Visual Cues**: Parent selection options (e.g., "All in [Category]") should be visually distinguished (e.g., via bold text or primary color) to clarify their function.
+
 ### 4. Code Structure Standards
 The project follows a modular, business-oriented directory structure to ensure scalability and maintainability.
 
@@ -214,3 +239,10 @@ Every component (whether shared or module-specific) follows the same pattern:
 27. **Identity-First Trust**: Build trust through personalized identity. Use "User Spaces" and unique visual identifiers like `GeometricAvatar` to give every participant a professional and recognizable presence.
 28. **Safe Passage**: Always warn users when they are about to leave the "safety" of the platform's ecosystem via external links. User trust is maintained by acknowledging the boundary between Gimlee and the wild web.
 29. **Content Integrity**: Enforce strict sanitization and platform-consistent styling for all user-generated content (like descriptions) using the `Markdown` component. This prevents visual fragmentation, bandwidth hijacking, and potential tracking via external images.
+30. **URL as Single Source of Truth**: For all listing, filtering, and sorting logic, treat the URL search parameters as the primary state. Synchronize local UI state to the URL to ensure deep linking, refresh persistence, and consistent browser history behavior.
+31. **Pagination Reset**: Always reset the pagination index (e.g., `p=0`) when the user modifies any filter or sorting criteria. Failing to do so can lead to "empty states" if the user was on a high page number that doesn't exist for the new filtered results.
+32. **Zero-Indexed Pagination**: The backend and `SmartPagination` component use **0-indexed** page numbers. Always ensure this is respected in search parameters and API calls to avoid off-by-one errors.
+33. **Localized Currency Ornaments**: Do not hardcode the position of currency symbols in forms. Use `getCurrencyFormatInfo` to dynamically determine if the symbol should be a prefix (common for `en-US`) or a suffix (common for `pl-PL`) based on the current locale.
+34. **Animation-Safe Overflows**: When using Framer Motion to animate height (e.g., in advanced filters or expandable cards), toggle the container to `overflow: visible` using `onAnimationComplete`. This prevents absolute-positioned children, such as autocomplete dropdowns, from being clipped.
+35. **Branch vs. Leaf Selection**: In hierarchical selectors, distinguish between searching (where selecting a parent branch like "All in Electronics" is desired) and resource creation (where strict leaf-only selection is required for data integrity).
+36. **PopLayout for Lists**: When filtering list items, use `AnimatePresence mode="popLayout"` on the container. This ensures that items being removed from the DOM don't cause the remaining items to "jump" instantly, allowing for a smooth layout transition.
