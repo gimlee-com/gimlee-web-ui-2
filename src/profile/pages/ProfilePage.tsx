@@ -283,6 +283,13 @@ const ProfilePage: React.FC = () => {
                 >
                   {t('profile.themes.dark-unicorn')}
                 </Button>
+                <Button
+                  size="small"
+                  variant={theme === 'iron-age' ? 'primary' : 'default'}
+                  onClick={() => setTheme('iron-age')}
+                >
+                  {t('profile.themes.iron-age')}
+                </Button>
               </div>
             </div>
 

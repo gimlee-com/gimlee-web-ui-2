@@ -52,6 +52,26 @@
   --card-border-radius: 12px;
 }
 
+[data-theme='iron-age'] {
+  --global-background: #121415;
+  --global-color: #d4cbb3;
+  --global-muted-color: #7d7565;
+  --global-muted-background: #1c1f20;
+  --global-border: #2c3032;
+  --global-primary-background: #a67c52;
+  --global-primary-color: #a67c52;
+  --global-secondary-background: #0a0b0c;
+  --navbar-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+  --global-medium-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
+  --global-large-shadow: 0 16px 32px rgba(0, 0, 0, 0.8);
+  --global-border-radius: 2px;
+  --card-border-radius: 2px;
+  --global-font-family: "Charter", "Bitstream Charter", "Sitka Text", "Cambria", "Georgia", serif;
+  --global-background-gradient: radial-gradient(circle at center, #1c1f20 0%, #121415 100%);
+  --logo-fill: #a67c52;
+  --logo-smoke-fill: #d4cbb3;
+}
+
 // 1. Your custom variables and variable overwrites.
 @import 'uikit-variables';
 
@@ -89,7 +109,7 @@
 @import 'uikit/src/scss/uikit-theme.scss';
 
 html {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: var(--global-font-family, system-ui, Avenir, Helvetica, Arial, sans-serif);
   line-height: 1.5;
   font-weight: 400;
 

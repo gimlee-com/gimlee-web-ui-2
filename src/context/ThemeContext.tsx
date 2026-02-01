@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-export type Theme = 'light' | 'dark' | 'dark-unicorn';
+export type Theme = 'light' | 'dark' | 'dark-unicorn' | 'iron-age';
 
 interface ThemeContextType {
   theme: Theme;
@@ -13,7 +13,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [theme, setTheme] = useState<Theme>(() => {
     const saved = localStorage.getItem('theme');
-    if (saved === 'light' || saved === 'dark' || saved === 'dark-unicorn') return saved;
+    if (saved === 'light' || saved === 'dark' || saved === 'dark-unicorn' || saved === 'iron-age') return saved;
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   });
 
@@ -27,7 +27,8 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       const colorMap = {
         'light': '#ffffff',
         'dark': '#1a1a1a',
-        'dark-unicorn': '#0f0c29'
+        'dark-unicorn': '#0f0c29',
+        'iron-age': '#1a1a1a'
       };
       metaThemeColor.setAttribute('content', colorMap[theme]);
     }
@@ -37,6 +38,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setTheme(prev => {
       if (prev === 'light') return 'dark';
       if (prev === 'dark') return 'dark-unicorn';
+      if (prev === 'dark-unicorn') return 'iron-age';
       return 'light';
     });
   };

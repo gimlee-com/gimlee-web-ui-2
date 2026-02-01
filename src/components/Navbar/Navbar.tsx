@@ -175,6 +175,12 @@ const Navbar: React.FC = () => {
                       {t('profile.themes.dark-unicorn')}
                     </Link>
                   </NavItem>
+                  <NavItem active={theme === 'iron-age'}>
+                    <Link to="#" onClick={(e) => { e.preventDefault(); setTheme('iron-age'); }}>
+                      <Icon icon="nut" className="uk-margin-small-right" />
+                      {t('profile.themes.iron-age')}
+                    </Link>
+                  </NavItem>
                   <NavDivider />
                   <NavItem>
                     <Link to="#" onClick={handleLogout}>
@@ -304,6 +310,7 @@ const Navbar: React.FC = () => {
                 <NavItem active={theme === 'light'}><Link to="#" onClick={(e) => { e.preventDefault(); setTheme('light'); }} uk-toggle="target: #mobile-menu">{t('profile.themes.light')}</Link></NavItem>
                 <NavItem active={theme === 'dark'}><Link to="#" onClick={(e) => { e.preventDefault(); setTheme('dark'); }} uk-toggle="target: #mobile-menu">{t('profile.themes.dark')}</Link></NavItem>
                 <NavItem active={theme === 'dark-unicorn'}><Link to="#" onClick={(e) => { e.preventDefault(); setTheme('dark-unicorn'); }} uk-toggle="target: #mobile-menu">{t('profile.themes.dark-unicorn')}</Link></NavItem>
+                <NavItem active={theme === 'iron-age'}><Link to="#" onClick={(e) => { e.preventDefault(); setTheme('iron-age'); }} uk-toggle="target: #mobile-menu">{t('profile.themes.iron-age')}</Link></NavItem>
               </SubNav>
             </MotionNavItem>
             <MotionNavItem
@@ -362,6 +369,7 @@ const Navbar: React.FC = () => {
                 <NavItem active={theme === 'light'}><Link to="#" onClick={(e) => { e.preventDefault(); setTheme('light'); }} uk-toggle="target: #mobile-menu">{t('profile.themes.light')}</Link></NavItem>
                 <NavItem active={theme === 'dark'}><Link to="#" onClick={(e) => { e.preventDefault(); setTheme('dark'); }} uk-toggle="target: #mobile-menu">{t('profile.themes.dark')}</Link></NavItem>
                 <NavItem active={theme === 'dark-unicorn'}><Link to="#" onClick={(e) => { e.preventDefault(); setTheme('dark-unicorn'); }} uk-toggle="target: #mobile-menu">{t('profile.themes.dark-unicorn')}</Link></NavItem>
+                <NavItem active={theme === 'iron-age'}><Link to="#" onClick={(e) => { e.preventDefault(); setTheme('iron-age'); }} uk-toggle="target: #mobile-menu">{t('profile.themes.iron-age')}</Link></NavItem>
               </SubNav>
             </MotionNavItem>
           </React.Fragment>

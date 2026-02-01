@@ -227,7 +227,8 @@ const resources = {
         "themes": {
           "light": "Light",
           "dark": "Dark",
-          "dark-unicorn": "Dark Unicorn"
+          "dark-unicorn": "Dark Unicorn",
+          "iron-age": "Iron Age"
         }
       },
       "spaces": {
@@ -488,7 +489,8 @@ const resources = {
         "themes": {
           "light": "Jasny",
           "dark": "Ciemny",
-          "dark-unicorn": "Ciemny Jednorożec"
+          "dark-unicorn": "Mroczny Jednorożec",
+          "iron-age": "Epoka żelaza"
         }
       },
       "spaces": {
