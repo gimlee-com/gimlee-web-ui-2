@@ -28,7 +28,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         'light': '#ffffff',
         'dark': '#1a1a1a',
         'dark-unicorn': '#0f0c29',
-        'iron-age': '#1a1a1a'
+        'iron-age': '#121415'
       };
       metaThemeColor.setAttribute('content', colorMap[theme]);
     }

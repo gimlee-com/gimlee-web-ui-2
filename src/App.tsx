@@ -30,12 +30,14 @@ function App() {
       const colorMap = {
         'light': '#ffffff',
         'dark': '#1a1a1a',
-        'dark-unicorn': '#0f0c29'
+        'dark-unicorn': '#0f0c29',
+        'iron-age': '#121415'
       };
       const styleMap = {
         'light': Style.Light,
         'dark': Style.Dark,
-        'dark-unicorn': Style.Dark
+        'dark-unicorn': Style.Dark,
+        'iron-age': Style.Dark
       };
       
       StatusBar.setBackgroundColor({ color: colorMap[theme] }).catch(() => {});
