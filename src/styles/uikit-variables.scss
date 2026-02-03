@@ -15,6 +15,9 @@ $global-success-background: var(--global-success-background);
 $global-warning-background: var(--global-warning-background);
 $global-danger-background: var(--global-danger-background);
 
+$global-medium-shadow: var(--global-medium-shadow);
+$global-large-shadow: var(--global-large-shadow);
+
 // 2. Overriding derived variables that use Sass color functions
 // This is necessary because Sass functions don't support CSS variables.
 

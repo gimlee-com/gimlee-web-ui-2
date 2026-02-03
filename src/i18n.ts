@@ -262,6 +262,19 @@ const resources = {
         "updateStatus": "Update Status",
         "statusUpdated": "Presence status updated.",
         "failedToUpdate": "Failed to update presence status."
+      },
+      "chat": {
+        "title": "Public Chat",
+        "today": "Today",
+        "yesterday": "Yesterday",
+        "placeholder": "Type a message...",
+        "send": "Send",
+        "typingOne": "{{user}} is typing...",
+        "typingTwo": "{{user1}} and {{user2}} are typing...",
+        "typingMany": "Several people are typing...",
+        "loadMore": "Load more messages",
+        "newMessages_one": "{{count}} new message",
+        "newMessages_other": "{{count}} new messages"
       }
     }
   },
@@ -524,6 +537,20 @@ const resources = {
         "updateStatus": "Aktualizuj status",
         "statusUpdated": "Status dostępności został zaktualizowany.",
         "failedToUpdate": "Nie udało się zaktualizować statusu dostępności."
+      },
+      "chat": {
+        "title": "Czat publiczny",
+        "today": "Dzisiaj",
+        "yesterday": "Wczoraj",
+        "placeholder": "Napisz wiadomość...",
+        "send": "Wyślij",
+        "typingOne": "{{user}} pisze...",
+        "typingTwo": "{{user1}} i {{user2}} piszą...",
+        "typingMany": "Kilka osób pisze...",
+        "loadMore": "Załaduj więcej wiadomości",
+        "newMessages_one": "{{count}} nowa wiadomość",
+        "newMessages_few": "{{count}} nowe wiadomości",
+        "newMessages_many": "{{count}} nowych wiadomości"
       }
     }
   }

@@ -1,0 +1,47 @@
+@import '../../../styles/uikit-imports';
+
+.chatContainer {
+  height: 100%;
+  background-color: $global-background;
+  border: 1px solid $global-border;
+  border-radius: $card-border-radius;
+  overflow: hidden;
+}
+
+.footer {
+  border-top: 1px solid $global-border;
+  background-color: color-mix(in srgb, $global-background, $global-muted-background 30%);
+}
+
+.typingIndicatorContainer {
+  height: 20px;
+  display: flex;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.unreadNotification {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: $global-primary-background;
+  color: #fff;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  box-shadow: $global-medium-shadow;
+  z-index: 10;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  white-space: nowrap;
+
+  &:hover {
+    background-color: color-mix(in srgb, $global-primary-background, #000 10%);
+    transform: translateX(-50%) scale(1.05);
+  }
+
+  &:active {
+    transform: translateX(-50%) scale(0.95);
+  }
+}

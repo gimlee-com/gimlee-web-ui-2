@@ -1,0 +1,47 @@
+@import '../../../styles/uikit-imports';
+
+.messageContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.contentWrapper {
+  display: flex;
+  flex-direction: column;
+  max-width: 85%;
+}
+
+.authorName {
+  font-size: 0.8rem;
+  color: $global-muted-color;
+  margin-bottom: 2px;
+  margin-left: 4px;
+}
+
+.avatar {
+  flex-shrink: 0;
+  margin-bottom: 4px;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.9);
+  }
+  
+  div {
+    border-radius: 50%;
+    overflow: hidden;
+  }
+}
+
+.meta {
+  font-size: 0.7rem;
+  opacity: 0.8;
+}
+
+.timestamp {
+  color: inherit;
+}

@@ -188,6 +188,20 @@ To maintain a high-quality visual experience across both light and dark themes, 
 - **Theme-Aware Assets**: Placeholders and simple graphics (like `PlaceholderImage`) should be implemented as inline SVGs using `currentColor` for fills, allowing them to adapt dynamically via CSS.
 - **Anti-Flicker Strategy**: The theme is applied via a `data-theme` attribute on the `<html>` element. A small script in `index.html` ensures the correct theme is applied before React hydrates to prevent a "flash of light mode."
 
+#### **V. Performant List Virtualization**
+For lists containing thousands of items (e.g., Chat), we use virtualization via `react-window` and `react-virtualized-auto-sizer` to maintain 60fps performance on mobile devices.
+- **Conflict with Animations**: `react-window` v2 uses CSS `transform: translateY(...)` for row positioning. If the row component also uses Framer Motion animations (like `y` or `scale`), the list's positioning will be overwritten, causing items to stack at the top.
+- **Solution**: Wrap the animated content in a static `div` that applies the `style` prop from the list. This ensures the transform is preserved while allowing internal elements to animate freely.
+- **Dynamic Height Measurement**: For items with variable heights (e.g., Markdown messages), use a "shadow rendering" strategy. Render unmeasured items into a hidden off-screen container with the target width, measure their `offsetHeight`, and cache the results. Allow a small timeout (e.g., `150ms`) for complex layout and images to settle before measurement.
+- **Initial Load Polish**: To prevent "clumping" (where elements appear stacked before their heights are calculated), hide the list behind a loading spinner until the first batch of items has been measured.
+- **Context Awareness in Measurement**: The off-screen measurement root must be wrapped in necessary providers (e.g., `MemoryRouter`, `Provider`, `AuthContext`) if the components being measured contain navigation elements or rely on global state. This ensures accurate height calculation for complex items.
+
+#### **W. Secure Real-Time Communication (SSE)**
+We use Server-Sent Events (SSE) for real-time features like chat and typing indicators.
+- **Header-Based Authentication**: Standard browser `EventSource` does not support custom headers. We use `@microsoft/fetch-event-source` to ensure the `Authorization: Bearer <token>` header is sent, maintaining security consistency with our REST API.
+- **Reactive Connections**: SSE hooks must be reactive to the application's `isAuthenticated` state. When a user logs in, the connection should automatically refresh to utilize the new JWT token.
+- **Robust Event Parsing**: Backend event streams often include heartbeats (empty data or "heartbeat" events) to keep the connection alive. The `onmessage` handler must explicitly filter these to avoid parsing errors.
+
 ### 4. Code Structure Standards
 The project follows a modular, business-oriented directory structure to ensure scalability and maintainability.
 
@@ -259,3 +273,10 @@ Every component (whether shared or module-specific) follows the same pattern:
 37. **Themeability is First-Class**: Never hardcode colors. Every UI element must be designed to look perfect in both light and dark modes by using the centralized theme variables and UIkit variables.
 38. **Color Mixing over Sass Adjust**: Prefer the CSS native `color-mix()` function for dynamic transparency and color adjustments. This maintains compatibility with CSS-variable-based themes where traditional Sass color functions fail.
 39. **Physical Theme Transitions**: When switching themes, ensure smooth transitions for background and text colors to maintain a high-end, polished feel. Global transition rules in `main.scss` handle this for the base layers.
+40. **Separate Positioning from Animation**: When using virtualization libraries that rely on CSS transforms for positioning, always wrap animated elements in a static container to prevent property conflicts.
+41. **Shadow Rendering for Accuracy**: For dynamic content that needs precise measurement (like virtualization heights), use off-screen shadow rendering to capture true dimensions before items enter the visible DOM.
+42. **Authenticated Streams**: Never pass sensitive tokens in URL query parameters for real-time streams. Use library wrappers that support standard `Authorization` headers to maintain security and consistency with the rest of the API.
+43. **Initial Load Polish for Virtualization**: When using virtualized lists with dynamic heights, hide the initial list behind a loading spinner until the first batch of items is fully measured. This prevents "clumping" or jarring layout shifts during the initial render.
+44. **Stick-to-Bottom Threshold**: For real-time chat interfaces, use a generous threshold (e.g., 50px) to detect if the user is at the bottom. This ensures the "stick-to-bottom" logic is robust against minor scroll variations and prevents unwanted jumps when the user is trying to read slightly older messages.
+45. **Intelligent Unread Notifications**: In virtualized lists, manage unread counts by tracking which unread items have actually entered the viewport (e.g., via `onRowsRendered`). This provides a more natural UX where the notification count decreases as the user manually scrolls through new messages.
+46. **Measurement Provider Context**: When performing off-screen "shadow rendering" for measurements, ensure the measurement container is wrapped in all necessary context providers (Redux, Router, Auth). This is critical for components that rely on these contexts (e.g., for `Link` or user-specific formatting) to render and measure correctly.

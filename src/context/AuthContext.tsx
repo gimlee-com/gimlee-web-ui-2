@@ -12,13 +12,14 @@ interface AuthContextType {
   setPreferredCurrency: (currency: string | null) => void;
   username: string | null;
   roles: string[];
+  publicChatId: string | null;
   login: (token: string) => Promise<void>;
   logout: () => void;
   loading: boolean;
   refreshSession: () => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -26,6 +27,7 @@ interface AuthState {
   preferredCurrency: string | null;
   username: string | null;
   roles: string[];
+  publicChatId: string | null;
   loading: boolean;
 }
 
@@ -36,6 +38,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     preferredCurrency: null,
     username: null,
     roles: [],
+    publicChatId: null,
     loading: true,
   });
 
@@ -46,12 +49,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     initStarted.current = true;
 
     try {
-      const session = await apiClient.get<SessionInitResponseDto>('/session/init?decorators=accessToken,userProfile,preferredCurrency');
+      const session = await apiClient.get<SessionInitResponseDto>('/session/init?decorators=accessToken,userProfile,preferredCurrency,publicChatId');
       
       let username: string | null = null;
       let roles: string[] = [];
       let isAuthenticated = false;
       let preferredCurrency = session.preferredCurrency || null;
+      const publicChatId = session.publicChatId || null;
 
       if (session.accessToken) {
         apiClient.setToken(session.accessToken);
@@ -82,6 +86,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         preferredCurrency,
         username,
         roles,
+        publicChatId,
         loading: false,
       });
     } catch (error) {
@@ -91,7 +96,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, []);
 
   useEffect(() => {
-    refreshSession();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void refreshSession();
   }, [refreshSession]);
 
   const login = async (token: string) => {
@@ -108,6 +114,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       preferredCurrency: null,
       username: null,
       roles: [],
+      publicChatId: null,
       loading: false,
     });
   };

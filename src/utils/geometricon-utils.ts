@@ -36,6 +36,7 @@ class Random {
 
 // 1. Hash the username into an integer seed
 function simpleHash(str: string): number {
+    if (!str) return 0;
     let h = 0xdeadbeef;
     for (let i = 0; i < str.length; i++) {
         h = Math.imul(h ^ str.charCodeAt(i), 2654435761);
@@ -63,7 +64,7 @@ function generatePalette(rng: Random, baseHue: number): string[] {
 
 // 3. The Main Generator Function
 export function generateGeometricAvatar(username: string, size = 120): string {
-    const seed = simpleHash(username);
+    const seed = simpleHash(username || "guest");
     const rng = new Random(seed);
     
     // Pick a base hue first so we can use it for the text border
@@ -115,7 +116,7 @@ export function generateGeometricAvatar(username: string, size = 120): string {
     }
 
     // Overlay: First character of the username
-    const char = username.charAt(0).toUpperCase();
+    const char = (username || "?").charAt(0).toUpperCase();
     const borderColor = `hsl(${baseHue}, 80%, 37%)`; // Darkened base hue
 
     svgContent += `

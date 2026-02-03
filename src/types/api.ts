@@ -200,7 +200,7 @@ export interface StatusResponseDto {
   success: boolean;
   status: string;
   message?: string;
-  data?: any;
+  data?: unknown;
 }
 
 export interface IdentityVerificationResponse {
@@ -359,6 +359,7 @@ export interface SessionInitResponseDto {
   accessToken: string;
   userProfile: UserProfileDto | null;
   preferredCurrency?: string;
+  publicChatId?: string;
 }
 
 export interface ExchangeRateDto {

@@ -8,9 +8,12 @@ import { Heading } from '../components/uikit/Heading/Heading';
 import { Spinner } from '../components/uikit/Spinner/Spinner';
 import { Alert } from '../components/uikit/Alert/Alert';
 import { ExperimentalDisclaimer } from '../components/ExperimentalDisclaimer';
+import { Chat } from '../chat/components/Chat/Chat';
+import { useAuth } from '../context/AuthContext';
 
 const HomePage: React.FC = () => {
   const { t } = useTranslation();
+  const { publicChatId } = useAuth();
   const [featuredAds, setFeaturedAds] = useState<AdPreviewDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -37,6 +40,15 @@ const HomePage: React.FC = () => {
   return (
     <div>
       <ExperimentalDisclaimer />
+      {publicChatId && (
+          <section className="uk-section uk-section-small">
+            <Heading as="h2">{t('chat.title')}</Heading>
+            <div style={{ height: '500px' }}>
+              <Chat chatId={publicChatId} />
+            </div>
+          </section>
+      )}
+
       <section className="uk-section uk-section-small">
         <div className="uk-flex uk-flex-between uk-flex-middle">
           <Heading as="h2">{t('home.featuredAds')}</Heading>

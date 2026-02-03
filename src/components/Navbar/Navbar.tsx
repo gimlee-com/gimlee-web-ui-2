@@ -386,7 +386,7 @@ const Navbar: React.FC = () => {
         initial={false}
         animate={{
           height: isScrolled ? 60 : 80,
-          backgroundColor: isScrolled ? 'var(--global-background)' : 'transparent',
+          backgroundColor: isScrolled ? 'var(--global-background)' : 'color-mix(in srgb, var(--global-background), transparent 100%)',
           boxShadow: isScrolled ? 'var(--navbar-shadow)' : '0 0 0 transparent',
         }}
         transition={{ type: 'spring', stiffness: 400, damping: 40 }}

@@ -1,0 +1,33 @@
+@import '../../../styles/uikit-imports';
+
+.card {
+  padding: 6px 15px 4px 15px;
+  border-radius: 12px;
+  width: fit-content;
+  max-width: 100%;
+  word-wrap: break-word;
+  box-shadow: var(--global-small-shadow);
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.01);
+  }
+
+  &.own {
+    background-color: $global-primary-background;
+    color: $global-inverse-color;
+    border-bottom-right-radius: 2px;
+  }
+
+  &.other {
+    background-color: $global-muted-background;
+    color: $global-color;
+    border-bottom-left-radius: 2px;
+  }
+}
+
+:global([data-theme='dark']) {
+  .card.other {
+    background-color: color-mix(in srgb, $global-background, white 10%);
+  }
+}
