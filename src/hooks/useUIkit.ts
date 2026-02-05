@@ -1,8 +1,23 @@
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect, useState, useMemo } from 'react'
 import UIkit from 'uikit'
 
 // A mapping of component names to their constructor types
 type UIkitComponent = keyof typeof UIkit
+
+// A mapping to assign stable, unique IDs to DOM nodes for stringification.
+// This allows us to detect when a DOM node in the options object has changed
+// while avoiding cyclic reference errors during JSON.stringify.
+const nodeIds = new WeakMap<any, string>()
+let nextNodeId = 1
+
+const getStableNodeId = (node: any): string => {
+  let id = nodeIds.get(node)
+  if (!id) {
+    id = `uikit-node-${nextNodeId++}`
+    nodeIds.set(node, id)
+  }
+  return `[Node:${node.nodeName || 'Node'}:${id}]`
+}
 
 /**
  * A generic hook to manage the lifecycle of a UIkit JavaScript component.
@@ -23,14 +38,30 @@ export const useUIKit = <
   const [instance, setInstance] = useState<C | null>(null)
 
   // Memoize the options object by stringifying it.
-  // We include function bodies in the stringification to ensure that if a callback
-  // changes, the component is re-initialized.
-  const optionsString = JSON.stringify(options ?? {}, (_key, value) => {
-    if (typeof value === 'function') {
-      return value.toString()
-    }
-    return value
-  })
+  // We include function bodies and stable Node IDs in the stringification to ensure that
+  // if a callback or a DOM element changes, the component is re-initialized.
+  // We use a WeakSet to track seen objects and prevent crashes from circular references.
+  const optionsString = useMemo(() => {
+    const seen = new WeakSet()
+    return JSON.stringify(options ?? {}, (_key, value) => {
+      if (typeof value === 'function') {
+        return value.toString()
+      }
+
+      if (value !== null && typeof value === 'object') {
+        if (seen.has(value)) {
+          return '[Circular]'
+        }
+        seen.add(value)
+
+        if (typeof Node !== 'undefined' && value instanceof Node) {
+          return getStableNodeId(value)
+        }
+      }
+
+      return value
+    })
+  }, [options])
 
   useEffect(() => {
     const element = elementRef.current

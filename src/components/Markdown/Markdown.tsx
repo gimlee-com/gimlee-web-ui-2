@@ -12,7 +12,7 @@ interface MarkdownProps {
 
 const API_URL = import.meta.env.VITE_API_URL || '';
 
-export const Markdown: React.FC<MarkdownProps> = ({ content, className }) => {
+export const Markdown: React.FC<MarkdownProps> = React.memo(({ content, className }) => {
   const { t } = useTranslation();
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -101,4 +101,4 @@ export const Markdown: React.FC<MarkdownProps> = ({ content, className }) => {
       </ReactMarkdown>
     </div>
   );
-};
+});

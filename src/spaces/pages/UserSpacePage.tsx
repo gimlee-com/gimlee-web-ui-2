@@ -65,7 +65,7 @@ const UserSpacePage: React.FC = () => {
           setPresence(userSpaceData.presence);
         } else if (userSpaceData.user.userId) {
           // If not in DTO, try fetching separately
-          presenceService.getUserPresence(userSpaceData.user.userId)
+          presenceService.getUserPresence(userSpaceData.user.username)
             .then(setPresence)
             .catch(() => {}); // Optional: ignore presence error
         }

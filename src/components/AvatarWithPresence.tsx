@@ -1,7 +1,6 @@
 import React from 'react';
-import { GeometricAvatar } from './GeometricAvatar/GeometricAvatar';
+import { Avatar } from './Avatar/Avatar';
 import { PresenceBadge } from '../profile/components/PresenceBadge';
-import { Image } from './Image/Image';
 import type { PresenceStatus } from '../types/api';
 
 interface AvatarWithPresenceProps {
@@ -13,7 +12,7 @@ interface AvatarWithPresenceProps {
   badgeSize?: number;
 }
 
-export const AvatarWithPresence: React.FC<AvatarWithPresenceProps> = ({
+export const AvatarWithPresence: React.FC<AvatarWithPresenceProps> = React.memo(({
   username,
   avatarUrl,
   size = 40,
@@ -23,13 +22,11 @@ export const AvatarWithPresence: React.FC<AvatarWithPresenceProps> = ({
 }) => {
   return (
     <div style={{ position: 'relative', display: 'inline-block', width: size, height: size, flexShrink: 0 }}>
-      <div className="uk-border-circle uk-overflow-hidden" style={{ width: size, height: size }}>
-        {avatarUrl ? (
-          <Image src={avatarUrl} width={size.toString()} height={size.toString()} alt={username} />
-        ) : (
-          <GeometricAvatar username={username} size={size} />
-        )}
-      </div>
+      <Avatar 
+        username={username} 
+        avatarUrl={avatarUrl} 
+        size={size} 
+      />
       {status && status !== 'OFFLINE' && (
         <div 
           style={{ 
@@ -64,4 +61,4 @@ export const AvatarWithPresence: React.FC<AvatarWithPresenceProps> = ({
       )}
     </div>
   );
-};
+});

@@ -1,0 +1,13 @@
+@import '../../../styles/uikit-imports';
+
+.divider {
+  .label {
+    box-shadow: var(--global-medium-shadow);
+    transition: background-color 0.2s ease, color 0.2s ease;
+
+    &.stickyLabel {
+      background-color: var(--global-muted-background) !important;
+      color: var(--global-muted-color) !important;
+    }
+  }
+}

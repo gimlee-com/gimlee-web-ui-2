@@ -27,7 +27,7 @@ export interface ChatDaysDivider {
   id: string; // generated
 }
 
-export type ChatListItem = (ChatMessageDto & { type?: 'MESSAGE' }) | ChatDaysDivider;
+export type ChatListItem = (ChatMessageDto & { type?: 'MESSAGE'; shouldAnimate?: boolean }) | ChatDaysDivider;
 
 export interface ChatState {
   messages: ChatMessageDto[];

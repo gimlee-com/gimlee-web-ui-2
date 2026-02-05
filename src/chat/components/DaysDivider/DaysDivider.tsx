@@ -1,13 +1,16 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { isToday, isYesterday } from 'date-fns';
+import classNames from 'classnames';
+import styles from './DaysDivider.module.scss';
 
 interface DaysDividerProps {
   date: string;
   style?: React.CSSProperties;
+  isSticky?: boolean;
 }
 
-export const DaysDivider: React.FC<DaysDividerProps> = ({ date, style }) => {
+export const DaysDivider: React.FC<DaysDividerProps> = ({ date, style, isSticky }) => {
   const { t, i18n } = useTranslation();
   const d = new Date(date);
 
@@ -26,9 +29,15 @@ export const DaysDivider: React.FC<DaysDividerProps> = ({ date, style }) => {
   }
 
   return (
-    <div style={style}>
+    <div style={style} className={styles.divider}>
       <div className="uk-text-center uk-padding-small">
-        <span className="uk-label uk-label-info">{label}</span>
+        <span 
+          className={classNames('uk-label uk-label-info', styles.label, {
+            [styles.stickyLabel]: isSticky,
+          })}
+        >
+          {label}
+        </span>
       </div>
     </div>
   );

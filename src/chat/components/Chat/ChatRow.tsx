@@ -2,10 +2,24 @@ import React, { memo } from 'react';
 import { Message } from '../Message/Message';
 import { DaysDivider } from '../DaysDivider/DaysDivider';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const ChatRow: React.FC<any> = (props) => {
-  const { items, index, style } = props;
-  const chatItem = items[index];
+import type { ChatListItem } from '../../types';
+
+interface ChatRowProps {
+  itemsRef: React.RefObject<ChatListItem[]>;
+  popupContainer?: HTMLElement | null;
+  index?: number;
+  style?: React.CSSProperties;
+  ariaAttributes?: {
+    "aria-posinset": number;
+    "aria-setsize": number;
+    role: "listitem";
+  };
+}
+
+const ChatRow = (props: ChatRowProps): React.ReactElement | null => {
+  const { itemsRef, popupContainer, index, style } = props;
+  if (index === undefined || !style || !itemsRef.current) return null;
+  const chatItem = itemsRef.current[index];
 
   if (!chatItem) return null;
 
@@ -22,9 +36,22 @@ const ChatRow: React.FC<any> = (props) => {
     <Message
       style={style}
       measuredHeight={typeof style.height === 'number' ? style.height : 0}
+      popupContainer={popupContainer}
       {...chatItem}
     />
   );
 };
 
-export default memo(ChatRow);
+const MemoizedChatRow = memo(ChatRow, (prevProps, nextProps) => {
+  // Ignore ariaAttributes for visual stability
+  return (
+    prevProps.index === nextProps.index &&
+    prevProps.itemsRef === nextProps.itemsRef &&
+    prevProps.popupContainer === nextProps.popupContainer &&
+    // Check style properties individually if needed, but react-window handles style identity well
+    prevProps.style?.transform === nextProps.style?.transform &&
+    prevProps.style?.height === nextProps.style?.height
+  );
+});
+
+export default MemoizedChatRow as any;

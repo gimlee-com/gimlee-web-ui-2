@@ -1,26 +1,27 @@
 import React from 'react';
 import classNames from 'classnames';
-import { motion } from 'motion/react';
-import { Link } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext';
 import type { ChatMessageDto } from '../../types';
 import { MessageCard } from './MessageCard';
 import { MessageContent } from './MessageContent';
-import { AvatarWithPresence } from '../../../components/AvatarWithPresence';
+import { Avatar } from '../../../components/Avatar/Avatar';
+import { UserPopup } from '../../../components/UserPopup/UserPopup';
 import styles from './Message.module.scss';
 
 interface MessageProps extends ChatMessageDto {
   style?: React.CSSProperties;
   measuredHeight?: number;
+  popupContainer?: HTMLElement | null;
 }
 
-export const Message: React.FC<MessageProps> = ({ 
+export const Message: React.FC<MessageProps> = React.memo(({ 
   author, 
   message, 
   timestamp, 
   style,
   sending,
-  error
+  error,
+  popupContainer
 }) => {
   const { username } = useAuth();
   const authorUsername = author?.username || 'unknown';
@@ -44,25 +45,26 @@ export const Message: React.FC<MessageProps> = ({
         isOwn ? 'uk-flex-right' : 'uk-flex-left'
       )}>
         {!isOwn && (
-          <div className={classNames(styles.avatar, 'uk-margin-small-right')}>
-            <Link to={`/u/${authorUsername}`} className="uk-display-block">
-              <AvatarWithPresence 
+          <UserPopup 
+            userId={author.userId}
+            username={authorUsername} 
+            avatarUrl={author.avatar} 
+            status={author.presence?.status}
+            customStatus={author.presence?.customStatus}
+            pos="bottom-left"
+            dropdownContainer={popupContainer}
+          >
+            <div className={classNames(styles.avatar, 'uk-margin-small-right')}>
+              <Avatar 
                 username={authorUsername} 
                 avatarUrl={author.avatar} 
-                status={author.presence?.status}
                 size={32} 
-                badgeSize={8}
               />
-            </Link>
-          </div>
+            </div>
+          </UserPopup>
         )}
         
-        <motion.div 
-          className={styles.contentWrapper}
-          initial={{ opacity: 0, x: isOwn ? 10 : -10 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.2, ease: 'easeOut' }}
-        >
+        <div className={styles.contentWrapper}>
           {!isOwn && <div className={styles.authorName}>{author?.displayName || authorUsername}</div>}
           <MessageCard own={isOwn}>
             <MessageContent message={message} />
@@ -72,22 +74,28 @@ export const Message: React.FC<MessageProps> = ({
               {error && <span className="uk-text-danger uk-margin-small-left">!</span>}
             </div>
           </MessageCard>
-        </motion.div>
+        </div>
 
         {isOwn && (
-          <div className={classNames(styles.avatar, 'uk-margin-small-left')}>
-            <Link to={`/u/${authorUsername}`} className="uk-display-block">
-              <AvatarWithPresence 
+          <UserPopup 
+            userId={author.userId}
+            username={authorUsername} 
+            avatarUrl={author.avatar} 
+            status={author.presence?.status}
+            customStatus={author.presence?.customStatus}
+            pos="bottom-right"
+            dropdownContainer={popupContainer}
+          >
+            <div className={classNames(styles.avatar, 'uk-margin-small-left')}>
+              <Avatar 
                 username={authorUsername} 
                 avatarUrl={author.avatar} 
-                status={author.presence?.status}
                 size={32} 
-                badgeSize={8}
               />
-            </Link>
-          </div>
+            </div>
+          </UserPopup>
         )}
       </div>
     </div>
   );
-};
+});

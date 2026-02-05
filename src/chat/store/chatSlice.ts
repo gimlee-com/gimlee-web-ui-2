@@ -91,23 +91,31 @@ export const chatSlice = createSlice({
         let hasMore = false;
 
         if (Array.isArray(rawData)) {
-          messages = rawData.map((m: any) => ({
-            id: m.id,
-            chatId: m.chatId,
-            author: { username: m.author, userId: m.author },
-            message: m.text || m.message || '',
-            timestamp: m.timestamp
-          }));
+          messages = rawData.map((m: any) => {
+            const author = typeof m.author === 'string' ? { username: m.author, userId: m.author } : m.author;
+            const authorId = typeof m.author === 'string' ? m.author : (author?.username || author?.userId || 'anon');
+            return {
+              id: m.id || `${authorId}-${new Date(m.timestamp).getTime()}-${Math.random()}`,
+              chatId: m.chatId || chatId,
+              author,
+              message: m.text || m.message || m.data || '',
+              timestamp: m.timestamp
+            };
+          });
           hasMore = messages.length > 0;
         } else if (rawData && typeof rawData === 'object') {
-          const rawMessages = (rawData as any).messages || (rawData as any).content || (rawData as any).data || [];
-          messages = rawMessages.map((m: any) => ({
-            id: m.id,
-            chatId: m.chatId,
-            author: { username: m.author, userId: m.author },
-            message: m.text || m.message || '',
-            timestamp: m.timestamp
-          }));
+          const rawMessages = (rawData as any).messages || (rawData as any).content || (rawData as any).data || (rawData as any).items || [];
+          messages = rawMessages.map((m: any) => {
+            const author = typeof m.author === 'string' ? { username: m.author, userId: m.author } : m.author;
+            const authorId = typeof m.author === 'string' ? m.author : (author?.username || author?.userId || 'anon');
+            return {
+              id: m.id || `${authorId}-${new Date(m.timestamp).getTime()}-${Math.random()}`,
+              chatId: m.chatId || chatId,
+              author,
+              message: m.text || m.message || m.data || '',
+              timestamp: m.timestamp
+            };
+          });
           hasMore = (rawData as any).hasMore ?? (messages.length > 0);
         }
 

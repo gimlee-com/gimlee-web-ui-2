@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback, useLayoutEffect } from 'react';
 import { List } from 'react-window';
 import { AutoSizer } from 'react-virtualized-auto-sizer';
 import { useTranslation } from 'react-i18next';
@@ -6,7 +6,9 @@ import { useChat } from '../../hooks/useChat';
 import { useAuth } from '../../../context/AuthContext';
 import { prepareChatListItems } from '../../utils/prepareChatListItems';
 import { measureChatItems } from '../../utils/measureChatItems';
+import type { ChatListItem } from '../../types';
 import ChatRow from './ChatRow';
+import { ChatTopBar } from './ChatTopBar';
 import { TypingIndicator } from '../TypingIndicator/TypingIndicator';
 import { TextArea } from '../../../components/uikit/Form/Form';
 import styles from './Chat.module.scss';
@@ -14,6 +16,16 @@ import styles from './Chat.module.scss';
 interface ChatProps {
   chatId: string;
   className?: string;
+}
+
+// Interface for react-window VariableSizeList
+interface VariableSizeList {
+  readonly element: HTMLDivElement | null;
+  scrollToRow: (config: {
+    align?: 'auto' | 'center' | 'end' | 'smart' | 'start';
+    behavior?: 'auto' | 'instant' | 'smooth';
+    index: number;
+  }) => void;
 }
 
 export const Chat: React.FC<ChatProps> = ({ chatId, className }) => {
@@ -32,31 +44,157 @@ export const Chat: React.FC<ChatProps> = ({ chatId, className }) => {
   const [input, setInput] = useState('');
   const [heights, setHeights] = useState<Record<string, number>>({});
   const [containerWidth, setContainerWidth] = useState<number>(0);
-  const [isAtBottom, setIsAtBottom] = useState(true);
-  const [unreadCount, setUnreadCount] = useState(0);
-  const [shouldScrollToBottom, setShouldScrollToBottom] = useState(false);
+  const [scrollTop, setScrollTop] = useState(0);
   
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const listRef = useRef<any>(null);
+  // "Stick to bottom" state
+  const isAtBottomRef = useRef(true);
+  const pendingScrollToBottomRef = useRef(false);
+  
+  // Unread count logic
+  const [unreadCount, setUnreadCount] = useState(0);
+  
+  // Refs
+  const listRef = useRef<VariableSizeList>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
-  const prevMessagesCount = useRef(0);
   const prevLastMessageId = useRef<string | null>(null);
+  const scrollAdjustmentRef = useRef<{ 
+    diff: number, 
+    type: 'PREPEND' | 'BOTTOM' | 'PREPEND_SMOOTH',
+    targetIndex?: number
+  } | null>(null);
+  const lastPrependAdjustedIdRef = useRef<string | null>(null);
+  const isMeasuringRef = useRef(false);
+  
+  // List state
+  const [isPrepending, setIsPrepending] = useState(false);
+  const [renderedItems, setRenderedItems] = useState<ChatListItem[]>([]);
+  const [popupContainer, setPopupContainer] = useState<HTMLDivElement | null>(null);
 
   const preparedItems = useMemo(() => prepareChatListItems(messages), [messages]);
   const lastMessageId = preparedItems.length > 0 ? preparedItems[preparedItems.length - 1].id : null;
 
-  const [initialMeasurementFinished, setInitialMeasurementFinished] = useState(false);
+  const totalContentHeight = useMemo(() => {
+    return renderedItems.reduce((sum, item) => sum + (heights[item.id] || 50), 0);
+  }, [renderedItems, heights]);
+
+  const itemsRef = useRef(renderedItems);
+  itemsRef.current = renderedItems;
+  const rowProps = useMemo(() => ({ 
+    itemsRef,
+    popupContainer
+  }), [itemsRef, popupContainer]);
+
+  // Reset state when chat changes
+  useEffect(() => {
+    setScrollTop(0);
+    isAtBottomRef.current = true;
+    pendingScrollToBottomRef.current = false;
+    setUnreadCount(0);
+    setHeights({});
+    setRenderedItems([]);
+    isMeasuringRef.current = false;
+    prevLastMessageId.current = null;
+    scrollAdjustmentRef.current = null;
+    lastPrependAdjustedIdRef.current = null;
+    setIsPrepending(false);
+  }, [chatId]);
+
+  // Sync prepend detection
+  const prevFirstMessageIdRef = useRef<string | null>(null);
+  const prevFirstMessageIndexRef = useRef<number>(-1);
+
+  const prependDetection = useMemo(() => {
+    const firstMessage = messages[0];
+    if (!firstMessage || !prevFirstMessageIdRef.current || firstMessage.id === prevFirstMessageIdRef.current) {
+      return null;
+    }
+    const newIndex = preparedItems.findIndex(item => item.id === prevFirstMessageIdRef.current);
+    if (newIndex === -1 || newIndex <= prevFirstMessageIndexRef.current) return null;
+
+    return {
+      firstOldMessageId: prevFirstMessageIdRef.current,
+      oldFirstMessageIndexInNew: newIndex,
+      shift: newIndex - prevFirstMessageIndexRef.current
+    };
+  }, [messages, preparedItems]);
 
   useEffect(() => {
-    if (!initialMeasurementFinished && !loading && messages.length > 0 && containerWidth > 0) {
-      const lastItem = preparedItems[preparedItems.length - 1];
-      if (heights[lastItem?.id]) {
-        setInitialMeasurementFinished(true);
-      }
+    const firstMessage = messages[0];
+    if (firstMessage) {
+      prevFirstMessageIdRef.current = firstMessage.id;
+      prevFirstMessageIndexRef.current = preparedItems.findIndex(item => item.id === firstMessage.id);
     }
-  }, [initialMeasurementFinished, loading, messages.length, preparedItems, heights, containerWidth]);
+  }, [messages, preparedItems]);
 
-  const showInitialLoading = loading || (!initialMeasurementFinished && messages.length > 0);
+  // Measurement Logic
+  useEffect(() => {
+    if (!chatId || preparedItems.length === 0 || containerWidth === 0) return;
+
+    const unmeasured = preparedItems.filter(item => !heights[item.id]);
+    
+    // If everything is already measured but renderedItems is out of sync
+    if (unmeasured.length === 0) {
+      if (renderedItems.length !== preparedItems.length) {
+        setRenderedItems(preparedItems);
+      }
+      return;
+    }
+
+    if (isMeasuringRef.current) return;
+
+    if (prependDetection) {
+      setIsPrepending(true);
+    }
+
+    isMeasuringRef.current = true;
+    measureChatItems(unmeasured, containerWidth, username || undefined).then(newHeights => {
+      setIsPrepending(false);
+      
+      const allHeights = { ...heights, ...newHeights };
+
+      if (prependDetection) {
+        // PREPENDING: New items appeared at the top
+        // Calculate REAL height difference to maintain scroll position
+        let newOffset = 0;
+        for (let i = 0; i < prependDetection.oldFirstMessageIndexInNew; i++) {
+          const item = preparedItems[i];
+          newOffset += (allHeights[item.id] || 50);
+        }
+
+        // Find the newest of the newly appeared messages to center it
+        let lastNewMessageIndex = -1;
+        for (let i = prependDetection.oldFirstMessageIndexInNew - 1; i >= 0; i--) {
+          if (preparedItems[i].type === 'MESSAGE') {
+            lastNewMessageIndex = i;
+            break;
+          }
+        }
+        const targetIndex = lastNewMessageIndex !== -1 ? lastNewMessageIndex : (prependDetection.oldFirstMessageIndexInNew - 1);
+
+        // Set smooth scroll adjustment
+        scrollAdjustmentRef.current = { 
+          diff: newOffset, 
+          type: 'PREPEND_SMOOTH', 
+          targetIndex 
+        };
+      }
+
+      // If we are supposed to stick to bottom, ensure we trigger a scroll after heights are updated
+      if (pendingScrollToBottomRef.current) {
+        scrollAdjustmentRef.current = { diff: 0, type: 'BOTTOM' };
+      }
+
+      setHeights(allHeights);
+      setRenderedItems(preparedItems);
+      isMeasuringRef.current = false;
+    }).catch(err => {
+      console.error('Measurement failed', err);
+      setIsPrepending(false);
+      isMeasuringRef.current = false;
+    });
+  }, [preparedItems, containerWidth, username, heights, chatId, renderedItems.length, prependDetection]);
+
+  const showInitialLoading = (loading && messages.length === 0) || (messages.length > 0 && renderedItems.length === 0);
 
   // Auto-resize textarea
   useEffect(() => {
@@ -67,38 +205,24 @@ export const Chat: React.FC<ChatProps> = ({ chatId, className }) => {
     }
   }, [input]);
 
-  // Handle measurement of new items
-  useEffect(() => {
-    const unmeasuredItems = preparedItems.filter(item => !heights[item.id]);
-    
-    if (unmeasuredItems.length > 0 && containerWidth > 0) {
-      measureChatItems(unmeasuredItems, containerWidth, username || undefined).then(newHeights => {
-        setHeights(prev => ({ ...prev, ...newHeights }));
-      });
-    }
-  }, [preparedItems, heights, containerWidth, username]);
-
   // Handle new messages for stick-to-bottom and unread count
-  useEffect(() => {
-    // We only care if messages were added to the end
+  useLayoutEffect(() => {
     if (lastMessageId !== prevLastMessageId.current) {
       if (prevLastMessageId.current === null) {
-        // Initial load or first message
-        setShouldScrollToBottom(true);
+        pendingScrollToBottomRef.current = true;
+        scrollAdjustmentRef.current = { diff: 0, type: 'BOTTOM' };
       } else {
         const lastItem = preparedItems[preparedItems.length - 1];
         const isMyMessage = lastItem.type !== 'DAYS-DIVIDER' && lastItem.author.username === username;
         
-        // Find how many items were added after the old last message
         const oldLastIndex = preparedItems.findIndex(item => item.id === prevLastMessageId.current);
         const appendedCount = oldLastIndex === -1 ? 1 : preparedItems.length - 1 - oldLastIndex;
         
-        // Stick to bottom if already at bottom, if it's our own message, or if a scroll is already pending
-        if (isAtBottom || isMyMessage || shouldScrollToBottom) {
-          setShouldScrollToBottom(true);
+        if (isAtBottomRef.current || isMyMessage) {
+          pendingScrollToBottomRef.current = true;
           setUnreadCount(0);
+          scrollAdjustmentRef.current = { diff: 0, type: 'BOTTOM' };
         } else {
-          // If we are here, it means messages were added at the end but we are not at bottom
           if (appendedCount > 0) {
             setUnreadCount(prev => prev + appendedCount);
           }
@@ -106,26 +230,62 @@ export const Chat: React.FC<ChatProps> = ({ chatId, className }) => {
       }
     }
     prevLastMessageId.current = lastMessageId;
-    prevMessagesCount.current = preparedItems.length;
-  }, [lastMessageId, preparedItems.length, username, isAtBottom, shouldScrollToBottom]);
+  }, [lastMessageId, preparedItems, username]);
 
-  // Scroll to bottom when requested and heights are updated
+  // Initial scroll to bottom safety timeout
   useEffect(() => {
-    if (shouldScrollToBottom && listRef.current && preparedItems.length > 0) {
-      const lastItem = preparedItems[preparedItems.length - 1];
-      // We wait for the last item to be measured before scrolling to the exact bottom
-      if (heights[lastItem.id]) {
-        // Use a small timeout to ensure the list has processed the new heights and rendered
-        const timer = setTimeout(() => {
-          if (listRef.current && typeof listRef.current.scrollToRow === 'function') {
-            listRef.current.scrollToRow({ index: preparedItems.length - 1, align: 'end' });
-          }
-          setShouldScrollToBottom(false);
-        }, 50);
-        return () => clearTimeout(timer);
-      }
+    if (pendingScrollToBottomRef.current && renderedItems.length > 0) {
+      const timer = setTimeout(() => {
+        if (pendingScrollToBottomRef.current && listRef.current?.element) {
+          listRef.current.scrollToRow({ index: renderedItems.length - 1, align: 'end' });
+          pendingScrollToBottomRef.current = false;
+        }
+      }, 400); // 400ms timeout for initial load as requested
+      return () => clearTimeout(timer);
     }
-  }, [preparedItems, heights, shouldScrollToBottom]);
+  }, [renderedItems.length]);
+
+  // Scroll management
+  useLayoutEffect(() => {
+    if (scrollAdjustmentRef.current && listRef.current?.element) {
+      const { type, diff, targetIndex } = scrollAdjustmentRef.current;
+      
+      if (type === 'PREPEND') {
+        listRef.current.element.scrollTop += diff;
+      } else if (type === 'PREPEND_SMOOTH') {
+        // Apply final correction from real measurement
+        listRef.current.element.scrollTop += diff;
+        
+        // Gracefully scroll up to show the last of the new messages
+        if (targetIndex !== undefined) {
+          listRef.current.scrollToRow({ 
+            index: targetIndex, 
+            align: 'center', 
+            behavior: 'smooth' 
+          });
+        }
+      } else if (type === 'BOTTOM') {
+        const scrollToIndex = renderedItems.length - 1;
+        if (scrollToIndex >= 0) {
+          listRef.current.scrollToRow({ index: scrollToIndex, align: 'end' });
+          
+          // Safety net: In case the list hasn't fully settled its scrollHeight,
+          // repeat the scroll in the next frame.
+          requestAnimationFrame(() => {
+            if (listRef.current?.element && renderedItems.length > 0) {
+              listRef.current.scrollToRow({ index: renderedItems.length - 1, align: 'end' });
+            }
+          });
+        }
+        
+        const lastItem = renderedItems[renderedItems.length - 1];
+        if (lastItem && heights[lastItem.id]) {
+          pendingScrollToBottomRef.current = false;
+        }
+      }
+      scrollAdjustmentRef.current = null;
+    }
+  }, [renderedItems, heights]);
 
   const handleSend = (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -141,63 +301,108 @@ export const Chat: React.FC<ChatProps> = ({ chatId, className }) => {
     }
   };
 
-  const handleScroll = useCallback((event: React.UIEvent<HTMLDivElement>) => {
-    const { scrollTop, clientHeight, scrollHeight } = event.currentTarget;
-    // Check if we are near the bottom (within 50px as requested)
-    const atBottom = scrollHeight - (scrollTop + clientHeight) < 50;
-    setIsAtBottom(atBottom);
+  const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
+    const target = e.currentTarget;
+    const scrollOffset = target.scrollTop;
+
+    setScrollTop(scrollOffset);
+
+    const { clientHeight, scrollHeight } = target;
+    
+    // Check if we are near the bottom (within 50px)
+    const atBottom = scrollHeight > 0 
+      ? scrollHeight - (scrollOffset + clientHeight) <= 50
+      : false;
+
+    isAtBottomRef.current = atBottom;
     if (atBottom) {
       setUnreadCount(0);
     }
-  }, []);
+
+    // Load more when reaching the top
+    if (scrollOffset === 0 && !pendingScrollToBottomRef.current && hasMore && !loading) {
+      loadMore();
+    }
+  }, [hasMore, loading, loadMore]);
 
   const getItemSize = useCallback((index: number) => {
-    const item = preparedItems[index];
-    return heights[item?.id] || 50;
-  }, [preparedItems, heights]);
+    const item = renderedItems[index];
+    if (!item) return 50;
+    return heights[item.id] || 50;
+  }, [renderedItems, heights]);
+
+  if (!chatId) return null;
 
   return (
     <div className={`${styles.chatContainer} ${className || ''} uk-flex uk-flex-column`}>
       <div className="uk-flex-1 uk-position-relative">
-        <AutoSizer
-          onResize={({ width }) => setContainerWidth(width)}
+        <AutoSizer 
+          style={{ height: '100%', width: '100%' }}
+          onResize={({ width }) => {
+            if (width > 0 && width !== containerWidth) setContainerWidth(width);
+          }}
           renderProp={({ height, width }) => {
-            if (!height || !width) return null;
-
-            if (showInitialLoading) {
-              return (
-                <div className="uk-position-center uk-text-center">
-                  <div uk-spinner="ratio: 1.5"></div>
-                  <p className="uk-text-muted uk-margin-small-top">{t('common.loading')}</p>
-                </div>
-              );
-            }
+            if (!width || !height) return null;
 
             return (
-              <List
-                key={`${chatId}-${width}`}
-                listRef={listRef}
-                style={{ height, width }}
-                rowCount={preparedItems.length}
-                rowHeight={getItemSize}
-                rowProps={{ items: preparedItems }}
-                onRowsRendered={(visibleRows) => {
-                   if (visibleRows.startIndex === 0 && hasMore && !loading) {
-                     loadMore();
-                   }
-                   
-                   // Handle unread count clearing as we scroll
-                   if (unreadCount > 0) {
-                     const firstUnreadIndex = preparedItems.length - unreadCount;
-                     if (visibleRows.stopIndex >= firstUnreadIndex) {
-                       setUnreadCount(Math.max(0, preparedItems.length - 1 - visibleRows.stopIndex));
-                     }
-                   }
-                }}
-                onScroll={handleScroll}
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                rowComponent={ChatRow as any}
-              />
+              <div className="uk-position-relative" style={{ height, width }}>
+                {showInitialLoading ? (
+                  <div className="uk-position-center uk-text-center">
+                    <div uk-spinner="ratio: 1.5"></div>
+                    <p className="uk-text-muted uk-margin-small-top">{t('common.loading')}</p>
+                  </div>
+                ) : (
+                  <>
+                    {renderedItems.length === 0 && !loading ? (
+                      <div className="uk-position-center uk-text-center">
+                        <p className="uk-text-muted">{t('chat.noMessages')}</p>
+                      </div>
+                    ) : (
+                      <div style={{ height, width, overflow: 'hidden' }}>
+                        <List
+                          key={chatId}
+                          listRef={listRef}
+                          style={{ height, width }}
+                          rowCount={renderedItems.length}
+                          rowHeight={getItemSize}
+                          rowProps={rowProps}
+                          rowComponent={ChatRow}
+                          onRowsRendered={({ stopIndex }) => {
+                            if (unreadCount > 0) {
+                              const firstUnreadIndex = renderedItems.length - unreadCount;
+                              if (stopIndex >= firstUnreadIndex) {
+                                setUnreadCount(Math.max(0, renderedItems.length - 1 - stopIndex));
+                              }
+                            }
+                          }}
+                          onScroll={handleScroll}
+                        >
+                          {totalContentHeight > 0 && (
+                            <div 
+                              style={{ 
+                                height: totalContentHeight, 
+                                width: 0, 
+                                position: 'absolute', 
+                                top: 0, 
+                                left: 0, 
+                                pointerEvents: 'none',
+                                visibility: 'hidden'
+                              }} 
+                            />
+                          )}
+                        </List>
+                        <div ref={setPopupContainer} className={styles.popupPortalTarget} />
+                        <ChatTopBar
+                          items={renderedItems}
+                          heights={heights}
+                          scrollTop={scrollTop}
+                          isLoadingMore={(loading && messages.length > 0) || isPrepending}
+                        />
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
             );
           }}
         />
@@ -206,12 +411,8 @@ export const Chat: React.FC<ChatProps> = ({ chatId, className }) => {
             className={styles.unreadNotification}
             onClick={() => {
               if (listRef.current) {
-                const firstUnreadIndex = preparedItems.length - unreadCount;
-                listRef.current.scrollToRow({ 
-                  index: firstUnreadIndex, 
-                  align: 'start',
-                  behavior: 'smooth'
-                });
+                const firstUnreadIndex = renderedItems.length - unreadCount;
+                listRef.current.scrollToRow({ index: firstUnreadIndex, align: 'start' });
               }
             }}
           >

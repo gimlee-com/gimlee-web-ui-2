@@ -232,7 +232,8 @@ const resources = {
         }
       },
       "spaces": {
-        "userAds": "{{username}}'s Ads"
+        "userAds": "{{username}}'s Ads",
+        "viewSpace": "View Space"
       },
       "adDetails": {
         "seller": "Seller",
@@ -507,7 +508,8 @@ const resources = {
         }
       },
       "spaces": {
-        "userAds": "Ogłoszenia użytkownika {{username}}"
+        "userAds": "Ogłoszenia użytkownika {{username}}",
+        "viewSpace": "Pokaż profil"
       },
       "adDetails": {
         "seller": "Sprzedawca",
