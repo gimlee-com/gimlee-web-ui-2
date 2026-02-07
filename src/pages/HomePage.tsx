@@ -8,7 +8,6 @@ import { Heading } from '../components/uikit/Heading/Heading';
 import { Spinner } from '../components/uikit/Spinner/Spinner';
 import { Alert } from '../components/uikit/Alert/Alert';
 import { ExperimentalDisclaimer } from '../components/ExperimentalDisclaimer';
-import { Chat } from '../chat/components/Chat/Chat';
 import { ChatFloatingButton } from '../chat/components/ChatFloatingButton/ChatFloatingButton';
 import { useAuth } from '../context/AuthContext';
 import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
