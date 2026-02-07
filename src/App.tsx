@@ -7,6 +7,8 @@ import { useTheme } from './context/ThemeContext';
 import { PurchaseModal } from './purchases/components/PurchaseModal';
 import './i18n';
 import Navbar from './components/Navbar/Navbar';
+import { FLOATING_BUTTON_CONTAINER_ID } from './components/FloatingButton/FloatingButtonPortal';
+import styles from './components/FloatingButton/FloatingButton.module.scss';
 import HomePage from './pages/HomePage';
 import LoginPage from './auth/pages/LoginPage';
 import RegisterPage from './auth/pages/RegisterPage';
@@ -73,6 +75,7 @@ function App() {
           purchase={activePurchase} 
         />
       )}
+      <div id={FLOATING_BUTTON_CONTAINER_ID} className={styles.floatingButtonContainer} />
     </div>
   );
 }

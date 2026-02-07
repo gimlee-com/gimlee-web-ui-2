@@ -1,0 +1,42 @@
+@import "../../styles/uikit-imports";
+
+.floatingButtonContainer {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1010; // Above most things, but maybe below some modals if needed. UIkit modals are 1010.
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 15px;
+  pointer-events: none;
+
+  & > * {
+    pointer-events: auto;
+  }
+
+  @media (max-width: $breakpoint-small-max) {
+    bottom: 80px; // Adjust for mobile bottom navbar if exists, or just safe area
+    right: 15px;
+  }
+}
+
+.floatingButton {
+  width: 60px;
+  height: 60px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 500px; // Ensure it's round
+  box-shadow: var(--global-medium-shadow);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: var(--global-large-shadow);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}

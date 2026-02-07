@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { adService } from '../ads/services/adService';
 import type { AdPreviewDto } from '../types/api';
@@ -9,7 +9,9 @@ import { Spinner } from '../components/uikit/Spinner/Spinner';
 import { Alert } from '../components/uikit/Alert/Alert';
 import { ExperimentalDisclaimer } from '../components/ExperimentalDisclaimer';
 import { Chat } from '../chat/components/Chat/Chat';
+import { ChatFloatingButton } from '../chat/components/ChatFloatingButton/ChatFloatingButton';
 import { useAuth } from '../context/AuthContext';
+import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
 
 const HomePage: React.FC = () => {
   const { t } = useTranslation();
@@ -17,6 +19,10 @@ const HomePage: React.FC = () => {
   const [featuredAds, setFeaturedAds] = useState<AdPreviewDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const chatSectionRef = useRef<HTMLElement>(null);
+  const intersection = useIntersectionObserver(chatSectionRef, { threshold: 0 });
+  const isChatVisible = !!intersection?.isIntersecting;
 
   useEffect(() => {
     const controller = new AbortController();
@@ -40,15 +46,7 @@ const HomePage: React.FC = () => {
   return (
     <div>
       <ExperimentalDisclaimer />
-      {publicChatId && (
-          <section className="uk-section uk-section-small">
-            <Heading as="h2">{t('chat.title')}</Heading>
-            <div style={{ height: '500px' }}>
-              <Chat chatId={publicChatId} />
-            </div>
-          </section>
-      )}
-
+      
       <section className="uk-section uk-section-small">
         <div className="uk-flex uk-flex-between uk-flex-middle">
           <Heading as="h2">{t('home.featuredAds')}</Heading>
@@ -71,6 +69,19 @@ const HomePage: React.FC = () => {
           </Grid>
         )}
       </section>
+
+      {publicChatId && (
+          <section ref={chatSectionRef} className="uk-section uk-section-small">
+            <Heading as="h2">{t('chat.title')}</Heading>
+            <div style={{ height: '500px' }}>
+              <Chat chatId={publicChatId} />
+            </div>
+          </section>
+      )}
+
+      {publicChatId && (
+        <ChatFloatingButton chatId={publicChatId} visible={!isChatVisible} />
+      )}
     </div>
   );
 };
