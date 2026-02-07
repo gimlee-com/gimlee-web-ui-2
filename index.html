@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/gimlee.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#ffffff" />
+    <meta name="theme-color" content="#121415" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <title>Gimlee Marketplace</title>
@@ -12,10 +12,8 @@
       (function() {
         try {
           var theme = localStorage.getItem('theme');
-          var supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
           var validThemes = ['light', 'dark', 'dark-unicorn', 'iron-age'];
-          if (!theme && supportDarkMode) theme = 'dark';
-          if (!theme || validThemes.indexOf(theme) === -1) theme = 'light';
+          if (!theme || validThemes.indexOf(theme) === -1) theme = 'iron-age';
           document.documentElement.setAttribute('data-theme', theme);
         } catch (e) {}
       })();

@@ -71,15 +71,6 @@ const HomePage: React.FC = () => {
       </section>
 
       {publicChatId && (
-          <section ref={chatSectionRef} className="uk-section uk-section-small">
-            <Heading as="h2">{t('chat.title')}</Heading>
-            <div style={{ height: '500px' }}>
-              <Chat chatId={publicChatId} />
-            </div>
-          </section>
-      )}
-
-      {publicChatId && (
         <ChatFloatingButton chatId={publicChatId} visible={!isChatVisible} />
       )}
     </div>
