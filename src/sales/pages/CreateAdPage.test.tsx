@@ -5,7 +5,7 @@ import { salesService } from '../services/salesService';
 import { AuthProvider } from '../../context/AuthContext';
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { store } from '../../store';
+import { createStore } from '../../store';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '../../i18n';
 
@@ -18,7 +18,7 @@ vi.mock('../services/salesService', () => ({
 
 const renderCreateAdPage = () => {
   return render(
-    <Provider store={store}>
+    <Provider store={createStore()}>
       <I18nextProvider i18n={i18n}>
         <AuthProvider>
           <MemoryRouter>

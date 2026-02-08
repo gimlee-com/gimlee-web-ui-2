@@ -61,6 +61,20 @@ global.DOMMatrix = class DOMMatrix {
   inverse() { return this; }
 } as unknown as typeof DOMMatrix;
 
+// Patch CSSStyleDeclaration.setProperty to avoid crashes in JSDOM/cssstyle
+// when UIKit passes non-string values or undefined.
+const originalSetProperty = CSSStyleDeclaration.prototype.setProperty;
+CSSStyleDeclaration.prototype.setProperty = function (property, value, priority) {
+  if (typeof property !== 'string' || value === undefined || value === null) {
+    return;
+  }
+  try {
+    originalSetProperty.call(this, property, String(value), priority);
+  } catch (e) {
+    // Ignore errors from invalid CSS properties in JSDOM
+  }
+};
+
 vi.mock('./services/apiClient', () => ({
   apiClient: {
     getToken: vi.fn().mockReturnValue(null),
@@ -71,5 +85,9 @@ vi.mock('./services/apiClient', () => ({
       }
       return Promise.resolve({});
     }),
+    post: vi.fn().mockResolvedValue({}),
+    put: vi.fn().mockResolvedValue({}),
+    patch: vi.fn().mockResolvedValue({}),
+    delete: vi.fn().mockResolvedValue({}),
   },
 }));

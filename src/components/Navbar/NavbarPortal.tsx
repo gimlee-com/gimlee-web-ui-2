@@ -11,7 +11,9 @@ interface NavbarPortalProps {
 
 const NavbarPortal: React.FC<NavbarPortalProps> = ({ children }) => {
   const mode = useAppSelector((state) => state.navbar.mode);
-  const [targetElement, setTargetElement] = useState<HTMLElement | null>(null);
+  const [targetElement, setTargetElement] = useState<HTMLElement | null>(() => 
+    typeof document !== 'undefined' ? document.getElementById(NAVBAR_PORTAL_ID) : null
+  );
 
   useEffect(() => {
     if (mode !== 'focused') {

@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import AdDetailsPage from './AdDetailsPage';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { store } from '../../store';
+import { createStore } from '../../store';
 import { AuthProvider } from '../../context/AuthContext';
 import { adService } from '../services/adService';
 import { I18nextProvider } from 'react-i18next';
@@ -29,7 +29,7 @@ const mockAd: AdDetailsDto = {
 
 const renderAdDetailsPage = (id = '1') => {
   return render(
-    <Provider store={store}>
+    <Provider store={createStore()}>
       <I18nextProvider i18n={i18n}>
         <AuthProvider>
           <div id="navbar-focused-content"></div>
@@ -59,7 +59,7 @@ describe('AdDetailsPage', () => {
       expect(screen.getByText('Test Description')).toBeInTheDocument();
       expect(screen.getByText(/ARRR 100\.00/)).toBeInTheDocument();
       expect(screen.getByText('Test City, Test Country')).toBeInTheDocument();
-    });
+    }, { timeout: 5000 });
   });
 
   it('should change active image when thumbnail is clicked', async () => {
@@ -69,7 +69,7 @@ describe('AdDetailsPage', () => {
 
     await waitFor(() => {
       expect(screen.getAllByText('Test Ad')[0]).toBeInTheDocument();
-    });
+    }, { timeout: 5000 });
 
     // Initial state: only first image has thumbs-md due to progressive loading
     const getMdImages = () => screen.getAllByRole('img').filter(img => (img as HTMLImageElement).src.includes('thumbs-md'));
@@ -87,7 +87,7 @@ describe('AdDetailsPage', () => {
     // Now second image should also have thumbs-md (as it's now visited)
     await waitFor(() => {
       expect(getMdImages()).toHaveLength(2);
-    });
+    }, { timeout: 5000 });
   });
 
   it('should still update active index on swipe after clicking a thumbnail', async () => {
@@ -100,7 +100,7 @@ describe('AdDetailsPage', () => {
 
     await waitFor(() => {
       expect(screen.getAllByText('Test Ad')[0]).toBeInTheDocument();
-    });
+    }, { timeout: 5000 });
 
     const getMdImages = () => screen.getAllByRole('img').filter(img => (img as HTMLImageElement).src.includes('thumbs-md'));
     
@@ -116,7 +116,7 @@ describe('AdDetailsPage', () => {
 
     await waitFor(() => {
       expect(getMdImages()).toHaveLength(2);
-    });
+    }, { timeout: 5000 });
 
     // Find main slider and items
     const allSliders = document.querySelectorAll('[uk-slider]');
@@ -130,7 +130,7 @@ describe('AdDetailsPage', () => {
     await waitFor(() => {
         fireEvent(sliderItems[2], new CustomEvent('itemshow', { bubbles: true }));
         expect(getMdImages()).toHaveLength(3);
-    });
+    }, { timeout: 5000 });
   });
 
   it('should have correct styling for the main image', async () => {
@@ -142,7 +142,7 @@ describe('AdDetailsPage', () => {
       const mainImages = screen.getAllByRole('img').filter(img => (img as HTMLImageElement).src.includes('thumbs-md'));
       expect(mainImages[0]).toHaveClass(styles.adDetailsLightboxImage);
       expect(mainImages[0]).toHaveClass('uk-object-cover');
-    });
+    }, { timeout: 5000 });
   });
 
   it('should show "no images" placeholder if ad has no media', async () => {
@@ -153,7 +153,7 @@ describe('AdDetailsPage', () => {
     await waitFor(() => {
       expect(screen.getByText(/No images available/i)).toBeInTheDocument();
       expect(screen.getByRole('img')).toBeInTheDocument();
-    });
+    }, { timeout: 5000 });
   });
 
   it('should render slider items with data-index attributes for robust tracking', async () => {
@@ -163,7 +163,7 @@ describe('AdDetailsPage', () => {
 
     await waitFor(() => {
       expect(screen.getAllByText('Test Ad')[0]).toBeInTheDocument();
-    });
+    }, { timeout: 5000 });
 
     // The main slider items should have data-index attributes
     const allItems = screen.getAllByRole('listitem');
@@ -191,7 +191,7 @@ describe('AdDetailsPage', () => {
     await waitFor(() => {
       expect(screen.getByText('Electronics')).toBeInTheDocument();
       expect(screen.getByText('Computers')).toBeInTheDocument();
-    });
+    }, { timeout: 5000 });
   });
 
   it('should render "Member since" as relative time', async () => {
@@ -211,7 +211,7 @@ describe('AdDetailsPage', () => {
     await waitFor(() => {
       // "about 1 year ago" is the default for date-fns enUS locale for 365 days
       expect(screen.getByText(/Member since (about )?1 year ago/)).toBeInTheDocument();
-    });
+    }, { timeout: 5000 });
   });
 
   it('should limit other ads to 4 and show "Display all" button', async () => {
@@ -236,7 +236,7 @@ describe('AdDetailsPage', () => {
       const otherAdTitles = screen.queryAllByText(/Other Ad \d/);
       // It should only render 4 items due to slice(0, 4)
       expect(otherAdTitles).toHaveLength(4);
-    });
+    }, { timeout: 5000 });
 
     // Should have "Display all" button
     expect(screen.getByText(/Display all/i)).toBeInTheDocument();

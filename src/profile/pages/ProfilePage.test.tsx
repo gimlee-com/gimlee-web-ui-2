@@ -3,6 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import ProfilePage from './ProfilePage';
 import { AuthProvider } from '../../context/AuthContext';
 import { PresenceProvider } from '../../context/PresenceContext';
+import { ThemeProvider } from '../../context/ThemeContext';
 import { userService } from '../services/userService';
 import { paymentService } from '../../payments/services/paymentService';
 import { apiClient } from '../../services/apiClient';
@@ -64,6 +65,22 @@ describe('ProfilePage', () => {
     (userService.getUserPreferences as any).mockResolvedValue({ language: 'en-US' });
   });
 
+  const renderProfilePage = () => {
+    return render(
+      <I18nextProvider i18n={i18n}>
+        <ThemeProvider>
+          <AuthProvider>
+            <PresenceProvider>
+              <MemoryRouter>
+                <ProfilePage />
+              </MemoryRouter>
+            </PresenceProvider>
+          </AuthProvider>
+        </ThemeProvider>
+      </I18nextProvider>
+    );
+  };
+
   it('should call updateUserPreferences when language is changed and user is authenticated', async () => {
     (apiClient.get as any).mockResolvedValue({
       accessToken: 'fake-token',
@@ -71,17 +88,7 @@ describe('ProfilePage', () => {
     });
     (userService.getUserPreferences as any).mockResolvedValue({ language: 'en-US' });
 
-    render(
-      <I18nextProvider i18n={i18n}>
-        <AuthProvider>
-          <PresenceProvider>
-            <MemoryRouter>
-              <ProfilePage />
-            </MemoryRouter>
-          </PresenceProvider>
-        </AuthProvider>
-      </I18nextProvider>
-    );
+    renderProfilePage();
 
     const polishButton = await screen.findByRole('button', { name: /Polski/i });
     fireEvent.click(polishButton);
@@ -99,17 +106,7 @@ describe('ProfilePage', () => {
       userProfile: null
     });
 
-    render(
-      <I18nextProvider i18n={i18n}>
-        <AuthProvider>
-          <PresenceProvider>
-            <MemoryRouter>
-              <ProfilePage />
-            </MemoryRouter>
-          </PresenceProvider>
-        </AuthProvider>
-      </I18nextProvider>
-    );
+    renderProfilePage();
 
     const englishButton = await screen.findByRole('button', { name: /English/i });
     fireEvent.click(englishButton);
@@ -127,17 +124,7 @@ describe('ProfilePage', () => {
     const mockTxs = [{ txid: 'test-transaction-id', amount: 10, confirmations: 1, zAddress: 'addr1' }];
     (paymentService.getPirateChainTransactions as any).mockResolvedValue(mockTxs);
 
-    render(
-      <I18nextProvider i18n={i18n}>
-        <AuthProvider>
-          <PresenceProvider>
-            <MemoryRouter>
-              <ProfilePage />
-            </MemoryRouter>
-          </PresenceProvider>
-        </AuthProvider>
-      </I18nextProvider>
-    );
+    renderProfilePage();
 
     // Should not show transaction id initially
     expect(screen.queryByText(/test-transac/i)).not.toBeInTheDocument();
@@ -167,17 +154,7 @@ describe('ProfilePage', () => {
     
     (paymentService.addPirateChainViewKey as any).mockRejectedValue(new Error('Invalid key format'));
 
-    render(
-      <I18nextProvider i18n={i18n}>
-        <AuthProvider>
-          <PresenceProvider>
-            <MemoryRouter>
-              <ProfilePage />
-            </MemoryRouter>
-          </PresenceProvider>
-        </AuthProvider>
-      </I18nextProvider>
-    );
+    renderProfilePage();
 
     const inputs = await screen.findAllByPlaceholderText(/Enter your zxview/i);
     const input = inputs[0];
@@ -209,17 +186,7 @@ describe('ProfilePage', () => {
     
     (paymentService.addPirateChainViewKey as any).mockRejectedValue(new Error('Invalid key format'));
 
-    render(
-      <I18nextProvider i18n={i18n}>
-        <AuthProvider>
-          <PresenceProvider>
-            <MemoryRouter>
-              <ProfilePage />
-            </MemoryRouter>
-          </PresenceProvider>
-        </AuthProvider>
-      </I18nextProvider>
-    );
+    renderProfilePage();
 
     const inputs = await screen.findAllByPlaceholderText(/Enter your zxview/i);
     const input = inputs[0];
@@ -242,18 +209,8 @@ describe('ProfilePage', () => {
       accessToken: 'fake-token',
       userProfile: { userId: '1', avatarUrl: '', updatedAt: 0 }
     });
-
-    render(
-      <I18nextProvider i18n={i18n}>
-        <AuthProvider>
-          <PresenceProvider>
-            <MemoryRouter>
-              <ProfilePage />
-            </MemoryRouter>
-          </PresenceProvider>
-        </AuthProvider>
-      </I18nextProvider>
-    );
+    
+    renderProfilePage();
 
     const input = await screen.findByPlaceholderText(/What's on your mind?/i);
     expect(input).toHaveAttribute('maxLength', '100');

@@ -1,17 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { AdCard } from './AdCard';
-import { MemoryRouter } from 'react-router-dom';
 
 const meta: Meta<typeof AdCard> = {
   title: 'Ads/AdCard',
   component: AdCard,
   decorators: [
     (Story) => (
-      <MemoryRouter>
-        <div style={{ padding: '2rem', maxWidth: '350px' }}>
-          <Story />
-        </div>
-      </MemoryRouter>
+      <div style={{ padding: '2rem', maxWidth: '350px' }}>
+        <Story />
+      </div>
     ),
   ],
   tags: ['autodocs'],

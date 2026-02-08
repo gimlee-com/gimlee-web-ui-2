@@ -5,22 +5,27 @@ import { I18nextProvider } from 'react-i18next';
 import i18n from '../../i18n';
 
 describe('MarkdownEditor Real', () => {
-  it('should render without RangeError', () => {
+  it('should render without RangeError', async () => {
     render(
       <I18nextProvider i18n={i18n}>
         <MarkdownEditor value="Hello" />
       </I18nextProvider>
     );
+    await waitFor(() => {
+      expect(screen.getByText('Hello')).toBeInTheDocument();
+    });
   });
 
-  it('should show toolbar with buttons', () => {
+  it('should show toolbar with buttons', async () => {
     render(
       <I18nextProvider i18n={i18n}>
         <MarkdownEditor value="" />
       </I18nextProvider>
     );
     
-    expect(screen.getByTitle(/Bold/i)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByTitle(/Bold/i)).toBeInTheDocument();
+    });
     expect(screen.getByTitle(/Italic/i)).toBeInTheDocument();
     expect(screen.getByText('H1')).toBeInTheDocument();
     expect(screen.getByTitle(/Link/i)).toBeInTheDocument();
