@@ -49,7 +49,7 @@ const UserSpacePage: React.FC = () => {
   const page = parseInt(searchParams.get('p') || '0', 10);
 
   // useNavbarMode automatically handles the back button logic based on location.state.from
-  useNavbarMode('focused', '/ads');
+  useNavbarMode('focused', '/');
 
   useEffect(() => {
     if (!userName) return;

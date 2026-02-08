@@ -70,7 +70,8 @@ Gimlee is built with the following stack:
 - `npm run dev`: Start the development server with HMR.
 - `npm run build`: Build the project for production.
 - `npm run lint`: Run ESLint to check code quality.
-- `npm run test`: Run the test suite (Vitest).
+- `npm run test`: Run the test suite once (CI-friendly).
+- `npm run test:watch`: Run the test suite in interactive watch mode.
 - `npm run test:coverage`: Run tests and generate coverage report.
 - `npm run preview`: Preview the production build locally.
 - `npm run storybook`: Start Storybook for component development.

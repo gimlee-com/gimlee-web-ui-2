@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import UIkit from 'uikit';
 import { AvatarWithPresence } from '../AvatarWithPresence';
 import { PresenceBadge } from '../../profile/components/PresenceBadge';
@@ -33,6 +33,7 @@ export const UserPopup: React.FC<UserPopupProps> = ({
   dropdownContainer
 }) => {
   const { t } = useTranslation();
+  const location = useLocation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [toggleEl, setToggleEl] = useState<HTMLDivElement | null>(null);
   const [currentStatus, setCurrentStatus] = useState<PresenceStatus | undefined>(status);
@@ -143,6 +144,7 @@ export const UserPopup: React.FC<UserPopupProps> = ({
         />
         <Link 
           to={`/u/${username}`} 
+          state={{ from: location.pathname + location.search }}
           className="uk-button uk-button-text uk-margin-small-top"
           onClick={() => setIsModalOpen(false)}
         >

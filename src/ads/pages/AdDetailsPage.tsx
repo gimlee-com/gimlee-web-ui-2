@@ -430,6 +430,7 @@ const AdDetailsPage: React.FC = () => {
                   <div className="uk-margin-top uk-text-center">
                     <Link 
                       to={`/u/${ad.user.username}`} 
+                      state={{ from: location.pathname + location.search }}
                       className="uk-button uk-button-default uk-border-rounded"
                     >
                       {t('adDetails.viewAll')}
@@ -560,7 +561,11 @@ const AdDetailsPage: React.FC = () => {
 
           {ad.user && (
             <motion.div variants={itemVariants} className="uk-margin-medium-top">
-              <Link to={`/u/${ad.user.username}`} className="uk-link-reset uk-display-block">
+              <Link 
+                to={`/u/${ad.user.username}`} 
+                state={{ from: location.pathname + location.search }}
+                className="uk-link-reset uk-display-block"
+              >
                 <Card className={`uk-border-rounded ${styles.sellerCard}`}>
                   <CardBody>
                     <Heading as="h4" className="uk-margin-small-bottom">{t('adDetails.seller')}</Heading>
