@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { PurchaseResponseDto, PurchaseStatus } from '../types/api';
 
-interface PurchaseState {
+export interface PurchaseState {
   activePurchase: PurchaseResponseDto | null;
   isModalOpen: boolean;
 }

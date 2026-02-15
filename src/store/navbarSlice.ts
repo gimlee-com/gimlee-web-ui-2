@@ -3,7 +3,7 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 
 export type NavbarMode = 'default' | 'focused';
 
-interface NavbarState {
+export interface NavbarState {
   mode: NavbarMode;
   backLink?: string;
 }

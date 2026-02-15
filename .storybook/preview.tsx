@@ -1,4 +1,3 @@
-import React from 'react';
 import type { Preview } from '@storybook/react';
 import uikit from 'uikit';
 import Icons from 'uikit/dist/js/uikit-icons';

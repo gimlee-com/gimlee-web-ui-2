@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/tool
 import { chatService } from '../services/chatService';
 import type { ChatMessageDto } from '../types';
 
-interface SingleChatState {
+export interface SingleChatState {
   messages: ChatMessageDto[];
   loading: boolean;
   error: string | null;
@@ -10,7 +10,7 @@ interface SingleChatState {
   hasMore: boolean;
 }
 
-interface ChatState {
+export interface ChatState {
   chats: Record<string, SingleChatState>;
 }
 
