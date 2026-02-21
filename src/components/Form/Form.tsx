@@ -86,6 +86,7 @@ export interface InputProps
   status?: FormStatus
   variant?: 'blank'
   formWidth?: 'xsmall' | 'small' | 'medium' | 'large'
+  layout?: boolean | "position" | "size" | "preserve-aspect"
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -96,6 +97,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       variant,
       formWidth,
       type = 'text',
+      layout = true,
       ...props
     },
     ref
@@ -138,7 +140,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <motion.input
         ref={ref as any}
-        layout
+        layout={layout}
         className={classNames.join(' ') || undefined}
         type={type}
         {...rest}
@@ -164,11 +166,12 @@ export interface SelectProps
   status?: FormStatus
   variant?: 'blank'
   formWidth?: 'xsmall' | 'small' | 'medium' | 'large'
+  layout?: boolean | "position" | "size" | "preserve-aspect"
 }
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
   (
-    { children, className: customClassName, status, variant, formWidth, ...props },
+    { children, className: customClassName, status, variant, formWidth, layout = true, ...props },
     ref
   ) => {
     const classNames = ['uk-select']
@@ -182,7 +185,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
     return (
       <motion.select
         ref={ref as any}
-        layout
+        layout={layout}
         className={classNames.join(' ')}
         {...rest}
       >
@@ -197,10 +200,11 @@ export interface TextAreaProps
   status?: FormStatus
   variant?: 'blank'
   formWidth?: 'xsmall' | 'small' | 'medium' | 'large'
+  layout?: boolean | "position" | "size" | "preserve-aspect"
 }
 
 export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
-  ({ className: customClassName, status, variant, formWidth, ...props }, ref) => {
+  ({ className: customClassName, status, variant, formWidth, layout = true, ...props }, ref) => {
     const classNames = ['uk-textarea']
     if (status) classNames.push(`uk-form-${status}`)
     if (variant === 'blank') classNames.push('uk-form-blank')
@@ -212,7 +216,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
     return (
       <motion.textarea
         ref={ref as any}
-        layout
+        layout={layout}
         className={classNames.join(' ')}
         {...rest}
       />

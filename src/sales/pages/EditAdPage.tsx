@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'motion/react';
+import UIkit from 'uikit';
 import { salesService } from '../services/salesService';
 import { cityService } from '../../ads/services/cityService';
 import { apiClient } from '../../services/apiClient';
@@ -165,9 +166,23 @@ const EditAdPage: React.FC = () => {
           categoryId: selectedCategoryId || undefined
       };
       await salesService.updateAd(id, updateData);
+      UIkit.notification({
+        message: t('ads.saveSuccess'),
+        status: 'success',
+        pos: 'top-center',
+        timeout: 3000
+      });
       navigate('/sales/ads');
     } catch (err: any) {
-      setError(err.message || t('auth.errors.generic'));
+      const message = err.message || t('auth.errors.generic');
+      UIkit.notification({
+        message,
+        status: 'danger',
+        pos: 'top-center',
+        timeout: 5000
+      });
+      // Remove local error state since we show toast
+      // setError(message); 
     } finally {
       setSaving(false);
     }
@@ -279,6 +294,7 @@ const EditAdPage: React.FC = () => {
               <div className="uk-margin">
                 <label className="uk-form-label">{t('ads.title')}</label>
                 <Input 
+                  layout={false}
                   {...register('title', { required: true })} 
                   status={errors.title && !titleFocused ? 'danger' : undefined}
                   onFocus={() => setTitleFocused(true)}
@@ -326,6 +342,7 @@ const EditAdPage: React.FC = () => {
                 <label className="uk-form-label">{t('ads.city')}</label>
                 <div className="uk-inline uk-width-1-1">
                   <Input
+                    layout={false}
                     type="text"
                     placeholder={t('ads.cityPlaceholder')}
                     value={citySearch}
@@ -388,16 +405,22 @@ const EditAdPage: React.FC = () => {
               <Grid gap="small">
                 <div className="uk-width-1-2@m">
                   <label className="uk-form-label">{t('ads.price')}</label>
-                  <Input 
-                    {...register('price')} 
-                    type="number" 
-                    step="0.00000001" 
-                    onFocus={() => setPriceFocused(true)}
-                    onBlur={(e) => {
-                      register('price').onBlur(e);
-                      setPriceFocused(false);
-                    }}
-                  />
+                  {(() => {
+                    const priceReg = register('price', { valueAsNumber: true });
+                    return (
+                      <Input 
+                        layout={false}
+                        {...priceReg} 
+                        type="number" 
+                        step="0.00000001" 
+                        onFocus={() => setPriceFocused(true)}
+                        onBlur={(e) => {
+                          priceReg.onBlur(e);
+                          setPriceFocused(false);
+                        }}
+                      />
+                    );
+                  })()}
                   {priceFocused && (
                     <div className="uk-text-primary uk-text-small uk-margin-small-top">
                       {t('ads.priceGuidance')}
@@ -406,7 +429,7 @@ const EditAdPage: React.FC = () => {
                 </div>
                 <div className="uk-width-1-2@m">
                   <label className="uk-form-label">{t('ads.currency')}</label>
-                  <Select {...register('currency')}>
+                  <Select layout={false} {...register('currency')}>
                     {allowedCurrencies.map(c => (
                       <option key={c.code} value={c.code}>{c.code} ({c.name})</option>
                     ))}
@@ -421,6 +444,7 @@ const EditAdPage: React.FC = () => {
                   name="stock"
                   render={({ field }) => (
                     <NumberInput 
+                      layout={false}
                       {...field}
                       min={0}
                       formWidth="small"
