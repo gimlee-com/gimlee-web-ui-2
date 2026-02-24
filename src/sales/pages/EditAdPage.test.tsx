@@ -38,6 +38,11 @@ const mockAd = {
   title: 'Test Ad',
   description: 'Test Description',
   price: { amount: 10, currency: 'ARRR' },
+  pricingMode: 'FIXED_CRYPTO',
+  settlementCurrencies: ['ARRR'],
+  frozenCurrencies: [],
+  isBuyable: true,
+  volatilityProtection: false,
   location: {
     city: {
       id: 'city-1',
@@ -49,7 +54,8 @@ const mockAd = {
   mediaPaths: [],
   mainPhotoPath: null,
   status: 'ACTIVE',
-  stock: 1
+  stock: 1,
+  availableStock: 1
 };
 
 const renderEditAdPage = () => {
@@ -70,10 +76,16 @@ describe('EditAdPage City Suggester', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     (salesService.getAdById as any).mockResolvedValue(mockAd);
-    (salesService.getAllowedCurrencies as any).mockResolvedValue([
-      { code: 'ARRR', name: 'Pirate Chain' },
-      { code: 'YEC', name: 'YCash' }
-    ]);
+    (salesService.getAllowedCurrencies as any).mockResolvedValue({
+      settlementCurrencies: [
+        { code: 'ARRR', name: 'Pirate Chain' },
+        { code: 'YEC', name: 'YCash' }
+      ],
+      referenceCurrencies: [
+        { code: 'USD', name: 'US Dollar' },
+        { code: 'PLN', name: 'Polish Zloty' }
+      ]
+    });
   });
 
   it('should display city with district on initial load', async () => {

@@ -35,7 +35,8 @@ const resources = {
         "logout": "Logout",
         "login": "Login",
         "register": "Register",
-        "theme": "Theme"
+        "theme": "Theme",
+        "terms": "Terms of Service"
       },
       "home": {
         "featuredAds": "Featured Ads",
@@ -54,6 +55,7 @@ const resources = {
         "loggingIn": "Logging in...",
         "registering": "Registering...",
         "noAccount": "Don't have an account?",
+        "termsAcknowledgment": "By registering, you agree to our <1>Terms of Service</1>.",
         "hasAccount": "Already have an account?",
         "loginRequired": "Almost there! Please log in to access the requested page. New to Gimlee? <1>Register here</1>.",
         "registrationSuccess": "Your account has been registered and the confirmation code was sent to email {{email}}. Please log in to complete registration.",
@@ -199,7 +201,11 @@ const resources = {
         "pendingPurchaseExists": "You already have a pending purchase. Please complete it before starting a new one.",
         "items": "Items",
         "paymentInstructions": "Payment is currently being processed.",
-        "viewPaymentInfo": "View Payment Info"
+        "viewPaymentInfo": "View Payment Info",
+        "currencyFrozen": "This payment method is temporarily unavailable due to market volatility. Try another payment method.",
+        "currencyNotAccepted": "This ad does not accept payment in {{currency}}.",
+        "priceMismatch": "The price has changed since you loaded this page. Please review the updated prices and try again.",
+        "insufficientStock": "Only {{count}} items available."
       },
       "profile": {
         "title": "Profile & Settings",
@@ -276,6 +282,45 @@ const resources = {
         "loadMore": "Load more messages",
         "newMessages_one": "{{count}} new message",
         "newMessages_other": "{{count}} new messages"
+      },
+      "volatility": {
+        "banner": {
+          "volatile": "⚠️ High volatility detected for {{currency}}. Protected ads may be temporarily frozen.",
+          "stale": "⚠️ Exchange rate data for {{currency}} is outdated. Trading in {{currency}} is temporarily suspended for safety.",
+          "cooldown": "{{currency}} is recovering. Trading expected to resume shortly."
+        }
+      },
+      "pricing": {
+        "mode": "Pricing Mode",
+        "fixedCrypto": "Fixed Crypto Price",
+        "fixedCryptoDesc": "I want to set an exact price in a cryptocurrency.",
+        "pegged": "Pegged Price",
+        "peggedDesc": "I want to set a price in a stable currency. Buyers pay the equivalent in crypto.",
+        "settlementCurrencies": "Accepted Payment Methods",
+        "settlementCurrenciesHint": "Select which cryptocurrencies buyers can pay with.",
+        "referenceCurrency": "Price Currency",
+        "volatilityProtection": "Volatility Protection",
+        "volatilityProtectionDesc": "Your ad will be temporarily frozen if the crypto market drops sharply.",
+        "multiCurrencyTip": "Tip: Accepting multiple currencies reduces the chance of your ad being fully suspended during market volatility.",
+        "enableViewingKey": "Register a viewing key to enable",
+        "payWith": "Pay with",
+        "suspended": "Suspended",
+        "temporarilyUnavailable": "Temporarily unavailable due to market conditions.",
+        "allFrozen": "All payment methods temporarily suspended due to market volatility. Please check back soon.",
+        "currencyFrozen": "Temporarily suspended",
+        "partiallyFrozen": "Some payment methods are temporarily unavailable.",
+        "fixedPrice": "Fixed price",
+        "peggedPrice": "Pegged price",
+        "frozenStatus": {
+          "active": "Active",
+          "partiallyFrozen": "Partially frozen",
+          "fullyFrozen": "Fully frozen"
+        }
+      },
+      "terms": {
+        "title": "Terms of Service",
+        "lastUpdated": "Last updated: February 2026",
+        "content": "## 1. Acceptance of Terms\n\nBy accessing or using the Gimlee platform (\"Platform\"), you agree to be bound by these Terms of Service (\"Terms\"). If you do not agree to these Terms, you may not use the Platform. Your continued use of the Platform following the posting of changes to these Terms constitutes acceptance of those changes.\n\n## 2. Platform Description\n\nGimlee is a decentralized, peer-to-peer (P2P) cryptocurrency marketplace that connects buyers and sellers for exchanging goods and services using cryptocurrency. The Platform uses a **non-custodial** payment verification model — sellers provide a read-only **viewing key**, allowing the Platform to verify payments on the blockchain without ever taking custody of funds.\n\nGimlee does not hold, manage, or transfer any cryptocurrency on behalf of its users. All payments occur directly between buyers and sellers on their respective blockchain networks.\n\n## 3. User Accounts & Responsibilities\n\n### 3.1 Registration\nYou must register an account to buy or sell on the Platform. You agree to provide accurate, current, and complete information during registration and to keep your account credentials secure.\n\n### 3.2 Viewing Keys & Roles\nTo sell on the Platform, you must register a **viewing key** for at least one supported settlement cryptocurrency. Viewing keys grant the Platform read-only access to verify incoming payments. You are solely responsible for the security of your private keys and wallet credentials — the Platform never requests nor stores private spending keys.\n\nAccess to settlement currencies is gated by roles (e.g., registering a PirateChain viewing key grants the PIRATE role). You may only accept payments in currencies for which you hold the corresponding role.\n\n### 3.3 User Spaces\nUsers may create personalized public profile pages (\"Spaces\") to showcase their ads and build reputation. You are solely responsible for the content you publish in your Space.\n\n## 4. Marketplace Rules\n\n### 4.1 Listings\nSellers may create advertisements (\"Ads\") for goods and services. All listings must comply with applicable laws and Platform guidelines. The Platform reserves the right to remove any listing that violates these Terms.\n\n### 4.2 Prohibited Items\nYou may not list items that are illegal, fraudulent, counterfeit, or otherwise prohibited by applicable law. The Platform reserves the right to determine, at its sole discretion, what constitutes a prohibited item.\n\n### 4.3 Transactions\nAll transactions are between the buyer and seller directly. The Platform facilitates discovery and payment verification but is not a party to any transaction. Buyers and sellers are solely responsible for fulfilling their respective obligations (delivery of goods, payment, etc.).\n\n## 5. Payments & Settlement\n\n### 5.1 Settlement Currencies\nBuyers pay exclusively in supported settlement cryptocurrencies (currently: **ARRR** — PirateChain, **YEC** — Ycash). Sellers select which settlement currencies they accept per ad. At least one settlement currency must be accepted for an ad to be active.\n\n### 5.2 Non-Custodial Model\nThe Platform does not hold funds at any point during a transaction. Payment verification is performed using the seller's viewing key, which provides read-only blockchain access. The Platform cannot move, freeze, or seize any cryptocurrency.\n\n### 5.3 Exchange Rates\nWhen currency conversion is required (e.g., for pegged-price ads), exchange rates are sourced from multiple external providers and updated frequently. The Platform does not guarantee the accuracy of exchange rates and is not liable for any losses arising from rate fluctuations between the time of purchase initiation and payment confirmation.\n\n## 6. Ad Pricing & Automatic Trading Suspension\n\n### 6.1 Pricing Modes\nGimlee supports two pricing modes for advertisements:\n\n1. **Fixed Crypto Price:** The seller specifies an exact price in a cryptocurrency (e.g., 100 ARRR). The buyer pays this exact amount. The price does not adjust based on market conditions.\n\n2. **Pegged (Reference) Price:** The seller specifies a price in a reference currency (e.g., 50 USD, 0.5 XAU). The buyer pays the market-rate equivalent in their chosen settlement cryptocurrency at the time of purchase. Exchange rates are sourced from multiple providers and updated frequently.\n\n### 6.2 Volatility Protection (Pegged Pricing Only)\nSellers using *Pegged Pricing* may optionally enable \"Volatility Protection.\" This feature is **not available** for ads using *Fixed Crypto Pricing*, as those sellers have accepted the inherent market risk.\n\n### 6.3 Definitions\n- **Protected Ad:** An ad using *Pegged Pricing* where the seller has explicitly enabled \"Volatility Protection.\"\n- **Significant Negative Volatility:** A condition where the market price of a settlement cryptocurrency drops by **5.0% or more** against USDT within a rolling **10-minute window**.\n- **Stale Market Data:** A condition where the Platform has not received a valid exchange rate update for a cryptocurrency for more than **1 hour**.\n\n### 6.4 Automatic Suspension\nWhen the system detects *Significant Negative Volatility* or *Stale Market Data* for a settlement cryptocurrency:\n1. All *Protected Ads* accepting that cryptocurrency have that specific payment method **frozen**.\n2. The frozen payment method is disabled — buyers cannot purchase using the affected cryptocurrency.\n3. If the ad accepts other non-affected settlement currencies, those remain fully available for purchase. The ad continues to be listed and purchasable via the unaffected currencies.\n4. Only when **all** of an ad's accepted settlement currencies are simultaneously frozen does the ad become fully unpurchasable. Even in this case, the ad remains visible to buyers with a notification explaining the temporary suspension.\n\n### 6.5 Cooldown & Recovery\n- **Volatility:** Once the price stabilizes (drop < 5%), the system enters a mandatory **30-minute Cooldown Period**. Trading in the affected currency resumes only after the cooldown expires *and* stability is maintained.\n- **Stale Data:** Trading resumes immediately once fresh exchange rate data is received.\n\n### 6.6 Seller Override\nSellers may disable Volatility Protection for individual ads at any time, accepting the risk of selling at potentially unfavorable rates.\n\n## 7. Intellectual Property\n\n### 7.1 Platform Content\nAll Platform branding, design, and software are the intellectual property of Gimlee. You may not reproduce, modify, or distribute any Platform content without prior written consent.\n\n### 7.2 User Content\nYou retain ownership of content you upload (descriptions, images, etc.). By uploading content, you grant the Platform a non-exclusive, worldwide license to display, distribute, and promote your content in connection with the Platform's services.\n\n### 7.3 Content Standards\nAll user-generated content is subject to sanitization and moderation. External images within descriptions are prohibited to prevent tracking and bandwidth abuse.\n\n## 8. Limitation of Liability\n\n### 8.1 No Custody Disclaimer\nThe Platform does not hold, manage, or have access to any user's cryptocurrency funds. The Platform is not liable for any loss of funds due to incorrect wallet addresses, blockchain network issues, or user error.\n\n### 8.2 Market Risk\nCryptocurrency values are inherently volatile. The Platform is not responsible for any financial losses arising from market price fluctuations, whether or not Volatility Protection is enabled.\n\n### 8.3 Service Availability\nThe Platform is provided \"as is\" without warranties of any kind. We do not guarantee uninterrupted or error-free operation. The Platform shall not be liable for any damages arising from service interruptions, data loss, or system failures.\n\n## 9. Dispute Resolution\n\nAs a peer-to-peer marketplace, the Platform acts as a facilitator, not a party to transactions. In the event of a dispute between a buyer and seller:\n1. Parties are encouraged to resolve disputes directly through the Platform's messaging system.\n2. The Platform may, at its discretion, provide mediation assistance but is under no obligation to do so.\n3. The Platform is not liable for any losses, damages, or disputes arising from transactions between users.\n\n## 10. Modifications to Terms\n\nThe Platform reserves the right to modify these Terms at any time. Material changes will be communicated through the Platform's notification system. Your continued use of the Platform after such changes constitutes acceptance of the modified Terms."
       }
     }
   },
@@ -311,7 +356,8 @@ const resources = {
         "logout": "Wyloguj",
         "login": "Zaloguj",
         "register": "Zarejestruj",
-        "theme": "Motyw"
+        "theme": "Motyw",
+        "terms": "Regulamin"
       },
       "home": {
         "featuredAds": "Wyróżnione ogłoszenia",
@@ -330,6 +376,7 @@ const resources = {
         "loggingIn": "Logowanie...",
         "registering": "Rejestracja...",
         "noAccount": "Nie masz konta?",
+        "termsAcknowledgment": "Rejestrując się, akceptujesz nasz <1>Regulamin</1>.",
         "hasAccount": "Masz już konto?",
         "loginRequired": "Już prawie! Zaloguj się, aby uzyskać dostęp do wybranej strony. Pierwszy raz w Gimlee? <1>Zarejestruj się tutaj</1>.",
         "registrationSuccess": "Twoje konto zostało zarejestrowane, a kod potwierdzający został wysłany na adres {{email}}. Zaloguj się, aby dokończyć rejestrację.",
@@ -475,7 +522,11 @@ const resources = {
         "pendingPurchaseExists": "Masz już oczekujący zakup. Dokończ go przed rozpoczęciem nowego.",
         "items": "Produkty",
         "paymentInstructions": "Płatność jest obecnie przetwarzana.",
-        "viewPaymentInfo": "Pokaż dane do płatności"
+        "viewPaymentInfo": "Pokaż dane do płatności",
+        "currencyFrozen": "Ta metoda płatności jest tymczasowo niedostępna z powodu zmienności rynku. Spróbuj innej metody płatności.",
+        "currencyNotAccepted": "To ogłoszenie nie akceptuje płatności w {{currency}}.",
+        "priceMismatch": "Cena zmieniła się od momentu załadowania strony. Sprawdź zaktualizowane ceny i spróbuj ponownie.",
+        "insufficientStock": "Dostępnych jest tylko {{count}} sztuk."
       },
       "profile": {
         "title": "Profil i ustawienia",
@@ -553,6 +604,45 @@ const resources = {
         "newMessages_one": "{{count}} nowa wiadomość",
         "newMessages_few": "{{count}} nowe wiadomości",
         "newMessages_many": "{{count}} nowych wiadomości"
+      },
+      "volatility": {
+        "banner": {
+          "volatile": "⚠️ Wykryto dużą zmienność dla {{currency}}. Chronione ogłoszenia mogą być tymczasowo zamrożone.",
+          "stale": "⚠️ Dane kursów wymiany dla {{currency}} są nieaktualne. Handel w {{currency}} jest tymczasowo zawieszony dla bezpieczeństwa.",
+          "cooldown": "{{currency}} odzyskuje stabilność. Handel powinien wkrótce zostać wznowiony."
+        }
+      },
+      "pricing": {
+        "mode": "Tryb wyceny",
+        "fixedCrypto": "Stała cena krypto",
+        "fixedCryptoDesc": "Chcę ustawić dokładną cenę w kryptowalucie.",
+        "pegged": "Cena powiązana",
+        "peggedDesc": "Chcę ustawić cenę w stabilnej walucie. Kupujący płacą równowartość w krypto.",
+        "settlementCurrencies": "Akceptowane metody płatności",
+        "settlementCurrenciesHint": "Wybierz, jakimi kryptowalutami kupujący mogą płacić.",
+        "referenceCurrency": "Waluta ceny",
+        "volatilityProtection": "Ochrona przed zmiennością",
+        "volatilityProtectionDesc": "Twoje ogłoszenie zostanie tymczasowo zamrożone, jeśli rynek krypto gwałtownie spadnie.",
+        "multiCurrencyTip": "Wskazówka: Akceptowanie wielu walut zmniejsza szansę na pełne zawieszenie ogłoszenia podczas zmienności rynku.",
+        "enableViewingKey": "Zarejestruj klucz podglądu, aby włączyć",
+        "payWith": "Zapłać za pomocą",
+        "suspended": "Zawieszony",
+        "temporarilyUnavailable": "Tymczasowo niedostępny z powodu warunków rynkowych.",
+        "allFrozen": "Wszystkie metody płatności tymczasowo zawieszone z powodu zmienności rynku. Spróbuj ponownie później.",
+        "currencyFrozen": "Tymczasowo zawieszone",
+        "partiallyFrozen": "Niektóre metody płatności są tymczasowo niedostępne.",
+        "fixedPrice": "Cena stała",
+        "peggedPrice": "Cena powiązana",
+        "frozenStatus": {
+          "active": "Aktywny",
+          "partiallyFrozen": "Częściowo zamrożony",
+          "fullyFrozen": "Całkowicie zamrożony"
+        }
+      },
+      "terms": {
+        "title": "Regulamin",
+        "lastUpdated": "Ostatnia aktualizacja: luty 2026",
+        "content": "## 1. Akceptacja Regulaminu\n\nKorzystając z platformy Gimlee („Platforma\"), zgadzasz się na niniejszy Regulamin. Jeśli nie akceptujesz tych warunków, nie możesz korzystać z Platformy. Dalsze korzystanie z Platformy po wprowadzeniu zmian do Regulaminu oznacza ich akceptację.\n\n## 2. Opis Platformy\n\nGimlee to zdecentralizowany rynek kryptowalutowy typu peer-to-peer (P2P), który łączy kupujących i sprzedających w wymianie towarów i usług za kryptowaluty. Platforma wykorzystuje **bezpowierniczy** model weryfikacji płatności — sprzedawcy udostępniają **klucz podglądu** (tylko do odczytu), umożliwiając Platformie weryfikację płatności na blockchainie bez przejmowania środków.\n\nGimlee nie przechowuje, nie zarządza ani nie transferuje żadnych kryptowalut w imieniu swoich użytkowników. Wszystkie płatności odbywają się bezpośrednio między kupującymi a sprzedającymi w ich odpowiednich sieciach blockchain.\n\n## 3. Konta Użytkowników i Obowiązki\n\n### 3.1 Rejestracja\nMusisz zarejestrować konto, aby kupować lub sprzedawać na Platformie. Zgadzasz się podać dokładne, aktualne i kompletne informacje podczas rejestracji oraz dbać o bezpieczeństwo swoich danych logowania.\n\n### 3.2 Klucze Podglądu i Role\nAby sprzedawać na Platformie, musisz zarejestrować **klucz podglądu** dla co najmniej jednej obsługiwanej kryptowaluty rozliczeniowej. Klucze podglądu dają Platformie dostęp tylko do odczytu w celu weryfikacji przychodzących płatności. Ponosisz wyłączną odpowiedzialność za bezpieczeństwo swoich kluczy prywatnych i danych portfela — Platforma nigdy nie żąda ani nie przechowuje prywatnych kluczy wydatkowych.\n\n### 3.3 Przestrzenie Użytkowników\nUżytkownicy mogą tworzyć spersonalizowane publiczne strony profilowe („Przestrzenie\"), aby prezentować swoje ogłoszenia i budować reputację. Ponosisz wyłączną odpowiedzialność za treści publikowane w swojej Przestrzeni.\n\n## 4. Zasady Rynku\n\n### 4.1 Ogłoszenia\nSprzedawcy mogą tworzyć ogłoszenia dotyczące towarów i usług. Wszystkie ogłoszenia muszą być zgodne z obowiązującym prawem i wytycznymi Platformy. Platforma zastrzega sobie prawo do usunięcia każdego ogłoszenia naruszającego niniejszy Regulamin.\n\n### 4.2 Przedmioty Zabronione\nNie wolno wystawiać przedmiotów, które są nielegalne, oszukańcze, podrobione lub w inny sposób zakazane przez obowiązujące prawo.\n\n### 4.3 Transakcje\nWszystkie transakcje odbywają się bezpośrednio między kupującym a sprzedającym. Platforma ułatwia odkrywanie ofert i weryfikację płatności, ale nie jest stroną żadnej transakcji.\n\n## 5. Płatności i Rozliczenia\n\n### 5.1 Waluty Rozliczeniowe\nKupujący płacą wyłącznie w obsługiwanych kryptowalutach rozliczeniowych (obecnie: **ARRR** — PirateChain, **YEC** — Ycash). Sprzedawcy wybierają, które waluty rozliczeniowe akceptują dla każdego ogłoszenia.\n\n### 5.2 Model Bezpowierniczy\nPlatforma nie przechowuje środków na żadnym etapie transakcji. Weryfikacja płatności odbywa się za pomocą klucza podglądu sprzedawcy.\n\n### 5.3 Kursy Wymiany\nGdy wymagana jest konwersja walut, kursy wymiany pochodzą z wielu zewnętrznych dostawców. Platforma nie gwarantuje dokładności kursów wymiany.\n\n## 6. Wycena Ogłoszeń i Automatyczne Zawieszenie Handlu\n\n### 6.1 Tryby Wyceny\nGimlee obsługuje dwa tryby wyceny ogłoszeń:\n\n1. **Stała Cena Krypto:** Sprzedawca określa dokładną cenę w kryptowalucie (np. 100 ARRR). Kupujący płaci tę dokładną kwotę.\n\n2. **Cena Powiązana (Referencyjna):** Sprzedawca określa cenę w walucie referencyjnej (np. 50 USD, 0,5 XAU). Kupujący płaci rynkowy ekwiwalent w wybranej kryptowalucie rozliczeniowej w momencie zakupu.\n\n### 6.2 Ochrona przed Zmiennością (Tylko Cena Powiązana)\nSprzedawcy korzystający z *Ceny Powiązanej* mogą opcjonalnie włączyć „Ochronę przed Zmiennością\". Ta funkcja **nie jest dostępna** dla ogłoszeń z *Stałą Ceną Krypto*.\n\n### 6.3 Definicje\n- **Chronione Ogłoszenie:** Ogłoszenie z *Ceną Powiązaną* z włączoną „Ochroną przed Zmiennością\".\n- **Znacząca Zmienność Negatywna:** Spadek ceny kryptowaluty rozliczeniowej o **5,0% lub więcej** wobec USDT w ciągu **10-minutowego** okna.\n- **Nieaktualne Dane Rynkowe:** Brak aktualizacji kursu wymiany kryptowaluty przez ponad **1 godzinę**.\n\n### 6.4 Automatyczne Zawieszenie\nGdy system wykryje *Znaczącą Zmienność Negatywną* lub *Nieaktualne Dane Rynkowe*:\n1. Wszystkie *Chronione Ogłoszenia* akceptujące tę kryptowalutę mają tę metodę płatności **zamrożoną**.\n2. Jeśli ogłoszenie akceptuje inne, nienaruszone waluty — te pozostają w pełni dostępne.\n3. Dopiero gdy **wszystkie** akceptowane waluty rozliczeniowe ogłoszenia są jednocześnie zamrożone, zakup przedmiotu ogłoszenia jest niemożliwy.\n\n### 6.5 Okres Stabilizacji i Powrót\n- **Zmienność:** Po stabilizacji ceny system wchodzi w obowiązkowy **30-minutowy okres stabilizacji**. Handel wznawia się po jego zakończeniu.\n- **Nieaktualne Dane:** Handel wznawia się natychmiast po otrzymaniu aktualnych danych.\n\n### 6.6 Wyłączenie przez Sprzedawcę\nSprzedawcy mogą w dowolnym momencie wyłączyć Ochronę przed Zmiennością, akceptując ryzyko sprzedaży po niekorzystnych kursach.\n\n## 7. Własność Intelektualna\n\n### 7.1 Treści Platformy\nWszystkie znaki towarowe, projekty i oprogramowanie Platformy stanowią własność intelektualną Gimlee.\n\n### 7.2 Treści Użytkowników\nZachowujesz własność przesyłanych treści. Przesyłając treści, udzielasz Platformie niewyłącznej, ogólnoświatowej licencji na ich wyświetlanie i dystrybucję w związku z usługami Platformy.\n\n## 8. Ograniczenie Odpowiedzialności\n\n### 8.1 Brak Powiernictwa\nPlatforma nie przechowuje ani nie zarządza środkami kryptowalutowymi użytkowników. Platforma nie ponosi odpowiedzialności za utratę środków.\n\n### 8.2 Ryzyko Rynkowe\nWartości kryptowalut są z natury zmienne. Platforma nie ponosi odpowiedzialności za straty finansowe wynikające z wahań cen rynkowych.\n\n### 8.3 Dostępność Usług\nPlatforma jest dostarczana „tak jak jest\" bez żadnych gwarancji.\n\n## 9. Rozwiązywanie Sporów\n\nJako rynek peer-to-peer, Platforma działa jako pośrednik, a nie strona transakcji. W przypadku sporu strony zachęcane są do bezpośredniego rozwiązania za pośrednictwem systemu wiadomości Platformy.\n\n## 10. Zmiany Regulaminu\n\nPlatforma zastrzega sobie prawo do zmiany niniejszego Regulaminu w dowolnym momencie. Istotne zmiany będą komunikowane za pośrednictwem systemu powiadomień Platformy. Dalsze korzystanie z Platformy po takich zmianach oznacza akceptację zmienionego Regulaminu."
       }
     }
   }

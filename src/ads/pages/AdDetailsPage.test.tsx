@@ -9,7 +9,7 @@ import { adService } from '../services/adService';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '../../i18n';
 import styles from './AdDetailsPage.module.scss';
-import type { AdDetailsDto } from '../../types/api';
+import type { AdDiscoveryDetailsDto } from '../../types/api';
 
 vi.mock('../services/adService', () => ({
   adService: {
@@ -17,14 +17,21 @@ vi.mock('../services/adService', () => ({
   },
 }));
 
-const mockAd: AdDetailsDto = {
+const mockAd: AdDiscoveryDetailsDto = {
   id: '1',
   title: 'Test Ad',
   description: 'Test Description',
   price: { amount: 100, currency: 'ARRR' },
+  pricingMode: 'FIXED_CRYPTO',
+  settlementCurrencies: ['ARRR'],
+  settlementPrices: [{ amount: 100, currency: 'ARRR' }],
+  preferredPrice: { amount: 100, currency: 'ARRR' },
+  frozenCurrencies: [],
+  isBuyable: true,
+  userCanPurchase: true,
   mediaPaths: ['image1.jpg', 'image2.jpg'],
   location: { city: { id: 'c1', name: 'Test City', country: 'Test Country' } },
-  status: 'ACTIVE'
+  availableStock: 5
 };
 
 const renderAdDetailsPage = (id = '1') => {
@@ -56,10 +63,11 @@ describe('AdDetailsPage', () => {
 
     await waitFor(() => {
       expect(screen.getAllByText('Test Ad')[0]).toBeInTheDocument();
-      expect(screen.getByText('Test Description')).toBeInTheDocument();
-      expect(screen.getByText(/ARRR 100\.00/)).toBeInTheDocument();
-      expect(screen.getByText('Test City, Test Country')).toBeInTheDocument();
     }, { timeout: 5000 });
+
+    expect(screen.getByText('Test Description')).toBeInTheDocument();
+    expect(screen.getAllByText(/ARRR 100\.00/).length).toBeGreaterThan(0);
+    expect(screen.getByText('Test City, Test Country')).toBeInTheDocument();
   });
 
   it('should change active image when thumbnail is clicked', async () => {
@@ -177,7 +185,7 @@ describe('AdDetailsPage', () => {
   });
 
   it('should render category breadcrumbs in NavbarPortal', async () => {
-    const adWithCategory: AdDetailsDto = {
+    const adWithCategory: AdDiscoveryDetailsDto = {
       ...mockAd,
       categoryPath: [
         { id: 1, name: 'Electronics' },
@@ -196,7 +204,7 @@ describe('AdDetailsPage', () => {
 
   it('should render "Member since" as relative time', async () => {
     const oneYearAgo = (Date.now() - 365 * 24 * 60 * 60 * 1000) * 1000; // microseconds
-    const adWithMemberSince: AdDetailsDto = {
+    const adWithMemberSince: AdDiscoveryDetailsDto = {
       ...mockAd,
       user: {
         userId: 'u1',
@@ -218,7 +226,10 @@ describe('AdDetailsPage', () => {
     const manyOtherAds = Array.from({ length: 10 }, (_, i) => ({
       id: `other-${i}`,
       title: `Other Ad ${i}`,
-      price: { amount: 10 + i, currency: 'ARRR' }
+      preferredPrice: { amount: 10 + i, currency: 'ARRR' },
+      pricingMode: 'FIXED_CRYPTO' as const,
+      settlementCurrencies: ['ARRR'],
+      isBuyable: true
     }));
     
     vi.mocked(adService.getAdById).mockResolvedValue({

@@ -5,7 +5,7 @@ import UIkit from 'uikit';
 import { motion, AnimatePresence, stagger } from 'motion/react';
 import { salesService } from '../services/salesService';
 import type { SalesAdsRequestDto } from '../services/salesService';
-import type { AdPreviewDto, PageAdPreviewDto } from '../../types/api';
+import type { AdDto, PageAdDto } from '../../types/api';
 import { Heading } from '../../components/uikit/Heading/Heading';
 import { Spinner } from '../../components/uikit/Spinner/Spinner';
 import { Button } from '../../components/uikit/Button/Button';
@@ -36,7 +36,7 @@ const itemVariants = {
 
 const SalesAdsPage: React.FC = () => {
   const { t } = useTranslation();
-  const [adsPage, setAdsPage] = useState<PageAdPreviewDto | null>(null);
+  const [adsPage, setAdsPage] = useState<PageAdDto | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -62,7 +62,7 @@ const SalesAdsPage: React.FC = () => {
     fetchAds();
   }, [fetchAds]);
 
-  const handleToggleStatus = async (ad: AdPreviewDto) => {
+  const handleToggleStatus = async (ad: AdDto) => {
     try {
       if (ad.status === 'ACTIVE') {
         await salesService.deactivateAd(ad.id);

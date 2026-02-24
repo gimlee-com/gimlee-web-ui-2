@@ -7,7 +7,7 @@ import UIkit from 'uikit';
 import { salesService } from '../services/salesService';
 import { cityService } from '../../ads/services/cityService';
 import { apiClient } from '../../services/apiClient';
-import type { AdDetailsDto, UpdateAdRequestDto, CitySuggestion, CityDetailsDto, MediaUploadResponseDto, CurrencyInfoDto, CategoryPathElementDto } from '../../types/api';
+import type { AdDto, UpdateAdRequestDto, CitySuggestion, CityDetailsDto, MediaUploadResponseDto, AllowedCurrenciesDto, CategoryPathElementDto, PricingMode } from '../../types/api';
 import { Heading } from '../../components/uikit/Heading/Heading';
 import { Spinner } from '../../components/uikit/Spinner/Spinner';
 import { Button } from '../../components/uikit/Button/Button';
@@ -52,10 +52,10 @@ const EditAdPage: React.FC = () => {
   const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { register, handleSubmit, reset, control, formState: { errors } } = useForm<UpdateAdRequestDto>({
+  const { register, handleSubmit, reset, control, watch, setValue, formState: { errors } } = useForm<UpdateAdRequestDto>({
     mode: 'onBlur'
   });
-  const [ad, setAd] = useState<AdDetailsDto | null>(null);
+  const [ad, setAd] = useState<AdDto | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -66,12 +66,15 @@ const EditAdPage: React.FC = () => {
   const [selectedCity, setSelectedCity] = useState<CityDetailsDto | null>(null);
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
   const [selectedCategoryPath, setSelectedCategoryPath] = useState<CategoryPathElementDto[]>([]);
-  const [allowedCurrencies, setAllowedCurrencies] = useState<CurrencyInfoDto[]>([]);
+  const [allowedCurrencies, setAllowedCurrencies] = useState<AllowedCurrenciesDto>({ settlementCurrencies: [], referenceCurrencies: [] });
   const [titleFocused, setTitleFocused] = useState(false);
   const [descriptionFocused, setDescriptionFocused] = useState(false);
   const [priceFocused, setPriceFocused] = useState(false);
   const [stockFocused, setStockFocused] = useState(false);
   const [editingImagePath, setEditingImagePath] = useState<string | null>(null);
+
+  const watchPricingMode = watch('pricingMode');
+  const watchSettlementCurrencies = watch('settlementCurrencies');
 
   useNavbarMode('focused', '/sales/ads');
 
@@ -79,9 +82,7 @@ const EditAdPage: React.FC = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const [currencies] = await Promise.all([
-          salesService.getAllowedCurrencies(),
-        ]);
+        const currencies = await salesService.getAllowedCurrencies();
         setAllowedCurrencies(currencies);
 
         if (id) {
@@ -98,14 +99,14 @@ const EditAdPage: React.FC = () => {
           if (data.categoryId) {
             setSelectedCategoryId(data.categoryId);
           }
-          if (data.categoryPath) {
-            setSelectedCategoryPath(data.categoryPath);
-          }
           reset({
             title: data.title,
             description: data.description,
+            pricingMode: data.pricingMode || 'FIXED_CRYPTO',
             price: data.price?.amount,
-            currency: data.price?.currency,
+            priceCurrency: data.price?.currency,
+            settlementCurrencies: data.settlementCurrencies || [],
+            volatilityProtection: data.volatilityProtection || false,
             mainPhotoPath: data.mainPhotoPath,
             mediaPaths: data.mediaPaths,
             stock: data.stock
@@ -272,7 +273,7 @@ const EditAdPage: React.FC = () => {
       
       {error && <Alert variant="danger" onClose={() => setError(null)}>{error}</Alert>}
   
-      {allowedCurrencies.length === 0 && (
+      {allowedCurrencies.settlementCurrencies.length === 0 && (
         <Alert variant="warning" className="uk-margin-medium-bottom">
           <Heading as="h4" className="uk-margin-small-bottom">{t('ads.notEligibleTitle')}</Heading>
           <p className="uk-margin-small-bottom">{t('ads.notEligibleMessage')}</p>
@@ -402,25 +403,119 @@ const EditAdPage: React.FC = () => {
           <Card>
             <CardBody>
               <Heading as="h4" divider>{t('ads.pricingStock')}</Heading>
+
+              {/* Settlement Currencies */}
+              <div className="uk-margin">
+                <label className="uk-form-label">{t('pricing.settlementCurrencies')}</label>
+                <p className="uk-text-meta uk-margin-small-bottom">{t('pricing.settlementCurrenciesHint')}</p>
+                <Controller
+                  control={control}
+                  name="settlementCurrencies"
+                  rules={{ validate: (v) => (v && v.length > 0) || 'At least one settlement currency required' }}
+                  render={({ field }) => (
+                    <div className="uk-flex uk-flex-wrap" style={{ gap: '12px' }}>
+                      {allowedCurrencies.settlementCurrencies.map(c => (
+                        <label key={c.code} className="uk-flex uk-flex-middle" style={{ gap: '6px', cursor: 'pointer' }}>
+                          <input
+                            type="checkbox"
+                            className="uk-checkbox"
+                            checked={field.value?.includes(c.code) || false}
+                            onChange={(e) => {
+                              const current = field.value || [];
+                              const updated = e.target.checked
+                                ? [...current, c.code]
+                                : current.filter(code => code !== c.code);
+                              field.onChange(updated);
+                            }}
+                          />
+                          <span>{c.code} ({c.name})</span>
+                        </label>
+                      ))}
+                    </div>
+                  )}
+                />
+              </div>
+
+              {/* Pricing Mode */}
+              <div className="uk-margin">
+                <label className="uk-form-label">{t('pricing.mode')}</label>
+                <Controller
+                  control={control}
+                  name="pricingMode"
+                  render={({ field }) => (
+                    <div className="uk-margin-small-top">
+                      <label className="uk-flex uk-flex-top uk-margin-small-bottom" style={{ gap: '8px', cursor: 'pointer' }}>
+                        <input
+                          type="radio"
+                          className="uk-radio"
+                          checked={field.value === 'FIXED_CRYPTO'}
+                          onChange={() => {
+                            field.onChange('FIXED_CRYPTO' as PricingMode);
+                            setValue('volatilityProtection', false);
+                            // Reset price currency to first settlement currency if not compatible
+                            const settlements = watchSettlementCurrencies || [];
+                            const currentPriceCurrency = watch('priceCurrency');
+                            if (currentPriceCurrency && !settlements.includes(currentPriceCurrency)) {
+                              setValue('priceCurrency', settlements[0] || '');
+                            }
+                          }}
+                        />
+                        <div>
+                          <span className="uk-text-bold">{t('pricing.fixedCrypto')}</span>
+                          <p className="uk-text-meta uk-margin-remove">{t('pricing.fixedCryptoDesc')}</p>
+                        </div>
+                      </label>
+                      <label className="uk-flex uk-flex-top" style={{ gap: '8px', cursor: 'pointer' }}>
+                        <input
+                          type="radio"
+                          className="uk-radio"
+                          checked={field.value === 'PEGGED'}
+                          onChange={() => {
+                            field.onChange('PEGGED' as PricingMode);
+                            // Reset price currency if not valid for PEGGED mode
+                            const references = allowedCurrencies.referenceCurrencies || [];
+                            const currentPriceCurrency = watch('priceCurrency');
+                            if (currentPriceCurrency && !references.some(r => r.code === currentPriceCurrency)) {
+                              setValue('priceCurrency', references[0]?.code || '');
+                            }
+                          }}
+                        />
+                        <div>
+                          <span className="uk-text-bold">{t('pricing.pegged')}</span>
+                          <p className="uk-text-meta uk-margin-remove">{t('pricing.peggedDesc')}</p>
+                        </div>
+                      </label>
+                    </div>
+                  )}
+                />
+              </div>
+
+              {/* Price + Currency */}
               <Grid gap="small">
                 <div className="uk-width-1-2@m">
                   <label className="uk-form-label">{t('ads.price')}</label>
-                  {(() => {
-                    const priceReg = register('price', { valueAsNumber: true });
-                    return (
-                      <Input 
+                  <Controller
+                    control={control}
+                    name="price"
+                    render={({ field }) => (
+                      <Input
                         layout={false}
-                        {...priceReg} 
-                        type="number" 
-                        step="0.00000001" 
+                        type="number"
+                        step="0.00000001"
+                        value={field.value ?? ''}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          const numVal = parseFloat(val);
+                          field.onChange(val === '' || isNaN(numVal) ? undefined : numVal);
+                        }}
                         onFocus={() => setPriceFocused(true)}
-                        onBlur={(e) => {
-                          priceReg.onBlur(e);
+                        onBlur={() => {
+                          field.onBlur();
                           setPriceFocused(false);
                         }}
                       />
-                    );
-                  })()}
+                    )}
+                  />
                   {priceFocused && (
                     <div className="uk-text-primary uk-text-small uk-margin-small-top">
                       {t('ads.priceGuidance')}
@@ -428,15 +523,57 @@ const EditAdPage: React.FC = () => {
                   )}
                 </div>
                 <div className="uk-width-1-2@m">
-                  <label className="uk-form-label">{t('ads.currency')}</label>
-                  <Select layout={false} {...register('currency')}>
-                    {allowedCurrencies.map(c => (
+                  <label className="uk-form-label">{t('pricing.referenceCurrency')}</label>
+                  <Select layout={false} {...register('priceCurrency')}>
+                    {(watchPricingMode === 'FIXED_CRYPTO'
+                      ? allowedCurrencies.settlementCurrencies
+                      : allowedCurrencies.referenceCurrencies
+                    ).map(c => (
                       <option key={c.code} value={c.code}>{c.code} ({c.name})</option>
                     ))}
                   </Select>
                 </div>
               </Grid>
 
+              {/* Volatility Protection (PEGGED only) */}
+              <AnimatePresence>
+                {watchPricingMode === 'PEGGED' && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 40 }}
+                    className="uk-margin"
+                  >
+                    <label className="uk-flex uk-flex-middle" style={{ gap: '8px', cursor: 'pointer' }}>
+                      <input
+                        type="checkbox"
+                        className="uk-checkbox"
+                        {...register('volatilityProtection')}
+                      />
+                      <div>
+                        <span className="uk-text-bold">{t('pricing.volatilityProtection')}</span>
+                        <p className="uk-text-meta uk-margin-remove">{t('pricing.volatilityProtectionDesc')}</p>
+                      </div>
+                    </label>
+
+                    {/* Multi-currency tip */}
+                    {watch('volatilityProtection') && (watchSettlementCurrencies?.length || 0) > 1 && (
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="uk-margin-small-top"
+                      >
+                        <Alert variant="primary" className="uk-border-rounded">
+                          <p className="uk-margin-remove uk-text-small">{t('pricing.multiCurrencyTip')}</p>
+                        </Alert>
+                      </motion.div>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Stock */}
               <div className="uk-margin">
                 <label className="uk-form-label">{t('ads.stock')}</label>
                 <Controller
@@ -595,7 +732,7 @@ const EditAdPage: React.FC = () => {
           >
             {t('common.cancel')}
           </Button>
-          <Button type="submit" variant="primary" disabled={saving || allowedCurrencies.length === 0}>
+          <Button type="submit" variant="primary" disabled={saving || allowedCurrencies.settlementCurrencies.length === 0}>
             {saving ? <><Spinner ratio={0.5} className="uk-margin-small-right" /> {t('ads.saving')}</> : t('common.save')}
           </Button>
         </motion.div>

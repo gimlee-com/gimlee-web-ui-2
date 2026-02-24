@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence, stagger } from 'motion/react';
 import { adService } from '../services/adService';
-import type { PageAdPreviewDto } from '../../types/api';
+import type { PageAdDiscoveryPreviewDto } from '../../types/api';
 import { AdCard } from '../components/AdCard';
 import { AdSearchFilters } from '../components/AdSearchFilters/AdSearchFilters';
 import { Alert } from '../../components/uikit/Alert/Alert';
@@ -34,7 +34,7 @@ const itemVariants = {
 const AdListingPage: React.FC = () => {
   const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [data, setData] = useState<PageAdPreviewDto | null>(null);
+  const [data, setData] = useState<PageAdDiscoveryPreviewDto | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

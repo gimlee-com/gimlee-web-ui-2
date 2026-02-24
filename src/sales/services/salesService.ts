@@ -1,12 +1,12 @@
 import { apiClient } from '../../services/apiClient';
 import type { 
-  AdDetailsDto, 
-  PageAdPreviewDto, 
+  AdDto, 
+  PageAdDto, 
   CreateAdRequestDto, 
   UpdateAdRequestDto,
   PageSalesOrderDto,
   SalesOrderDto,
-  CurrencyInfoDto
+  AllowedCurrenciesDto
 } from '../../types/api';
 
 export interface SalesAdsRequestDto {
@@ -25,26 +25,26 @@ export const salesService = {
     query.append('by', params.by);
     query.append('dir', params.dir);
     query.append('p', params.p.toString());
-    return apiClient.get<PageAdPreviewDto>(`/sales/ads/?${query.toString()}`);
+    return apiClient.get<PageAdDto>(`/sales/ads/?${query.toString()}`);
   },
 
   createAd: (data: CreateAdRequestDto) =>
-    apiClient.post<AdDetailsDto>('/sales/ads', data),
+    apiClient.post<AdDto>('/sales/ads', data),
 
   getAdById: (id: string) =>
-    apiClient.get<AdDetailsDto>(`/sales/ads/${id}`),
+    apiClient.get<AdDto>(`/sales/ads/${id}`),
 
   getAllowedCurrencies: () =>
-    apiClient.get<CurrencyInfoDto[]>('/sales/ads/allowed-currencies'),
+    apiClient.get<AllowedCurrenciesDto>('/sales/ads/allowed-currencies'),
 
   updateAd: (id: string, data: UpdateAdRequestDto) =>
-    apiClient.put<AdDetailsDto>(`/sales/ads/${id}`, data),
+    apiClient.put<AdDto>(`/sales/ads/${id}`, data),
 
   activateAd: (id: string) =>
-    apiClient.post<AdDetailsDto>(`/sales/ads/${id}/activate`),
+    apiClient.post<AdDto>(`/sales/ads/${id}/activate`),
 
   deactivateAd: (id: string) =>
-    apiClient.post<AdDetailsDto>(`/sales/ads/${id}/deactivate`),
+    apiClient.post<AdDto>(`/sales/ads/${id}/deactivate`),
 
   getSalesOrders: (page: number = 0) =>
     apiClient.get<PageSalesOrderDto>(`/sales/orders/?p=${page}`),

@@ -22,15 +22,14 @@ export const Default: Story = {
     ad: {
       id: '1',
       title: 'Vintage Camera - Nikon FM2 in Excellent Condition',
-      price: { amount: 1250, currency: 'PLN' },
       preferredPrice: { amount: 12.5, currency: 'ARRR' },
-      mainPhotoPath: '', // Will fallback to placeholder
+      pricingMode: 'PEGGED',
+      settlementCurrencies: ['ARRR', 'YEC'],
+      mainPhotoPath: '',
       location: {
         city: { id: 'warsaw', name: 'Warsaw', district: 'Mokotów', country: 'Poland' }
       },
-      createdAt: new Date().toISOString(),
-      availableStock: 10,
-      status: 'ACTIVE',
+      isBuyable: true,
     },
   },
 };
@@ -41,7 +40,6 @@ export const New: Story = {
       ...Default.args?.ad,
       id: '2',
       title: 'New Listing: Mechanical Keyboard',
-      createdAt: new Date().toISOString(),
     } as any,
   },
 };
@@ -51,7 +49,7 @@ export const Sold: Story = {
     ad: {
       ...Default.args?.ad,
       id: '3',
-      status: 'SOLD',
+      isBuyable: false,
     } as any,
   },
 };
@@ -61,7 +59,6 @@ export const LowStock: Story = {
     ad: {
       ...Default.args?.ad,
       id: '4',
-      availableStock: 3,
     } as any,
   },
 };
@@ -71,7 +68,7 @@ export const OutOfStock: Story = {
     ad: {
       ...Default.args?.ad,
       id: '5',
-      availableStock: 0,
+      isBuyable: false,
     } as any,
   },
 };

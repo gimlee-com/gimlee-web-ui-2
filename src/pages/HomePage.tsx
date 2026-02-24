@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { adService } from '../ads/services/adService';
-import type { AdPreviewDto } from '../types/api';
+import type { AdDiscoveryPreviewDto } from '../types/api';
 import { AdCard } from '../ads/components/AdCard';
 import { Grid } from '../components/uikit/Grid/Grid';
 import { Heading } from '../components/uikit/Heading/Heading';
@@ -15,7 +15,7 @@ import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
 const HomePage: React.FC = () => {
   const { t } = useTranslation();
   const { publicChatId } = useAuth();
-  const [featuredAds, setFeaturedAds] = useState<AdPreviewDto[]>([]);
+  const [featuredAds, setFeaturedAds] = useState<AdDiscoveryPreviewDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

@@ -33,9 +33,14 @@ const renderCreateAdPage = () => {
 describe('CreateAdPage Validation', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    (salesService.getAllowedCurrencies as any).mockResolvedValue([
-      { code: 'ARRR', name: 'Pirate Chain' }
-    ]);
+    (salesService.getAllowedCurrencies as any).mockResolvedValue({
+      settlementCurrencies: [
+        { code: 'ARRR', name: 'Pirate Chain' }
+      ],
+      referenceCurrencies: [
+        { code: 'USD', name: 'US Dollar' }
+      ]
+    });
   });
 
   it('should activate Save button only when title length is at least 5 characters', async () => {

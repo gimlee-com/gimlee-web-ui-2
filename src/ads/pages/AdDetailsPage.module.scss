@@ -106,3 +106,23 @@
     }
   }
 }
+
+.currencyOption {
+  border: 2px solid $global-border;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+
+  &:hover:not(.currencyFrozen) {
+    border-color: $global-primary-background;
+  }
+}
+
+.currencySelected {
+  border-color: $global-primary-background;
+  background-color: color-mix(in srgb, $global-primary-background, transparent 95%);
+}
+
+.currencyFrozen {
+  opacity: 0.6;
+  border-color: $global-border;
+  background-color: $global-muted-background;
+}

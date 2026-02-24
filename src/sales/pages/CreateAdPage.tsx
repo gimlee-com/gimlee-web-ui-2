@@ -12,7 +12,7 @@ import { Spinner } from '../../components/uikit/Spinner/Spinner';
 import { Card, CardBody } from '../../components/uikit/Card/Card';
 import { useNavbarMode } from '../../hooks/useNavbarMode';
 import NavbarPortal from '../../components/Navbar/NavbarPortal';
-import type { CurrencyInfoDto } from '../../types/api';
+import type { AllowedCurrenciesDto } from '../../types/api';
 
 interface CreateAdForm {
   title: string;
@@ -28,7 +28,7 @@ const CreateAdPage: React.FC = () => {
   const [initialLoading, setInitialLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [titleFocused, setTitleFocused] = useState(false);
-  const [allowedCurrencies, setAllowedCurrencies] = useState<CurrencyInfoDto[]>([]);
+  const [allowedCurrencies, setAllowedCurrencies] = useState<AllowedCurrenciesDto>({ settlementCurrencies: [], referenceCurrencies: [] });
 
   useNavbarMode('focused', '/sales/ads');
 
@@ -76,7 +76,7 @@ const CreateAdPage: React.FC = () => {
 
             {error && <Alert variant="danger">{error}</Alert>}
 
-            {allowedCurrencies.length === 0 && (
+            {allowedCurrencies.settlementCurrencies.length === 0 && (
               <Alert variant="warning" className="uk-margin-medium-bottom">
                 <Heading as="h4" className="uk-margin-small-bottom">{t('ads.notEligibleTitle')}</Heading>
                 <p className="uk-margin-small-bottom">{t('ads.notEligibleMessage')}</p>
@@ -123,7 +123,7 @@ const CreateAdPage: React.FC = () => {
                   type="submit"
                   variant="primary"
                   className="uk-width-1-1"
-                  disabled={loading || !isValid || allowedCurrencies.length === 0}
+                  disabled={loading || !isValid || allowedCurrencies.settlementCurrencies.length === 0}
                 >
                   {loading ? t('common.loading') : t('common.save')}
                 </Button>

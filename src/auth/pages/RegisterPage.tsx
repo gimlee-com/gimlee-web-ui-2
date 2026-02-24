@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import { authService } from '../services/authService';
 import type { RegisterRequestDto } from '../../types/api';
 import { Button } from '../../components/uikit/Button/Button';
@@ -236,6 +236,11 @@ const RegisterPage: React.FC = () => {
             <Button type="submit" variant="primary" className="uk-width-1-1" disabled={!isValid || loading}>
               {loading ? t('auth.registering') : t('auth.registerTitle')}
             </Button>
+            <p className="uk-text-meta uk-text-center uk-margin-small-top">
+              <Trans i18nKey="auth.termsAcknowledgment">
+                By registering, you agree to our <Link to="/terms">Terms of Service</Link>.
+              </Trans>
+            </p>
           </motion.div>
         </Form>
         <div className="uk-text-center uk-margin-top">

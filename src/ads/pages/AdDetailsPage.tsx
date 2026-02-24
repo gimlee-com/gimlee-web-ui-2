@@ -1,14 +1,14 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import UIkit from 'uikit';
 import { useAuth } from '../../context/AuthContext';
 import { adService } from '../services/adService';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { setActivePurchase, setModalOpen } from '../../store/purchaseSlice';
 import { purchaseService } from '../../purchases/services/purchaseService';
-import type { AdDetailsDto } from '../../types/api';
+import type { AdDiscoveryDetailsDto, CurrencyAmountDto } from '../../types/api';
 import { Heading } from '../../components/uikit/Heading/Heading';
 import { Spinner } from '../../components/uikit/Spinner/Spinner';
 import { Grid } from '../../components/uikit/Grid/Grid';
@@ -62,43 +62,20 @@ const itemVariants = {
   }
 } as const;
 
-const enrichAdWithMocks = (ad: AdDetailsDto): AdDetailsDto => {
-  return {
-    ...ad,
-    condition: ad.condition || 'LIKE_NEW',
-    stats: ad.stats || {
-      viewsCount: 128,
-      favoritesCount: 14,
-      lastPurchasedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2).toISOString()
-    },
-    shipping: ad.shipping || {
-      methods: ['Digital Delivery', 'International Shipping'],
-      estimatedDelivery: '3-5 business days',
-      origin: ad.location?.city?.name || 'Worldwide'
-    },
-    attributes: ad.attributes || [
-      { label: 'Color', value: 'Midnight Blue' },
-      { label: 'Material', value: 'Recycled Aluminum' }
-    ],
-    isFavorite: ad.isFavorite !== undefined ? ad.isFavorite : false,
-    userCanPurchase: ad.userCanPurchase !== undefined ? ad.userCanPurchase : true,
-    user: ad.user
-  };
-};
-
 const AdDetailsPage: React.FC = () => {
   const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const location = useLocation();
   const { isAuthenticated } = useAuth();
-  const [ad, setAd] = useState<AdDetailsDto | null>(null);
+  const [ad, setAd] = useState<AdDiscoveryDetailsDto | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [visitedIndices, setVisitedIndices] = useState<number[]>([0]);
   const [showLightboxThumbnav, setShowLightboxThumbnav] = useState(window.innerWidth >= 960);
   const [quantity, setQuantity] = useState(1);
+  const [selectedCurrency, setSelectedCurrency] = useState<string | null>(null);
   const activePurchase = useAppSelector(state => state.purchase.activePurchase);
   const dispatch = useAppDispatch();
   const [isPurchasing, setIsPurchasing] = useState(false);
@@ -189,30 +166,57 @@ const AdDetailsPage: React.FC = () => {
       return;
     }
 
-    if (!ad || !ad.price) return;
+    if (!ad || !selectedCurrency) return;
+
+    // Find the settlement price for the selected currency
+    const settlementPrice = ad.settlementPrices?.find(sp => sp.currency === selectedCurrency);
+    if (!settlementPrice) return;
 
     setIsPurchasing(true);
     try {
       const response = await purchaseService.createPurchase({
-        currency: ad.price.currency,
+        currency: selectedCurrency,
         items: [
           {
             adId: ad.id,
             quantity: quantity,
-            unitPrice: ad.price.amount
+            unitPrice: settlementPrice.amount
           }
         ]
       });
-      // Ensure currency is set in response even if backend didn't (though it should)
-      if (!response.currency) {
-        response.currency = ad.price.currency;
-      }
-      dispatch(setActivePurchase(response));
+      dispatch(setActivePurchase({
+        ...response,
+        currency: response.currency || selectedCurrency
+      }));
     } catch (error: any) {
       console.error('Failed to create purchase', error);
-      UIkit.modal.alert(error.message || t('auth.errors.generic'));
+      if (error.status === 'PURCHASE_CURRENCY_FROZEN') {
+        UIkit.modal.alert(t('purchases.currencyFrozen', { currency: selectedCurrency }), { stack: true, i18n: { ok: t('common.ok'), cancel: t('common.cancel') } });
+      } else if (error.status === 'PURCHASE_PRICE_MISMATCH') {
+        UIkit.modal.alert(t('purchases.priceMismatch'), { stack: true, i18n: { ok: t('common.ok'), cancel: t('common.cancel') } });
+        // Refresh ad data to get updated prices
+        if (id) {
+          adService.getAdById(id).then(data => {
+            setAd(data);
+            autoSelectCurrency(data);
+          }).catch(() => {});
+        }
+      } else {
+        UIkit.modal.alert(error.message || t('auth.errors.generic'));
+      }
     } finally {
       setIsPurchasing(false);
+    }
+  };
+
+  const autoSelectCurrency = (adData: AdDiscoveryDetailsDto) => {
+    const frozen = adData.frozenCurrencies || [];
+    const settlements = adData.settlementCurrencies || [];
+    const available = settlements.filter(c => !frozen.includes(c));
+    if (available.length > 0) {
+      setSelectedCurrency(available[0]);
+    } else if (settlements.length > 0) {
+      setSelectedCurrency(settlements[0]);
     }
   };
 
@@ -231,7 +235,10 @@ const AdDetailsPage: React.FC = () => {
       setLoading(true);
       setError(null);
       adService.getAdById(id, { signal: controller.signal })
-        .then(data => setAd(enrichAdWithMocks(data)))
+        .then(data => {
+          setAd(data);
+          autoSelectCurrency(data);
+        })
         .catch(err => {
           if (err.name !== 'AbortError') {
             setError(err.message || t('auth.errors.generic'));
@@ -398,20 +405,6 @@ const AdDetailsPage: React.FC = () => {
             </div>
           </motion.div>
 
-          {ad.attributes && ad.attributes.length > 0 && (
-            <motion.div variants={itemVariants} className="uk-margin-large-top">
-              <Heading as="h4" divider>{t('adDetails.specs')}</Heading>
-              <div className="uk-margin">
-                {ad.attributes.map((attr, idx) => (
-                  <div key={idx} className={styles.specRow}>
-                    <span className={styles.specLabel}>{attr.label}</span>
-                    <span className={styles.specValue}>{attr.value}</span>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          )}
-
           {ad.otherAds && ad.otherAds.length > 0 && (
             <motion.div variants={itemVariants} className="uk-margin-large-top">
               <Heading as="h4" divider>{t('adDetails.otherAds')}</Heading>
@@ -457,15 +450,17 @@ const AdDetailsPage: React.FC = () => {
             <Card className="uk-border-rounded uk-box-shadow-medium">
               <CardBody>
                 <div className="uk-flex uk-flex-between uk-flex-middle uk-margin-small-bottom">
-                  {ad.condition && (
-                    <Label variant="default">{t(`ads.conditions.${ad.condition}`)}</Label>
+                  {ad.pricingMode && (
+                    <Label variant={ad.pricingMode === 'PEGGED' ? 'success' : 'default'}>
+                      {ad.pricingMode === 'PEGGED' ? t('pricing.peggedPrice') : t('pricing.fixedPrice')}
+                    </Label>
                   )}
                   <div className={styles.actionButtons}>
                     <button 
-                      className={`uk-icon-button ${styles.actionButton} ${ad.isFavorite ? styles.isFavorite : ''}`}
+                      className={`uk-icon-button ${styles.actionButton} ${ad.stats?.isFavorite ? styles.isFavorite : ''}`}
                       title={t('adDetails.favorites')}
                     >
-                      <Icon icon="heart" className={ad.isFavorite ? 'uk-text-danger' : ''} />
+                      <Icon icon="heart" className={ad.stats?.isFavorite ? 'uk-text-danger' : ''} />
                     </button>
                     <button 
                       className={`uk-icon-button ${styles.actionButton}`}
@@ -478,24 +473,80 @@ const AdDetailsPage: React.FC = () => {
 
                 <Heading as="h2" className="uk-margin-remove-top uk-margin-small-bottom">{ad.title}</Heading>
                 
+                {/* Reference price */}
                 <div className="uk-margin-small-bottom">
-                  {ad.preferredPrice ? (
-                    <div className="uk-flex uk-flex-middle">
-                      <span className="uk-text-large uk-text-primary uk-text-bold">
-                        {formatPrice(ad.preferredPrice.amount, ad.preferredPrice.currency)}
-                      </span>
-                      {ad.price && (
-                        <span className="uk-text-meta uk-margin-small-left">
-                          ({formatPrice(ad.price.amount, ad.price.currency)})
-                        </span>
-                      )}
-                    </div>
-                  ) : ad.price && (
+                  {ad.preferredPrice && (
                     <span className="uk-text-large uk-text-primary uk-text-bold">
-                      {formatPrice(ad.price.amount, ad.price.currency)}
+                      {formatPrice(ad.preferredPrice.amount, ad.preferredPrice.currency)}
                     </span>
                   )}
                 </div>
+
+                <hr className="uk-margin-small" />
+
+                {/* All-frozen warning */}
+                <AnimatePresence>
+                  {ad.isBuyable === false && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ type: 'spring', stiffness: 400, damping: 40 }}
+                    >
+                      <Alert variant="danger" className="uk-margin-small-bottom">
+                        <Icon icon="warning" ratio={0.9} className="uk-margin-xsmall-right" />
+                        {t('pricing.allFrozen')}
+                      </Alert>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* "Pay with" currency selector */}
+                {ad.settlementPrices && ad.settlementPrices.length > 0 && (
+                  <div className="uk-margin-small">
+                    <label className="uk-form-label uk-text-small uk-text-bold">
+                      {t('pricing.payWith')}
+                    </label>
+                    <div className="uk-margin-small-top">
+                      {ad.settlementPrices.map((sp: CurrencyAmountDto) => {
+                        const isFrozen = ad.frozenCurrencies?.includes(sp.currency);
+                        const isSelected = selectedCurrency === sp.currency;
+                        return (
+                          <motion.div
+                            key={sp.currency}
+                            layout
+                            className={`uk-padding-small uk-border-rounded uk-margin-xsmall-bottom ${styles.currencyOption} ${isSelected ? styles.currencySelected : ''} ${isFrozen ? styles.currencyFrozen : ''}`}
+                            onClick={() => !isFrozen && setSelectedCurrency(sp.currency)}
+                            style={{ cursor: isFrozen ? 'not-allowed' : 'pointer' }}
+                          >
+                            <div className="uk-flex uk-flex-between uk-flex-middle">
+                              <div className="uk-flex uk-flex-middle">
+                                <input 
+                                  type="radio" 
+                                  name="settlementCurrency"
+                                  className="uk-radio uk-margin-small-right" 
+                                  checked={isSelected}
+                                  disabled={isFrozen}
+                                  onChange={() => setSelectedCurrency(sp.currency)}
+                                />
+                                <span className={`uk-text-bold ${isFrozen ? 'uk-text-muted' : ''}`}>{sp.currency}</span>
+                              </div>
+                              <span className={isFrozen ? 'uk-text-muted' : 'uk-text-emphasis'}>
+                                {formatPrice(sp.amount, sp.currency)}
+                              </span>
+                            </div>
+                            {isFrozen && (
+                              <div className="uk-text-xsmall uk-text-danger uk-margin-xsmall-top">
+                                <Icon icon="warning" ratio={0.65} className="uk-margin-xsmall-right" />
+                                {t('pricing.currencyFrozen')}
+                              </div>
+                            )}
+                          </motion.div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
 
                 <hr className="uk-margin-small" />
 
@@ -513,11 +564,13 @@ const AdDetailsPage: React.FC = () => {
                           formWidth="xsmall"
                         />
                       </div>
-                      <div>
-                        <span className="uk-text-meta">
-                          {t('ads.onlyLeft', { count: ad.availableStock || 0 })}
-                        </span>
-                      </div>
+                      {ad.availableStock !== undefined && (
+                        <div>
+                          <span className="uk-text-meta">
+                            {t('ads.onlyLeft', { count: ad.availableStock })}
+                          </span>
+                        </div>
+                      )}
                     </Grid>
                   </div>
                 </div>
@@ -526,7 +579,7 @@ const AdDetailsPage: React.FC = () => {
                   variant="primary" 
                   className="uk-width-1-1 uk-margin-small-top uk-border-rounded" 
                   onClick={handleBuyNow}
-                  disabled={isPurchasing || ad.status === 'SOLD' || !!activePurchase || !ad.userCanPurchase}
+                  disabled={isPurchasing || !ad.isBuyable || !selectedCurrency || ad.frozenCurrencies?.includes(selectedCurrency) || !!activePurchase || !ad.userCanPurchase}
                 >
                   {isPurchasing ? <Spinner ratio={0.8} /> : t('purchases.buyNow')}
                 </Button>
@@ -615,13 +668,13 @@ const AdDetailsPage: React.FC = () => {
                   <div>
                     <div className={styles.statItem}>
                       <Icon icon="history" />
-                      <span>{t('adDetails.views', { count: ad.stats?.viewsCount })}</span>
+                      <span>{t('adDetails.views', { count: ad.stats?.viewsCount ?? 0 })}</span>
                     </div>
                   </div>
                   <div>
                     <div className={styles.statItem}>
                       <Icon icon="heart" />
-                      <span>{t('adDetails.favorites', { count: ad.stats?.favoritesCount })}</span>
+                      <span>{t('adDetails.favorites', { count: ad.stats?.favoritesCount ?? 0 })}</span>
                     </div>
                   </div>
                   {ad.stats?.lastPurchasedAt && (
@@ -639,11 +692,11 @@ const AdDetailsPage: React.FC = () => {
             </Card>
           </motion.div>
 
-          <motion.div variants={itemVariants} className="uk-margin-medium-top">
-            <Card className="uk-border-rounded">
-              <CardBody>
-                <Heading as="h4" className="uk-margin-small-bottom">{t('adDetails.shipping')}</Heading>
-                {ad.location?.city && (
+          {ad.location?.city && (
+            <motion.div variants={itemVariants} className="uk-margin-medium-top">
+              <Card className="uk-border-rounded">
+                <CardBody>
+                  <Heading as="h4" className="uk-margin-small-bottom">{t('adDetails.shipping')}</Heading>
                   <Grid gap="small" className="uk-flex-middle uk-margin-small-bottom">
                     <div className="uk-width-auto">
                       <Icon icon="location" className="uk-text-primary" />
@@ -652,23 +705,10 @@ const AdDetailsPage: React.FC = () => {
                       <span>{ad.location.city.name}{ad.location.city.district ? `, ${ad.location.city.district}` : ''}, {ad.location.city.country}</span>
                     </div>
                   </Grid>
-                )}
-                <div className={styles.shippingInfo}>
-                  <Grid gap="small" className="uk-flex-middle uk-margin-small-bottom">
-                    <div className="uk-width-auto">
-                      <Icon icon="receiver" />
-                    </div>
-                    <div className="uk-width-expand">
-                      <span>{ad.shipping?.methods.join(', ')}</span>
-                    </div>
-                  </Grid>
-                  <div className="uk-text-small uk-text-bold uk-text-success">
-                    {t('adDetails.deliveryEstimate', { estimate: ad.shipping?.estimatedDelivery })}
-                  </div>
-                </div>
-              </CardBody>
-            </Card>
-          </motion.div>
+                </CardBody>
+              </Card>
+            </motion.div>
+          )}
         </div>
       </Grid>
     </motion.div>

@@ -5,6 +5,7 @@ import { Capacitor } from '@capacitor/core';
 import { useAppSelector } from './store';
 import { useTheme } from './context/ThemeContext';
 import { PurchaseModal } from './purchases/components/PurchaseModal';
+import { VolatilityBanner } from './payments/components/VolatilityBanner/VolatilityBanner';
 import './i18n';
 import Navbar from './components/Navbar/Navbar';
 import { FLOATING_BUTTON_CONTAINER_ID } from './components/FloatingButton/FloatingButtonPortal';
@@ -22,6 +23,7 @@ import SalesOrdersPage from './sales/pages/SalesOrdersPage';
 import PurchasesPage from './purchases/pages/PurchasesPage';
 import ProfilePage from './profile/pages/ProfilePage';
 import UserSpacePage from './spaces/pages/UserSpacePage';
+import TermsOfServicePage from './pages/TermsOfServicePage';
 
 function App() {
   const { activePurchase, isModalOpen } = useAppSelector(state => state.purchase);
@@ -53,6 +55,7 @@ function App() {
       <Navbar />
       <main className="uk-section uk-section-default">
         <div className="uk-container">
+          <VolatilityBanner />
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
@@ -67,6 +70,7 @@ function App() {
             <Route path="/purchases" element={<PurchasesPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/u/:userName" element={<UserSpacePage />} />
+            <Route path="/terms" element={<TermsOfServicePage />} />
           </Routes>
         </div>
       </main>

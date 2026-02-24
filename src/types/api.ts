@@ -38,6 +38,50 @@ export interface LocationWithCityDetailsDto {
   point?: Point;
 }
 
+export type PricingMode = 'FIXED_CRYPTO' | 'PEGGED';
+
+// Seller view — returned by /sales/ads endpoints
+export interface AdDto {
+  id: string;
+  userId: string;
+  title: string;
+  description?: string;
+  pricingMode: PricingMode;
+  price?: CurrencyAmountDto;
+  settlementCurrencies: string[];
+  volatilityProtection: boolean;
+  frozenCurrencies: string[];
+  isBuyable: boolean;
+  status: 'ACTIVE' | 'INACTIVE' | 'DELETED';
+  location?: LocationWithCityDetailsDto;
+  categoryId?: number;
+  mediaPaths?: string[];
+  mainPhotoPath?: string;
+  stock: number;
+  lockedStock: number;
+  availableStock: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Buyer discovery preview — returned by /ads/ search
+export interface AdDiscoveryPreviewDto {
+  id: string;
+  title: string;
+  pricingMode?: PricingMode;
+  price?: CurrencyAmountDto;
+  settlementCurrencies?: string[];
+  settlementPrices?: CurrencyAmountDto[];
+  preferredPrice?: CurrencyAmountDto;
+  mainPhotoPath?: string;
+  categoryId?: number;
+  categoryPath?: CategoryPathElementDto[];
+  location?: LocationWithCityDetailsDto;
+  frozenCurrencies?: string[];
+  isBuyable?: boolean;
+}
+
+/** @deprecated Use AdDiscoveryPreviewDto for buyer views, AdDto for seller views */
 export interface AdPreviewDto {
   id: string;
   title: string;
@@ -89,6 +133,38 @@ export interface AdStatsDto {
   lastPurchasedAt?: string;
 }
 
+// Buyer discovery details — returned by /ads/{id}
+export interface AdDiscoveryDetailsDto {
+  id: string;
+  title: string;
+  description?: string;
+  location?: LocationWithCityDetailsDto;
+  pricingMode?: PricingMode;
+  price?: CurrencyAmountDto;
+  settlementCurrencies?: string[];
+  settlementPrices?: CurrencyAmountDto[];
+  preferredPrice?: CurrencyAmountDto;
+  categoryId?: number;
+  categoryPath?: CategoryPathElementDto[];
+  mediaPaths?: string[];
+  mainPhotoPath?: string;
+  availableStock?: number;
+  user?: UserSpaceDetailsDto;
+  otherAds?: AdDiscoveryPreviewDto[];
+  stats?: AdDiscoveryStatsDto;
+  frozenCurrencies?: string[];
+  isBuyable?: boolean;
+  userCanPurchase?: boolean;
+}
+
+export interface AdDiscoveryStatsDto {
+  viewsCount: number;
+  favoritesCount: number;
+  lastPurchasedAt?: string;
+  isFavorite?: boolean;
+}
+
+/** @deprecated Use AdDiscoveryDetailsDto for buyer views, AdDto for seller views */
 export interface AdDetailsDto {
   id: string;
   title: string;
@@ -125,8 +201,11 @@ export interface CreateAdRequestDto {
 export interface UpdateAdRequestDto {
   title?: string;
   description?: string;
+  pricingMode?: PricingMode;
   price?: number;
-  currency?: Currency;
+  priceCurrency?: string;
+  settlementCurrencies?: string[];
+  volatilityProtection?: boolean;
   location?: LocationDto;
   mediaPaths?: string[];
   mainPhotoPath?: string;
@@ -152,6 +231,21 @@ export interface VerifyUserRequestDto {
 export interface CurrencyInfoDto {
   code: string;
   name: string;
+}
+
+export interface AllowedCurrenciesDto {
+  settlementCurrencies: CurrencyInfoDto[];
+  referenceCurrencies: CurrencyInfoDto[];
+}
+
+export interface VolatilityStatusDto {
+  currency: string;
+  isVolatile: boolean;
+  isStale: boolean;
+  startTime?: string;
+  cooldownEndsAt?: string;
+  currentDropPct?: number;
+  maxPriceInWindow?: number;
 }
 
 export interface AvailabilityStatusResponseDto {
@@ -193,6 +287,16 @@ export interface PageMetadata {
 
 export interface PageAdPreviewDto {
   content: AdPreviewDto[];
+  page: PageMetadata;
+}
+
+export interface PageAdDiscoveryPreviewDto {
+  content: AdDiscoveryPreviewDto[];
+  page: PageMetadata;
+}
+
+export interface PageAdDto {
+  content: AdDto[];
   page: PageMetadata;
 }
 

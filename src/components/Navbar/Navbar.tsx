@@ -155,6 +155,12 @@ const Navbar: React.FC = () => {
                       {t('navbar.purchases')}
                     </Link>
                   </NavItem>
+                  <NavItem>
+                    <Link to="/terms">
+                      <Icon icon="info" className="uk-margin-small-right" />
+                      {t('navbar.terms')}
+                    </Link>
+                  </NavItem>
                   <NavDivider />
                   <NavHeader>{t('navbar.theme')}</NavHeader>
                   <NavItem active={theme === 'light'}>
@@ -293,6 +299,15 @@ const Navbar: React.FC = () => {
             >
               <Link to="/profile" uk-toggle="target: #mobile-menu">{t('navbar.profile')}</Link>
             </MotionNavItem>
+            <MotionNavItem
+              key="terms-off"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2, delay: 0.27 }}
+            >
+              <Link to="/terms" uk-toggle="target: #mobile-menu">{t('navbar.terms')}</Link>
+            </MotionNavItem>
             <li className="uk-nav-divider"></li>
             <MotionNavItem
               key="theme-off"
@@ -351,6 +366,15 @@ const Navbar: React.FC = () => {
               transition={{ duration: 0.2, delay: 0.15 }}
             >
               <Link to="/register" uk-toggle="target: #mobile-menu">{t('navbar.register')}</Link>
+            </MotionNavItem>
+            <MotionNavItem
+              key="terms-off-guest"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2, delay: 0.17 }}
+            >
+              <Link to="/terms" uk-toggle="target: #mobile-menu">{t('navbar.terms')}</Link>
             </MotionNavItem>
             <li className="uk-nav-divider"></li>
             <MotionNavItem
