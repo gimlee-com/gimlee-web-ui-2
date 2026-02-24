@@ -579,12 +579,12 @@ const AdDetailsPage: React.FC = () => {
                   variant="primary" 
                   className="uk-width-1-1 uk-margin-small-top uk-border-rounded" 
                   onClick={handleBuyNow}
-                  disabled={isPurchasing || !ad.isBuyable || !selectedCurrency || ad.frozenCurrencies?.includes(selectedCurrency) || !!activePurchase || !ad.userCanPurchase}
+                  disabled={isPurchasing || ad.isBuyable === false || !selectedCurrency || ad.frozenCurrencies?.includes(selectedCurrency) || !!activePurchase || ad.userCanPurchase === false}
                 >
                   {isPurchasing ? <Spinner ratio={0.8} /> : t('purchases.buyNow')}
                 </Button>
 
-                {!ad.userCanPurchase && (
+                {ad.userCanPurchase === false && (
                   <div className="uk-alert-danger uk-padding-small uk-border-rounded uk-margin-small-top">
                     <p className="uk-text-small uk-margin-remove">
                       {t('ads.notEligibleTitle')}

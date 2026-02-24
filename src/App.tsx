@@ -2,9 +2,11 @@ import { Routes, Route } from 'react-router-dom';
 import { lazy, Suspense, useEffect } from 'react';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { Capacitor } from '@capacitor/core';
-import { useAppSelector } from './store';
+import { useAppSelector, useAppDispatch } from './store';
 import { useTheme } from './context/ThemeContext';
+import { useAuth } from './context/AuthContext';
 import { PurchaseModal } from './purchases/components/PurchaseModal';
+import { rehydrateForUser, clearForLogout } from './store/purchaseSlice';
 import { VolatilityBanner } from './payments/components/VolatilityBanner/VolatilityBanner';
 import './i18n';
 import Navbar from './components/Navbar/Navbar';
@@ -27,7 +29,17 @@ const TermsOfServicePage = lazy(() => import('./pages/TermsOfServicePage'));
 
 function App() {
   const { activePurchase, isModalOpen } = useAppSelector(state => state.purchase);
+  const { isAuthenticated, username } = useAuth();
+  const dispatch = useAppDispatch();
   const { theme } = useTheme();
+
+  useEffect(() => {
+    if (isAuthenticated && username) {
+      dispatch(rehydrateForUser(username));
+    } else if (!isAuthenticated) {
+      dispatch(clearForLogout());
+    }
+  }, [isAuthenticated, username, dispatch]);
 
   useEffect(() => {
     if (Capacitor.isNativePlatform()) {
@@ -74,7 +86,7 @@ function App() {
           </Routes>
         </div>
       </main>
-      {activePurchase && isModalOpen && (
+      {isAuthenticated && activePurchase && isModalOpen && (
         <PurchaseModal 
           purchase={activePurchase} 
         />
