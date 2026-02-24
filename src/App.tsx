@@ -1,5 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
-import { useEffect } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { Capacitor } from '@capacitor/core';
 import { useAppSelector } from './store';
@@ -23,7 +23,7 @@ import SalesOrdersPage from './sales/pages/SalesOrdersPage';
 import PurchasesPage from './purchases/pages/PurchasesPage';
 import ProfilePage from './profile/pages/ProfilePage';
 import UserSpacePage from './spaces/pages/UserSpacePage';
-import TermsOfServicePage from './pages/TermsOfServicePage';
+const TermsOfServicePage = lazy(() => import('./pages/TermsOfServicePage'));
 
 function App() {
   const { activePurchase, isModalOpen } = useAppSelector(state => state.purchase);
@@ -70,7 +70,7 @@ function App() {
             <Route path="/purchases" element={<PurchasesPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/u/:userName" element={<UserSpacePage />} />
-            <Route path="/terms" element={<TermsOfServicePage />} />
+            <Route path="/terms" element={<Suspense><TermsOfServicePage /></Suspense>} />
           </Routes>
         </div>
       </main>

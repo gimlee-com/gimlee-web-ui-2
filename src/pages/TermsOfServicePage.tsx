@@ -1,11 +1,17 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'motion/react';
 import { useNavbarMode } from '../hooks/useNavbarMode';
 import NavbarPortal from '../components/Navbar/NavbarPortal';
 import { Heading } from '../components/uikit/Heading/Heading';
 import { Markdown } from '../components/Markdown/Markdown';
+import { Spinner } from '../components/uikit/Spinner/Spinner';
 import styles from './TermsOfServicePage.module.scss';
+
+const termsLoaders: Record<string, () => Promise<string>> = {
+  'en-US': () => import('../legal/terms-en-US.md?raw').then(m => m.default),
+  'pl-PL': () => import('../legal/terms-pl-PL.md?raw').then(m => m.default),
+};
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -25,9 +31,15 @@ const itemVariants = {
 } as const;
 
 const TermsOfServicePage: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const [content, setContent] = useState<string | null>(null);
 
   useNavbarMode('focused', '/');
+
+  useEffect(() => {
+    const loader = termsLoaders[i18n.language] ?? termsLoaders['en-US'];
+    loader().then(setContent);
+  }, [i18n.language]);
 
   return (
     <motion.div
@@ -44,7 +56,11 @@ const TermsOfServicePage: React.FC = () => {
       <motion.article variants={itemVariants} className={`uk-article ${styles.article}`}>
         <h1 className="uk-article-title">{t('terms.title')}</h1>
         <p className="uk-article-meta">{t('terms.lastUpdated')}</p>
-        <Markdown content={t('terms.content')} />
+        {content ? <Markdown content={content} /> : (
+          <div className="uk-flex uk-flex-center uk-padding-large">
+            <Spinner ratio={2} />
+          </div>
+        )}
       </motion.article>
     </motion.div>
   );
