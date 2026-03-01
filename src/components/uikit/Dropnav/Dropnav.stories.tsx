@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Dropnav } from './Dropnav'
 import { Subnav } from '../Subnav/Subnav'
 import { Tab, TabItem } from '../Tab/Tab'

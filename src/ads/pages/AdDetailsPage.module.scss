@@ -96,15 +96,6 @@
     background-color: $global-border !important;
     color: $global-color !important;
   }
-
-  &.isFavorite {
-    background-color: color-mix(in srgb, $global-danger-background, transparent 90%) !important;
-    color: $global-danger-background !important;
-
-    &:hover {
-      background-color: color-mix(in srgb, $global-danger-background, transparent 80%) !important;
-    }
-  }
 }
 
 .currencyOption {

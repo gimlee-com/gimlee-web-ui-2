@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Dropbar } from './Dropbar'
 import { Navbar, NavbarContainer, NavbarLeft, NavbarNav, NavbarItem } from '../Navbar/Navbar'
 import { Nav, NavItem, NavHeader, NavDivider } from '../Nav/Nav'

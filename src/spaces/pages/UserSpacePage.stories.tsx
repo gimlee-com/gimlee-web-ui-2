@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Routes, Route } from 'react-router-dom';
 import UserSpacePage from './UserSpacePage';
 

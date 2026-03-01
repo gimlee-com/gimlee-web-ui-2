@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Upload } from './Upload'
 import { Placeholder } from '../Placeholder/Placeholder'
 import { Icon } from '../Icon/Icon'

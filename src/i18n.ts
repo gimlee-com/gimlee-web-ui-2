@@ -36,7 +36,8 @@ const resources = {
         "login": "Login",
         "register": "Register",
         "theme": "Theme",
-        "terms": "Terms of Service"
+        "terms": "Terms of Service",
+        "watchlist": "Watchlist"
       },
       "home": {
         "featuredAds": "Featured Ads",
@@ -247,7 +248,7 @@ const resources = {
         "verified": "Verified",
         "popularity": "Popularity",
         "views": "{{count}} views",
-        "favorites": "{{count}} favorites",
+        "watchers": "{{count}} watchers",
         "condition": "Condition",
         "shipping": "Shipping & Delivery",
         "deliveryEstimate": "Estimated delivery: {{estimate}}",
@@ -258,6 +259,14 @@ const resources = {
         "questions": "Questions & Answers",
         "noQuestions": "No questions yet. Be the first to ask!",
         "askQuestion": "Ask a Question"
+      },
+      "watchlist": {
+        "title": "My Watchlist",
+        "empty": "You're not watching any ads yet.",
+        "emptyHint": "Browse ads and click the heart icon to add them to your watchlist.",
+        "added": "Ad added to watchlist",
+        "removed": "Ad removed from watchlist",
+        "loginRequired": "Log in to manage your watchlist"
       },
       "presence": {
         "online": "Online",
@@ -356,7 +365,8 @@ const resources = {
         "login": "Zaloguj",
         "register": "Zarejestruj",
         "theme": "Motyw",
-        "terms": "Regulamin"
+        "terms": "Regulamin",
+        "watchlist": "Obserwowane"
       },
       "home": {
         "featuredAds": "Wyróżnione ogłoszenia",
@@ -567,7 +577,7 @@ const resources = {
         "verified": "Zweryfikowany",
         "popularity": "Popularność",
         "views": "{{count}} wyświetleń",
-        "favorites": "{{count}} obserwujących",
+        "watchers": "{{count}} obserwujących",
         "condition": "Stan",
         "shipping": "Wysyłka i dostawa",
         "deliveryEstimate": "Przewidywana dostawa: {{estimate}}",
@@ -578,6 +588,14 @@ const resources = {
         "questions": "Pytania i odpowiedzi",
         "noQuestions": "Brak pytań. Bądź pierwszy!",
         "askQuestion": "Zadaj pytanie"
+      },
+      "watchlist": {
+        "title": "Moja lista obserwowanych",
+        "empty": "Nie obserwujesz jeszcze żadnych ogłoszeń.",
+        "emptyHint": "Przeglądaj ogłoszenia i kliknij ikonę serca, aby dodać je do listy obserwowanych.",
+        "added": "Ogłoszenie dodane do obserwowanych",
+        "removed": "Ogłoszenie usunięte z obserwowanych",
+        "loginRequired": "Zaloguj się, aby zarządzać listą obserwowanych"
       },
       "presence": {
         "online": "Dostępny",

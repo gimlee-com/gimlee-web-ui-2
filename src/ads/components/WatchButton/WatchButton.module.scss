@@ -1,0 +1,79 @@
+@import "../../../styles/uikit-imports.scss";
+
+.watchButton {
+  position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: $global-muted-color;
+  transition: color 0.2s ease, transform 0.15s ease;
+
+  &:hover {
+    transform: scale(1.15);
+  }
+
+  &:active {
+    transform: scale(0.9);
+  }
+
+  &.watched {
+    color: $global-danger-background;
+  }
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.6;
+    transform: none;
+  }
+}
+
+/* Icon button variant (used in AdDetailsPage action buttons row) */
+.iconButton {
+  composes: watchButton;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: $global-muted-background;
+
+  &:hover {
+    background-color: $global-border;
+    color: $global-color;
+  }
+
+  &.watched {
+    background-color: color-mix(in srgb, $global-danger-background, transparent 90%);
+    color: $global-danger-background;
+
+    &:hover {
+      background-color: color-mix(in srgb, $global-danger-background, transparent 80%);
+    }
+  }
+}
+
+/* Overlay variant (used on AdCard over the image) */
+.overlay {
+  composes: watchButton;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background-color: color-mix(in srgb, $global-background, transparent 20%);
+  backdrop-filter: blur(4px);
+  box-shadow: var(--global-medium-shadow, 0 5px 15px rgba(0, 0, 0, 0.08));
+
+  &:hover {
+    background-color: $global-background;
+  }
+
+  &.watched {
+    background-color: $global-background;
+    color: $global-danger-background;
+  }
+}

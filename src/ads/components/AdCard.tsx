@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { useTranslation } from 'react-i18next';
@@ -8,10 +8,12 @@ import { Label } from '../../components/uikit/Label/Label';
 import { Icon } from '../../components/uikit/Icon/Icon';
 import { formatPrice } from '../../utils/currencyUtils';
 import { Image } from '../../components/Image/Image';
+import { WatchButton } from './WatchButton/WatchButton';
 import styles from './AdCard.module.scss';
 
 interface AdCardProps {
   ad: AdDiscoveryPreviewDto;
+  onWatchToggle?: (adId: string, isWatched: boolean) => void;
 }
 
 const API_URL = import.meta.env.VITE_API_URL || '';
@@ -25,9 +27,10 @@ const cardVariants = {
   }
 } as const;
 
-export const AdCard: React.FC<AdCardProps> = ({ ad }) => {
+export const AdCard: React.FC<AdCardProps> = ({ ad, onWatchToggle }) => {
   const { t } = useTranslation();
   const location = useLocation();
+  const [isWatched, setIsWatched] = useState(!!ad.isWatched);
   const photoUrl = ad.mainPhotoPath ? `${API_URL}/api/media?p=/thumbs-sm${ad.mainPhotoPath}` : '/placeholder-image.svg';
 
   const isOutOfStock = ad.isBuyable === false;
@@ -46,6 +49,15 @@ export const AdCard: React.FC<AdCardProps> = ({ ad }) => {
             {isOutOfStock && !isFrozen && <Label variant="warning">{t('ads.status.outOfStock')}</Label>}
             {isFrozen && !isOutOfStock && <Label variant="warning">{t('pricing.partiallyFrozen')}</Label>}
           </div>
+          <WatchButton
+            adId={ad.id}
+            isWatched={isWatched}
+            variant="overlay"
+            onToggle={(watched) => {
+              setIsWatched(watched);
+              onWatchToggle?.(ad.id, watched);
+            }}
+          />
           <Image 
             src={photoUrl} 
             alt={ad.title} 

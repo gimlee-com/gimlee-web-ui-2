@@ -79,6 +79,7 @@ export interface AdDiscoveryPreviewDto {
   location?: LocationWithCityDetailsDto;
   frozenCurrencies?: string[];
   isBuyable?: boolean;
+  isWatched?: boolean;
 }
 
 /** @deprecated Use AdDiscoveryPreviewDto for buyer views, AdDto for seller views */
@@ -129,7 +130,7 @@ export interface ShippingDetailsDto {
 
 export interface AdStatsDto {
   viewsCount: number;
-  favoritesCount: number;
+  watchersCount: number;
   lastPurchasedAt?: string;
 }
 
@@ -154,14 +155,14 @@ export interface AdDiscoveryDetailsDto {
   stats?: AdDiscoveryStatsDto;
   frozenCurrencies?: string[];
   isBuyable?: boolean;
+  isWatched?: boolean;
   userCanPurchase?: boolean;
 }
 
 export interface AdDiscoveryStatsDto {
   viewsCount: number;
-  favoritesCount: number;
+  watchersCount?: number;
   lastPurchasedAt?: string;
-  isFavorite?: boolean;
 }
 
 /** @deprecated Use AdDiscoveryDetailsDto for buyer views, AdDto for seller views */

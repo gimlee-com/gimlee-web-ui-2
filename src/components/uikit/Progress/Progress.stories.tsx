@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useState, useEffect, useRef } from 'react'
 import { Progress } from './Progress'
 import { Button } from '../Button/Button'

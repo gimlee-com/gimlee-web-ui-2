@@ -25,6 +25,7 @@ import SalesOrdersPage from './sales/pages/SalesOrdersPage';
 import PurchasesPage from './purchases/pages/PurchasesPage';
 import ProfilePage from './profile/pages/ProfilePage';
 import UserSpacePage from './spaces/pages/UserSpacePage';
+import AdWatchlistPage from './ads/pages/AdWatchlistPage';
 const TermsOfServicePage = lazy(() => import('./pages/TermsOfServicePage'));
 
 function App() {
@@ -75,6 +76,7 @@ function App() {
             <Route path="/verify" element={<VerifyPage />} />
             <Route path="/ads" element={<AdListingPage />} />
             <Route path="/ads/:id" element={<AdDetailsPage />} />
+            <Route path="/watchlist" element={<AdWatchlistPage />} />
             <Route path="/sales/ads" element={<SalesAdsPage />} />
             <Route path="/sales/ads/create" element={<CreateAdPage />} />
             <Route path="/sales/ads/edit/:id" element={<EditAdPage />} />

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Drop, DropParentIcon } from './Drop'
 import { Button } from '../Button/Button'
 import { Card } from '../Card/Card'

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Column, ColumnSpan } from './Column'
 
 const meta: Meta<typeof Column> = {

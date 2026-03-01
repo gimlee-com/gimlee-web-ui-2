@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Tab, TabItem } from './Tab'
 import { Grid } from '../Grid/Grid'
 

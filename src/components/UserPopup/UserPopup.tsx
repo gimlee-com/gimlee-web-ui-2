@@ -55,7 +55,9 @@ export const UserPopup: React.FC<UserPopupProps> = ({
   }, [userId]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- syncing prop to local state for modal display
     setCurrentStatus(status);
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- syncing prop to local state for modal display
     setCurrentCustomStatus(customStatus);
   }, [status, customStatus]);
 
@@ -78,7 +80,6 @@ export const UserPopup: React.FC<UserPopupProps> = ({
       UIkit.util.off(element, 'show', handleShow);
       UIkit.util.off(element, 'hidden', handleHidden);
     };
-    // eslint-disable-next-line react-hooks/refs -- modalRef is stable; effect runs on mount
   }, [modalRef, fetchPresence]);
 
   const dropdownCleanupRef = React.useRef<(() => void) | null>(null);

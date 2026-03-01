@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import UIkit from 'uikit'
 import { Button } from '../../components/uikit/Button/Button'
 

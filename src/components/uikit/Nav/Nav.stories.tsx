@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Nav, NavItem, SubNav, NavHeader, NavDivider } from './Nav'
 import { Icon } from '../Icon/Icon'
 

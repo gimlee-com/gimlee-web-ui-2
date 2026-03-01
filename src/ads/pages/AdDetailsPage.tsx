@@ -31,6 +31,7 @@ import { Markdown } from '../../components/Markdown/Markdown';
 import { Image } from '../../components/Image/Image';
 import { AvatarWithPresence } from '../../components/AvatarWithPresence';
 import { AdCard } from '../components/AdCard';
+import { WatchButton } from '../components/WatchButton/WatchButton';
 import styles from './AdDetailsPage.module.scss';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
@@ -79,6 +80,8 @@ const AdDetailsPage: React.FC = () => {
   const activePurchase = useAppSelector(state => state.purchase.activePurchase);
   const dispatch = useAppDispatch();
   const [isPurchasing, setIsPurchasing] = useState(false);
+  const [isWatched, setIsWatched] = useState(false);
+  const [watchersCount, setWatchersCount] = useState(0);
   const mainSliderRef = useRef<HTMLDivElement>(null);
   const thumbSliderRef = useRef<HTMLDivElement>(null);
 
@@ -237,6 +240,8 @@ const AdDetailsPage: React.FC = () => {
       adService.getAdById(id, { signal: controller.signal })
         .then(data => {
           setAd(data);
+          setIsWatched(!!data.isWatched);
+          setWatchersCount(data.stats?.watchersCount ?? 0);
           autoSelectCurrency(data);
         })
         .catch(err => {
@@ -456,12 +461,15 @@ const AdDetailsPage: React.FC = () => {
                     </Label>
                   )}
                   <div className={styles.actionButtons}>
-                    <button 
-                      className={`uk-icon-button ${styles.actionButton} ${ad.stats?.isFavorite ? styles.isFavorite : ''}`}
-                      title={t('adDetails.favorites')}
-                    >
-                      <Icon icon="heart" className={ad.stats?.isFavorite ? 'uk-text-danger' : ''} />
-                    </button>
+                    <WatchButton
+                      adId={ad.id}
+                      isWatched={isWatched}
+                      variant="icon-button"
+                      onToggle={(watched) => {
+                        setIsWatched(watched);
+                        setWatchersCount(prev => watched ? prev + 1 : Math.max(0, prev - 1));
+                      }}
+                    />
                     <button 
                       className={`uk-icon-button ${styles.actionButton}`}
                       title={t('common.actions')}
@@ -674,7 +682,7 @@ const AdDetailsPage: React.FC = () => {
                   <div>
                     <div className={styles.statItem}>
                       <Icon icon="heart" />
-                      <span>{t('adDetails.favorites', { count: ad.stats?.favoritesCount ?? 0 })}</span>
+                      <span>{t('adDetails.watchers', { count: watchersCount })}</span>
                     </div>
                   </div>
                   {ad.stats?.lastPurchasedAt && (

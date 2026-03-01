@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Search, SearchInput, SearchIcon } from './Search'
 import { Navbar, NavbarContainer, NavbarLeft, NavbarRight, NavbarItem } from '../Navbar/Navbar'
 import { Dropdown } from '../Dropdown/Dropdown'

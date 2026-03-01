@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Slider, SliderItems, SliderItem, SliderContainer, SliderNav } from './Slider'
 import { Slidenav } from '../Slidenav/Slidenav'
 import { Card, CardBody, CardTitle, CardMedia } from '../Card/Card'

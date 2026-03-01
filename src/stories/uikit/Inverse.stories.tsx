@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Grid } from '../../components/uikit/Grid/Grid'
 import { Section } from '../../components/uikit/Section/Section'
 import { Container } from '../../components/uikit/Container/Container'

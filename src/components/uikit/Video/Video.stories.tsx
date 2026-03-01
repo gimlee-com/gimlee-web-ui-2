@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Video } from './Video'
 import { Grid } from '../Grid/Grid'
 import { Icon } from '../Icon/Icon'

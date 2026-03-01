@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Lightbox, LightboxItem } from './Lightbox'
 
 const meta: Meta<typeof Lightbox> = {

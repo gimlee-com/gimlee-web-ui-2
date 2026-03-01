@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Sticky } from './Sticky'
 import { Card, CardBody, CardTitle } from '../Card/Card'
 import { Grid } from '../Grid/Grid'

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Grid } from '../../../components/uikit/Grid/Grid'
 import { Card, CardBody } from '../../../components/uikit/Card/Card'
 

@@ -156,6 +156,12 @@ const Navbar: React.FC = () => {
                     </Link>
                   </NavItem>
                   <NavItem>
+                    <Link to="/watchlist">
+                      <Icon icon="heart" className="uk-margin-small-right" />
+                      {t('navbar.watchlist')}
+                    </Link>
+                  </NavItem>
+                  <NavItem>
                     <Link to="/terms">
                       <Icon icon="info" className="uk-margin-small-right" />
                       {t('navbar.terms')}
@@ -289,6 +295,15 @@ const Navbar: React.FC = () => {
               transition={{ duration: 0.2, delay: 0.2 }}
             >
               <Link to="/purchases" uk-toggle="target: #mobile-menu">{t('navbar.purchases')}</Link>
+            </MotionNavItem>
+            <MotionNavItem
+              key="watchlist-off"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2, delay: 0.22 }}
+            >
+              <Link to="/watchlist" uk-toggle="target: #mobile-menu">{t('navbar.watchlist')}</Link>
             </MotionNavItem>
             <MotionNavItem
               key="profile-off"
