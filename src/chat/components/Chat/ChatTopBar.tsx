@@ -19,6 +19,7 @@ export const ChatTopBarPortal: React.FC<{ children: React.ReactNode }> = ({ chil
   useEffect(() => {
     const el = document.getElementById(CHAT_TOP_BAR_PORTAL_ID);
     if (el && container !== el) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- DOM sync via MutationObserver pattern
       setContainer(el);
     }
     

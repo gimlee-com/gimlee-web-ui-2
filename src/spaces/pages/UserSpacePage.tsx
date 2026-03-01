@@ -55,6 +55,7 @@ const UserSpacePage: React.FC = () => {
     if (!userName) return;
 
     const controller = new AbortController();
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- loading state before async fetch
     setLoading(true);
     setError(null);
 

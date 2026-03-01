@@ -40,6 +40,7 @@ const AdListingPage: React.FC = () => {
 
   useEffect(() => {
     const controller = new AbortController();
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- loading state before async fetch
     setLoading(true);
     setError(null);
     const params = Object.fromEntries(searchParams.entries());

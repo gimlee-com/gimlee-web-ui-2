@@ -92,6 +92,7 @@ export const MediaEditor: React.FC<MediaEditorProps> = ({ id = 'media-editor', i
   // Initial history entry
   useEffect(() => {
     if (history.length === 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- initializing history on first render
       pushToHistory({ crop: { x: 0, y: 0 }, zoom: 1, rotation: 0, aspect: ASPECTS[1].value, croppedAreaPixels: null });
     }
   }, [history.length, pushToHistory]);

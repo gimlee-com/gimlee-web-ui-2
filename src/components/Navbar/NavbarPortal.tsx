@@ -17,6 +17,7 @@ const NavbarPortal: React.FC<NavbarPortalProps> = ({ children }) => {
 
   useEffect(() => {
     if (mode !== 'focused') {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional DOM sync for portal target
       setTargetElement(null);
       return;
     }

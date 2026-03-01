@@ -29,6 +29,7 @@ export const CitySelector: React.FC<CitySelectorProps> = ({
   useEffect(() => {
     if (initialValue) {
       const districtSuffix = initialValue.district ? ` (${initialValue.district})` : '';
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- syncing local state from prop
       setCitySearch(`${initialValue.name}${districtSuffix}, ${initialValue.country}`);
     } else {
       setCitySearch('');

@@ -50,6 +50,7 @@ export const PresenceProvider: React.FC<{ children: ReactNode }> = ({ children }
 
   useEffect(() => {
     if (isAuthenticated && !loading) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- triggers async fetch that sets state
       fetchMyPresence();
       
       intervalRef.current = setInterval(() => {

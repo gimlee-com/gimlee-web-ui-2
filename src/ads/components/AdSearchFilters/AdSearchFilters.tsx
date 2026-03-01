@@ -36,6 +36,7 @@ export const AdSearchFilters: React.FC = () => {
 
   // Sync from URL on mount and when URL changes
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional URL-to-state sync (AGENTS.md §S)
     setText(searchParams.get('t') || '');
     setMinPrice(searchParams.get('minp') || '');
     setMaxPrice(searchParams.get('maxp') || '');
