@@ -85,18 +85,6 @@
   gap: 8px;
 }
 
-.actionButton {
-  background-color: $global-muted-background !important;
-  color: $global-muted-color !important;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background-color: $global-border !important;
-    color: $global-color !important;
-  }
-}
 
 .currencyOption {
   border: 2px solid $global-border;

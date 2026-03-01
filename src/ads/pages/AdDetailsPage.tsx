@@ -466,12 +466,7 @@ const AdDetailsPage: React.FC = () => {
                         setWatchersCount(prev => watched ? prev + 1 : Math.max(0, prev - 1));
                       }}
                     />
-                    <button 
-                      className={`uk-icon-button ${styles.actionButton}`}
-                      title={t('common.actions')}
-                    >
-                      <Icon icon="more-vertical" />
-                    </button>
+
                   </div>
                 </div>
 
