@@ -93,7 +93,7 @@ describe('AuthContext', () => {
     let loginFn: (token: string) => Promise<void> = async () => {};
     const TestLoginComponent = () => {
       const { login } = useAuth();
-      loginFn = login;
+      loginFn = login; // eslint-disable-line react-hooks/globals -- Capturing hook value for test assertion
       return null;
     };
 

@@ -62,11 +62,11 @@ const RegisterPage: React.FC = () => {
 
   const validateEmailFormat = (value: string | undefined) => {
     if (!value) return true;
-    return /^[\w-\.]+@([\w-]+\.)+[\w-]{2,}$/.test(value) || t('auth.errors.invalidEmail');
+    return /^[\w-.]+@([\w-]+\.)+[\w-]{2,}$/.test(value) || t('auth.errors.invalidEmail');
   };
 
   const validateEmailAvailability = React.useMemo(() => debouncedValidate('email', async (value) => {
-    if (!value || !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,}$/.test(value)) return true;
+    if (!value || !/^[\w-.]+@([\w-]+\.)+[\w-]{2,}$/.test(value)) return true;
     try {
       const res = await authService.checkEmail(value);
       return res.available || t('auth.errors.emailTaken');

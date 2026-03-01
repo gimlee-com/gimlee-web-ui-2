@@ -70,7 +70,7 @@ CSSStyleDeclaration.prototype.setProperty = function (property, value, priority)
   }
   try {
     originalSetProperty.call(this, property, String(value), priority);
-  } catch (e) {
+  } catch {
     // Ignore errors from invalid CSS properties in JSDOM
   }
 };

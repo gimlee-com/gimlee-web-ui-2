@@ -87,6 +87,7 @@ export const PresenceProvider: React.FC<{ children: ReactNode }> = ({ children }
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const usePresence = () => {
   const context = useContext(PresenceContext);
   if (context === undefined) {

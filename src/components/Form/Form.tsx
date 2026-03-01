@@ -4,7 +4,9 @@ import { useUIKit } from '../../hooks/useUIkit'
 import { useMergeRefs } from '../../hooks/useMergeRefs'
 import UIkit from 'uikit'
 
+// eslint-disable-next-line react-refresh/only-export-components
 export { motion, AnimatePresence } from 'motion/react'
+// eslint-disable-next-line react-refresh/only-export-components
 export * from './NumberInput'
 
 export type FormLayout = 'stacked' | 'horizontal'

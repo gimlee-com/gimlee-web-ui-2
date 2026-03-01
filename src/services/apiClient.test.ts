@@ -21,14 +21,14 @@ describe('ApiClient', () => {
   const originalLocation = window.location;
 
   beforeEach(() => {
-    // @ts-ignore
+    // @ts-expect-error -- Deleting window.location for test mock
     delete window.location;
     window.location = { ...originalLocation, href: '', pathname: '/current-page', search: '?q=test' } as any;
     vi.stubGlobal('fetch', vi.fn());
   });
 
   afterEach(() => {
-    // @ts-ignore
+    // @ts-expect-error -- Restoring original window.location after test
     window.location = originalLocation;
     vi.restoreAllMocks();
   });
@@ -100,7 +100,7 @@ describe('ApiClient', () => {
 
     try {
       await apiClient.get('/test');
-    } catch (e) {}
+    } catch (e) { /* Expected error */ }
 
     expect(apiClient.getToken()).toBe('existing-token');
   });
