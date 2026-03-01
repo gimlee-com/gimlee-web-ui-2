@@ -78,6 +78,7 @@ export const Chat: React.FC<ChatProps> = ({ chatId, className }) => {
   }, [renderedItems, heights]);
 
   const itemsRef = useRef(renderedItems);
+  // eslint-disable-next-line react-hooks/refs -- Sync ref for react-window callbacks outside React render
   itemsRef.current = renderedItems;
   const rowProps = useMemo(() => ({ 
     itemsRef,
@@ -103,6 +104,7 @@ export const Chat: React.FC<ChatProps> = ({ chatId, className }) => {
   const prevFirstMessageIdRef = useRef<string | null>(null);
   const prevFirstMessageIndexRef = useRef<number>(-1);
 
+  /* eslint-disable react-hooks/refs -- Intentional: previous-value refs for prepend detection (usePrevious pattern) */
   const prependDetection = useMemo(() => {
     const firstMessage = messages[0];
     if (!firstMessage || !prevFirstMessageIdRef.current || firstMessage.id === prevFirstMessageIdRef.current) {
@@ -117,6 +119,7 @@ export const Chat: React.FC<ChatProps> = ({ chatId, className }) => {
       shift: newIndex - prevFirstMessageIndexRef.current
     };
   }, [messages, preparedItems]);
+  /* eslint-enable react-hooks/refs */
 
   useEffect(() => {
     const firstMessage = messages[0];

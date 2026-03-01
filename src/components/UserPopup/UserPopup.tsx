@@ -78,7 +78,8 @@ export const UserPopup: React.FC<UserPopupProps> = ({
       UIkit.util.off(element, 'show', handleShow);
       UIkit.util.off(element, 'hidden', handleHidden);
     };
-  }, [modalRef.current, fetchPresence]);
+    // eslint-disable-next-line react-hooks/refs -- modalRef is stable; effect runs on mount
+  }, [modalRef, fetchPresence]);
 
   const dropdownCleanupRef = React.useRef<(() => void) | null>(null);
   const onDropdownRef = useCallback((el: HTMLDivElement | null) => {

@@ -286,6 +286,7 @@ export const FormIcon = forwardRef<HTMLElement, FormIconProps>(
     if (flip) classNames.push('uk-form-icon-flip')
     if (customClassName) classNames.push(customClassName)
 
+    /* eslint-disable react-hooks/refs -- Passing forwardRef to createElement is standard React usage */
     return React.createElement(
       Tag,
       {
@@ -295,6 +296,7 @@ export const FormIcon = forwardRef<HTMLElement, FormIconProps>(
       } as any,
       icon ? <span uk-icon={`icon: ${icon}`}></span> : props.children
     )
+    /* eslint-enable react-hooks/refs */
   }
 )
 

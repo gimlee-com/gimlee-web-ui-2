@@ -17,6 +17,7 @@ interface ChatRowProps {
 }
 
 const ChatRow = (props: ChatRowProps): React.ReactElement | null => {
+  /* eslint-disable react-hooks/refs -- react-window row component; ref is read by virtualization callback outside React render */
   const { itemsRef, popupContainer, index, style } = props;
   if (index === undefined || !style || !itemsRef.current) return null;
   const chatItem = itemsRef.current[index];
@@ -40,6 +41,7 @@ const ChatRow = (props: ChatRowProps): React.ReactElement | null => {
       {...chatItem}
     />
   );
+  /* eslint-enable react-hooks/refs */
 };
 
 const MemoizedChatRow = memo(ChatRow, (prevProps, nextProps) => {
