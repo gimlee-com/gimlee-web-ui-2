@@ -177,6 +177,7 @@ const EditAdPage: React.FC = () => {
     } catch (err: unknown) {
       const errorBody = err as StatusResponseDto;
       const fieldErrors = errorBody?.fieldErrors;
+      const message = errorBody?.message || (err as Error).message || t('auth.errors.generic');
 
       if (fieldErrors && fieldErrors.length > 0) {
         const formFields: Array<keyof UpdateAdRequestDto> = [
@@ -189,15 +190,14 @@ const EditAdPage: React.FC = () => {
             setFieldError(fe.field as keyof UpdateAdRequestDto, { type: 'server', message: fe.message });
           }
         }
-      } else {
-        const message = errorBody?.message || (err as Error).message || t('auth.errors.generic');
-        UIkit.notification({
-          message,
-          status: 'danger',
-          pos: 'top-center',
-          timeout: 5000
-        });
       }
+
+      UIkit.notification({
+        message,
+        status: 'danger',
+        pos: 'top-center',
+        timeout: 5000
+      });
     } finally {
       setSaving(false);
     }
